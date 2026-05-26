@@ -33,6 +33,7 @@ wp-config.php
 
 # Composer
 composer.phar
+vendor/
 
 # PHPUnit
 .phpunit.result.cache
