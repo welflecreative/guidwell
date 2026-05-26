@@ -14,6 +14,33 @@ class Guidwell_API {
 	public function register_routes(): void {
 		register_rest_route(
 			self::NAMESPACE,
+			'/wizard',
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'create_wizard' ],
+				'permission_callback' => [ $this, 'can_edit' ],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/settings',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_settings' ],
+					'permission_callback' => [ $this, 'can_manage_options' ],
+				],
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'save_settings' ],
+					'permission_callback' => [ $this, 'can_manage_options' ],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/config/(?P<wizard_id>\d+)',
 			[
 				[
@@ -46,6 +73,71 @@ class Guidwell_API {
 
 	public function can_edit(): bool {
 		return current_user_can( 'edit_posts' );
+	}
+
+	public function can_manage_options(): bool {
+		return current_user_can( 'manage_options' );
+	}
+
+	// -------------------------------------------------------------------------
+	// POST /guidwell/v1/wizard — create a new wizard post
+	// -------------------------------------------------------------------------
+
+	public function create_wizard( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$title = sanitize_text_field(
+			$request->get_param( 'title' ) ?? __( 'My Wizard', 'guidwell' )
+		);
+
+		$post_id = wp_insert_post( [
+			'post_type'   => 'guidwell_wizard',
+			'post_title'  => $title ?: __( 'My Wizard', 'guidwell' ),
+			'post_status' => 'publish',
+		] );
+
+		if ( is_wp_error( $post_id ) ) {
+			return $post_id;
+		}
+
+		return rest_ensure_response( [ 'id' => $post_id ] );
+	}
+
+	// -------------------------------------------------------------------------
+	// GET /guidwell/v1/settings
+	// -------------------------------------------------------------------------
+
+	public function get_settings(): WP_REST_Response {
+		return rest_ensure_response( guidwell_get_settings() );
+	}
+
+	// -------------------------------------------------------------------------
+	// POST /guidwell/v1/settings
+	// -------------------------------------------------------------------------
+
+	public function save_settings( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$body = $request->get_json_params();
+		if ( ! is_array( $body ) ) {
+			return new WP_Error(
+				'guidwell_invalid_body',
+				__( 'Request body must be a JSON object.', 'guidwell' ),
+				[ 'status' => 400 ]
+			);
+		}
+
+		$allowed = [ 'primaryColor', 'primaryDark', 'backgroundColor', 'cardBackground' ];
+		$clean   = [];
+
+		foreach ( $allowed as $key ) {
+			if ( isset( $body[ $key ] ) ) {
+				$value = sanitize_hex_color( $body[ $key ] );
+				if ( $value ) {
+					$clean[ $key ] = $value;
+				}
+			}
+		}
+
+		update_option( 'guidwell_settings', $clean );
+
+		return rest_ensure_response( guidwell_get_settings() );
 	}
 
 	// -------------------------------------------------------------------------

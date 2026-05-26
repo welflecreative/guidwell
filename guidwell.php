@@ -23,6 +23,10 @@ require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-cpt.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-api.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-shortcode.php';
 
+if ( is_admin() ) {
+	require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-admin.php';
+}
+
 /**
  * Enqueue frontend assets only on pages that use the [guidwell] shortcode.
  */

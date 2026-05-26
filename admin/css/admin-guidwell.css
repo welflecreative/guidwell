@@ -1,0 +1,602 @@
+/* ==========================================================================
+   Guidwell Admin — scoped under #guidwell-admin
+   ========================================================================== */
+
+#guidwell-admin {
+	--gw-primary:      #4a90a4;
+	--gw-primary-dark: #3a7a8c;
+	--gw-border:       #e0e0e0;
+	--gw-text:         #1a1a2e;
+	--gw-muted:        #6b7280;
+	--gw-surface:      #ffffff;
+	--gw-surface-alt:  #f9f9f9;
+	--gw-hover-bg:     #f0fafb;
+	--gw-selected-bg:  #e8f6f8;
+	--gw-radius:       6px;
+	--gw-error:        #c0392b;
+	--gw-info-bg:      #eaf4fb;
+	--gw-info-border:  #90cde8;
+
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	color: var(--gw-text);
+	margin-top: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   Tabs
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-tabs {
+	display: flex;
+	gap: 0;
+	border-bottom: 2px solid var(--gw-border);
+	margin-bottom: 0;
+}
+
+#guidwell-admin .gw-tab {
+	padding: 10px 20px;
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	margin-bottom: -2px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--gw-muted);
+	cursor: pointer;
+	font-family: inherit;
+	transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+#guidwell-admin .gw-tab:hover {
+	color: var(--gw-text);
+}
+
+#guidwell-admin .gw-tab--active {
+	color: var(--gw-primary);
+	border-bottom-color: var(--gw-primary);
+	font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+   Notifications
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-notice {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	padding: 12px 16px;
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	line-height: 1.5;
+	margin-bottom: 16px;
+}
+
+#guidwell-admin .gw-notice--info {
+	background: var(--gw-info-bg);
+	border: 1px solid var(--gw-info-border);
+	color: #1a567e;
+}
+
+#guidwell-admin .gw-notice--success {
+	background: #eafaf1;
+	border: 1px solid #82d8a0;
+	color: #1a6b38;
+}
+
+#guidwell-admin .gw-notice--error {
+	background: #fdf0ef;
+	border: 1px solid #f0a09a;
+	color: var(--gw-error);
+}
+
+#guidwell-admin .gw-notice__dismiss {
+	margin-left: auto;
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 1;
+	color: inherit;
+	opacity: 0.6;
+	padding: 0;
+	flex-shrink: 0;
+	font-family: inherit;
+}
+
+#guidwell-admin .gw-notice__dismiss:hover {
+	opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Two-column builder layout
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-builder {
+	display: grid;
+	grid-template-columns: 280px 1fr;
+	gap: 0;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	background: var(--gw-surface);
+	min-height: 600px;
+	overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-sidebar {
+	background: var(--gw-surface-alt);
+	border-right: 1px solid var(--gw-border);
+	display: flex;
+	flex-direction: column;
+}
+
+#guidwell-admin .gw-sidebar-section {
+	padding: 16px 16px 8px;
+}
+
+#guidwell-admin .gw-sidebar-heading {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--gw-muted);
+	margin: 0 0 8px 0;
+}
+
+#guidwell-admin .gw-sidebar-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#guidwell-admin .gw-sidebar-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 12px;
+	margin: 0 8px 2px;
+	border-radius: var(--gw-radius);
+	cursor: pointer;
+	font-size: 13px;
+	color: var(--gw-text);
+	transition: background 0.15s ease;
+	border-left: 3px solid transparent;
+	user-select: none;
+}
+
+#guidwell-admin .gw-sidebar-item:hover {
+	background: var(--gw-hover-bg);
+}
+
+#guidwell-admin .gw-sidebar-item--active {
+	background: var(--gw-selected-bg);
+	border-left-color: var(--gw-primary);
+	font-weight: 500;
+}
+
+#guidwell-admin .gw-drag-handle {
+	cursor: grab;
+	color: var(--gw-muted);
+	opacity: 0.5;
+	font-size: 15px;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-drag-handle:hover {
+	opacity: 1;
+}
+
+#guidwell-admin .gw-sidebar-item__label {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#guidwell-admin .gw-sidebar-item__delete {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 2px 4px;
+	color: var(--gw-muted);
+	font-size: 16px;
+	line-height: 1;
+	border-radius: 3px;
+	opacity: 0;
+	transition: opacity 0.15s ease, color 0.15s ease;
+	font-family: inherit;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-sidebar-item:hover .gw-sidebar-item__delete {
+	opacity: 1;
+}
+
+#guidwell-admin .gw-sidebar-item__delete:hover {
+	color: var(--gw-error);
+}
+
+#guidwell-admin .gw-sidebar-divider {
+	border: none;
+	border-top: 1px solid var(--gw-border);
+	margin: 12px 0;
+}
+
+#guidwell-admin .gw-sidebar-footer {
+	padding: 12px 16px;
+	margin-top: auto;
+	border-top: 1px solid var(--gw-border);
+	background: var(--gw-surface-alt);
+}
+
+#guidwell-admin .gw-btn-add {
+	display: block;
+	width: 100%;
+	padding: 8px 12px;
+	background: none;
+	border: 1.5px dashed var(--gw-border);
+	border-radius: var(--gw-radius);
+	color: var(--gw-muted);
+	font-size: 13px;
+	font-weight: 500;
+	font-family: inherit;
+	cursor: pointer;
+	text-align: center;
+	margin-bottom: 8px;
+	transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+#guidwell-admin .gw-btn-add:hover {
+	border-color: var(--gw-primary);
+	color: var(--gw-primary);
+	background: var(--gw-hover-bg);
+}
+
+/* --------------------------------------------------------------------------
+   Save button
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-btn-save {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	padding: 10px 16px;
+	background: var(--gw-primary);
+	color: #fff;
+	border: none;
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+#guidwell-admin .gw-btn-save:hover:not(:disabled) {
+	background: var(--gw-primary-dark);
+}
+
+#guidwell-admin .gw-btn-save:disabled {
+	cursor: not-allowed;
+	opacity: 0.8;
+}
+
+#guidwell-admin .gw-btn-save--success {
+	background: #27ae60;
+}
+
+#guidwell-admin .gw-btn-save--error {
+	background: var(--gw-error);
+}
+
+#guidwell-admin .gw-btn-spinner {
+	width: 13px;
+	height: 13px;
+	border: 2px solid rgba(255,255,255,0.4);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: gw-spin 0.6s linear infinite;
+	flex-shrink: 0;
+}
+
+@keyframes gw-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Right panel
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-panel {
+	padding: 28px 32px;
+	overflow-y: auto;
+}
+
+#guidwell-admin .gw-panel-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	min-height: 300px;
+	color: var(--gw-muted);
+	font-size: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   Form elements
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-field {
+	margin-bottom: 20px;
+}
+
+#guidwell-admin .gw-label {
+	display: block;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--gw-text);
+	margin-bottom: 6px;
+	letter-spacing: 0.01em;
+}
+
+#guidwell-admin .gw-label-hint {
+	font-weight: 400;
+	color: var(--gw-muted);
+	margin-left: 6px;
+}
+
+#guidwell-admin .gw-input,
+#guidwell-admin .gw-textarea {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	font-family: inherit;
+	color: var(--gw-text);
+	background: var(--gw-surface);
+	box-sizing: border-box;
+	transition: border-color 0.15s ease;
+}
+
+#guidwell-admin .gw-input:focus,
+#guidwell-admin .gw-textarea:focus {
+	outline: none;
+	border-color: var(--gw-primary);
+	box-shadow: 0 0 0 2px rgba(74, 144, 164, 0.15);
+}
+
+#guidwell-admin .gw-input[readonly] {
+	background: var(--gw-surface-alt);
+	color: var(--gw-muted);
+	cursor: default;
+}
+
+#guidwell-admin .gw-textarea {
+	resize: none;
+	overflow: hidden;
+	line-height: 1.5;
+	min-height: 72px;
+}
+
+#guidwell-admin .gw-field-note {
+	font-size: 11px;
+	color: var(--gw-muted);
+	margin-top: 5px;
+	line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   Section headers inside panels
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-section-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+#guidwell-admin .gw-section-title {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--gw-text);
+	margin: 0;
+}
+
+#guidwell-admin .gw-btn-secondary {
+	padding: 5px 12px;
+	background: none;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	font-size: 12px;
+	font-weight: 500;
+	font-family: inherit;
+	color: var(--gw-text);
+	cursor: pointer;
+	transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+#guidwell-admin .gw-btn-secondary:hover {
+	border-color: var(--gw-primary);
+	color: var(--gw-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Answer rows
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-answers-list {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-bottom: 12px;
+}
+
+#guidwell-admin .gw-answer-row {
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	padding: 12px;
+	background: var(--gw-surface-alt);
+}
+
+#guidwell-admin .gw-answer-row__top {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+}
+
+#guidwell-admin .gw-answer-row__input {
+	flex: 1;
+}
+
+#guidwell-admin .gw-answer-row__delete {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	color: var(--gw-muted);
+	padding: 2px 4px;
+	border-radius: 3px;
+	font-family: inherit;
+	line-height: 1;
+	flex-shrink: 0;
+	transition: color 0.15s ease;
+}
+
+#guidwell-admin .gw-answer-row__delete:hover {
+	color: var(--gw-error);
+}
+
+#guidwell-admin .gw-weights {
+	display: flex;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+#guidwell-admin .gw-weight-field {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	min-width: 56px;
+}
+
+#guidwell-admin .gw-weight-label {
+	font-size: 10px;
+	font-weight: 600;
+	color: var(--gw-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	text-align: center;
+}
+
+#guidwell-admin .gw-weight-input {
+	width: 56px;
+	padding: 5px 6px;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	font-family: inherit;
+	text-align: center;
+	color: var(--gw-text);
+	background: var(--gw-surface);
+	transition: border-color 0.15s ease;
+}
+
+#guidwell-admin .gw-weight-input:focus {
+	outline: none;
+	border-color: var(--gw-primary);
+	box-shadow: 0 0 0 2px rgba(74, 144, 164, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Settings tab
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-settings {
+	max-width: 520px;
+	padding: 28px 0;
+}
+
+#guidwell-admin .gw-color-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#guidwell-admin .gw-color-picker {
+	width: 40px;
+	height: 34px;
+	padding: 2px;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	cursor: pointer;
+	background: none;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-color-hex {
+	flex: 1;
+}
+
+#guidwell-admin .gw-btn-primary {
+	padding: 9px 20px;
+	background: var(--gw-primary);
+	color: #fff;
+	border: none;
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	transition: background 0.15s ease;
+}
+
+#guidwell-admin .gw-btn-primary:hover:not(:disabled) {
+	background: var(--gw-primary-dark);
+}
+
+#guidwell-admin .gw-btn-primary:disabled {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   Sortable ghost / drag state
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .sortable-ghost {
+	opacity: 0.4;
+}
+
+#guidwell-admin .sortable-drag {
+	box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media ( max-width: 782px ) {
+	#guidwell-admin .gw-builder {
+		grid-template-columns: 1fr;
+	}
+
+	#guidwell-admin .gw-sidebar {
+		border-right: none;
+		border-bottom: 1px solid var(--gw-border);
+	}
+
+	#guidwell-admin .gw-panel {
+		padding: 20px;
+	}
+}
