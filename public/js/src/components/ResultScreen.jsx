@@ -19,7 +19,7 @@ function CheckIcon() {
 	);
 }
 
-export default function ResultScreen( { plan, onRestart, headingRef } ) {
+export default function ResultScreen( { plan, contactEmail, onRestart, headingRef } ) {
 	useEffect( () => {
 		if ( headingRef?.current ) {
 			headingRef.current.focus();
@@ -27,6 +27,8 @@ export default function ResultScreen( { plan, onRestart, headingRef } ) {
 	}, [] );
 
 	if ( ! plan ) {
+		const ctaHref = contactEmail ? `mailto:${ contactEmail }` : '#contact';
+
 		return (
 			<div className="guidwell-result">
 				<CheckIcon />
@@ -40,13 +42,10 @@ export default function ResultScreen( { plan, onRestart, headingRef } ) {
 				</h2>
 
 				<p className="guidwell-result-description">
-					{ __( "Based on your answers, we'd love to talk through the best option for you personally.", 'guidwell' ) }
+					{ __( "Based on your answers, let's talk. Reach out for a custom recommendation.", 'guidwell' ) }
 				</p>
 
-				<a
-					href="#contact"
-					className="guidwell-result-cta"
-				>
+				<a href={ ctaHref } className="guidwell-result-cta">
 					{ __( 'Get in Touch', 'guidwell' ) }
 				</a>
 
@@ -81,10 +80,7 @@ export default function ResultScreen( { plan, onRestart, headingRef } ) {
 
 			<p className="guidwell-result-description">{ plan.description }</p>
 
-			<a
-				href={ plan.ctaUrl }
-				className="guidwell-result-cta"
-			>
+			<a href={ plan.ctaUrl } className="guidwell-result-cta">
 				{ plan.ctaLabel }
 			</a>
 

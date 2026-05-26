@@ -38,7 +38,7 @@ class Guidwell_Shortcode {
 	 * Resolve wizard ID from shortcode attribute or fallback to first published wizard.
 	 */
 	private function resolve_wizard_id( string $raw_id ): int {
-		$id = (int) $raw_id;
+		$id = absint( $raw_id );
 		if ( $id > 0 ) {
 			return $id;
 		}

@@ -18,10 +18,12 @@ export default function ProgressBar( { current, total } ) {
 					style={ { width: `${ pct }%` } }
 				/>
 			</div>
-			<p className="guidwell-step-counter">
-				{ /* translators: 1: current step number, 2: total steps */ }
-				{ __( 'Step', 'guidwell' ) } { current } { __( 'of', 'guidwell' ) } { total }
-			</p>
+			{ total > 1 && (
+				<p className="guidwell-step-counter">
+					{ /* translators: 1: current step number, 2: total steps */ }
+					{ __( 'Step', 'guidwell' ) } { current } { __( 'of', 'guidwell' ) } { total }
+				</p>
+			) }
 		</div>
 	);
 }

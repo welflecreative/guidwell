@@ -21,8 +21,9 @@ module.exports = [
 		name: 'wizard',
 		entry: './public/js/src/index.js',
 		output: {
-			path: path.resolve( __dirname, 'public/js/dist' ),
-			filename: 'wizard.js',
+			path:       path.resolve( __dirname, 'public/js/dist' ),
+			filename:   'wizard.js',
+			publicPath: 'auto',
 		},
 		module: { rules: [ babelRule ] },
 		resolve,

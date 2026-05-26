@@ -99,6 +99,15 @@ function guidwell_activate(): void {
 register_activation_hook( __FILE__, 'guidwell_activate' );
 
 /**
+ * Uninstall hook — removes all plugin data from the database.
+ */
+function guidwell_uninstall(): void {
+	require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-uninstall.php';
+	Guidwell_Uninstall::run();
+}
+register_uninstall_hook( __FILE__, 'guidwell_uninstall' );
+
+/**
  * Load plugin text domain for translations.
  */
 function guidwell_load_textdomain(): void {

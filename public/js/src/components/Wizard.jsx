@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { __ } from '@wordpress/i18n';
 import QuestionStep from './QuestionStep';
-import ResultScreen from './ResultScreen';
 import ProgressBar from './ProgressBar';
 import scoreAnswers from '../utils/scoreAnswers';
+
+const ResultScreen = lazy( () => import( './ResultScreen' ) );
 
 const HARDCODED_CONFIG = {
 	questions: [
@@ -58,46 +59,48 @@ const HARDCODED_CONFIG = {
 	],
 	plans: [
 		{
-			slug: 'starter',
-			tier: 1,
-			name: __( 'Starter', 'guidwell' ),
-			price: '$0/month',
+			slug: 'starter', tier: 1,
+			name: __( 'Starter', 'guidwell' ), price: '$0/month',
 			description: __( 'Edit this plan description to match your offer.', 'guidwell' ),
-			ctaLabel: __( 'Get Started', 'guidwell' ),
-			ctaUrl: '#',
+			ctaLabel: __( 'Get Started', 'guidwell' ), ctaUrl: '#',
 		},
 		{
-			slug: 'pro',
-			tier: 2,
-			name: __( 'Pro', 'guidwell' ),
-			price: '$0/month',
+			slug: 'pro', tier: 2,
+			name: __( 'Pro', 'guidwell' ), price: '$0/month',
 			description: __( 'Edit this plan description to match your offer.', 'guidwell' ),
-			ctaLabel: __( 'Get Started', 'guidwell' ),
-			ctaUrl: '#',
+			ctaLabel: __( 'Get Started', 'guidwell' ), ctaUrl: '#',
 		},
 		{
-			slug: 'premium',
-			tier: 3,
-			name: __( 'Premium', 'guidwell' ),
-			price: '$0/month',
+			slug: 'premium', tier: 3,
+			name: __( 'Premium', 'guidwell' ), price: '$0/month',
 			description: __( 'Edit this plan description to match your offer.', 'guidwell' ),
-			ctaLabel: __( 'Contact Us', 'guidwell' ),
-			ctaUrl: '#',
+			ctaLabel: __( 'Contact Us', 'guidwell' ), ctaUrl: '#',
 		},
 	],
 };
 
+function SpinnerFallback() {
+	return (
+		<div className="guidwell-wrapper">
+			<div className="guidwell-card guidwell-card--loading">
+				<div className="guidwell-spinner" role="status" aria-label={ __( 'Loading…', 'guidwell' ) } />
+			</div>
+		</div>
+	);
+}
+
 export default function Wizard() {
 	const { wizardId = 0, apiBase = '', settings = {} } = window.guidwellData || {};
+	const contactEmail = settings.contactEmail || '';
 
-	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
-	const [ loading,     setLoading     ] = useState( wizardId > 0 );
-	const [ fetchError,  setFetchError  ] = useState( false );
-	const [ currentStep, setCurrentStep ] = useState( 0 );
-	const [ answers,     setAnswers     ] = useState( {} );
-	const [ showResult,  setShowResult  ] = useState( false );
-	const [ transitioning,  setTransitioning  ] = useState( false );
-	const [ transitionDir,  setTransitionDir  ] = useState( 'forward' );
+	const [ config,       setConfig       ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
+	const [ loading,      setLoading      ] = useState( wizardId > 0 );
+	const [ fetchError,   setFetchError   ] = useState( false );
+	const [ currentStep,  setCurrentStep  ] = useState( 0 );
+	const [ answers,      setAnswers      ] = useState( {} );
+	const [ showResult,   setShowResult   ] = useState( false );
+	const [ transitioning,   setTransitioning  ] = useState( false );
+	const [ transitionDir,   setTransitionDir  ] = useState( 'forward' );
 
 	const headingRef = useRef( null );
 
@@ -118,10 +121,9 @@ export default function Wizard() {
 			return;
 		}
 
-		const url = `${ apiBase }config/${ wizardId }`;
-		const nonce = window.guidwellData?.nonce || '';
-
-		fetch( url, { headers: { 'X-WP-Nonce': nonce } } )
+		fetch( `${ apiBase }config/${ wizardId }`, {
+			headers: { 'X-WP-Nonce': window.guidwellData?.nonce || '' },
+		} )
 			.then( ( res ) => {
 				if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
 				return res.json();
@@ -143,19 +145,13 @@ export default function Wizard() {
 		}
 	}, [ currentStep, showResult, transitioning, loading ] );
 
-	// ── Loading state ────────────────────────────────────────────────────────
+	// ── Loading ──────────────────────────────────────────────────────────────
 
 	if ( loading ) {
-		return (
-			<div className="guidwell-wrapper">
-				<div className="guidwell-card guidwell-card--loading">
-					<div className="guidwell-spinner" role="status" aria-label={ __( 'Loading wizard…', 'guidwell' ) } />
-				</div>
-			</div>
-		);
+		return <SpinnerFallback />;
 	}
 
-	// ── Error state ──────────────────────────────────────────────────────────
+	// ── Fetch error ──────────────────────────────────────────────────────────
 
 	if ( fetchError ) {
 		return (
@@ -172,10 +168,9 @@ export default function Wizard() {
 	// ── Wizard ───────────────────────────────────────────────────────────────
 
 	const { questions, plans } = config;
-
-	const question      = questions[ currentStep ];
+	const question       = questions[ currentStep ];
 	const selectedAnswer = answers[ question?.id ] ?? null;
-	const totalSteps    = questions.length;
+	const totalSteps     = questions.length;
 
 	function transition( direction, callback ) {
 		setTransitionDir( direction );
@@ -187,7 +182,15 @@ export default function Wizard() {
 	}
 
 	function handleAnswerSelect( answerId ) {
-		setAnswers( ( prev ) => ( { ...prev, [ question.id ]: answerId } ) );
+		setAnswers( ( prev ) => {
+			// Clear answers for all steps after the current one so stale
+			// forward selections never influence the final score.
+			const updated = { ...prev };
+			questions.slice( currentStep + 1 ).forEach( ( q ) => {
+				delete updated[ q.id ];
+			} );
+			return { ...updated, [ question.id ]: answerId };
+		} );
 	}
 
 	function handleNext() {
@@ -215,22 +218,27 @@ export default function Wizard() {
 	}
 
 	const stepClass = transitioning
-		? ( transitionDir === 'forward' ? 'guidwell-step-exit guidwell-step-exit-active' : 'guidwell-step-enter guidwell-step-enter-active' )
+		? ( transitionDir === 'forward'
+			? 'guidwell-step-exit guidwell-step-exit-active'
+			: 'guidwell-step-enter guidwell-step-enter-active' )
 		: 'guidwell-step-visible';
 
 	if ( showResult ) {
 		const slug   = scoreAnswers( answers, config );
 		const result = plans.find( ( p ) => p.slug === slug ) ?? null;
 		return (
-			<div className="guidwell-wrapper">
-				<div className="guidwell-card">
-					<ResultScreen
-						plan={ result }
-						onRestart={ handleRestart }
-						headingRef={ headingRef }
-					/>
+			<Suspense fallback={ <SpinnerFallback /> }>
+				<div className="guidwell-wrapper">
+					<div className="guidwell-card">
+						<ResultScreen
+							plan={ result }
+							contactEmail={ contactEmail }
+							onRestart={ handleRestart }
+							headingRef={ headingRef }
+						/>
+					</div>
 				</div>
-			</div>
+			</Suspense>
 		);
 	}
 
