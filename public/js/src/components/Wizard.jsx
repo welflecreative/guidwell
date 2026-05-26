@@ -35,7 +35,7 @@ const HARDCODED_CONFIG = {
 			id: 3,
 			text: __( 'How much support are you looking for?', 'guidwell' ),
 			answers: [
-				{ id: '3a', label: __( 'Guidance — I\'ll handle execution', 'guidwell' ),
+				{ id: '3a', label: __( "Guidance — I'll handle execution", 'guidwell' ),
 					weights: { starter: 3, pro: 1, premium: 0 } },
 				{ id: '3b', label: __( 'Collaborative — we work together', 'guidwell' ),
 					weights: { starter: 1, pro: 3, premium: 1 } },
@@ -87,21 +87,17 @@ const HARDCODED_CONFIG = {
 	],
 };
 
-
 export default function Wizard() {
-	const config = ( window.guidwellData?.config && Object.keys( window.guidwellData.config ).length )
-		? window.guidwellData.config
-		: HARDCODED_CONFIG;
+	const { wizardId = 0, apiBase = '', settings = {} } = window.guidwellData || {};
 
-	const settings = window.guidwellData?.settings || {};
-
-	const { questions, plans } = config;
-
+	const [ config,      setConfig      ] = useState( null );
+	const [ loading,     setLoading     ] = useState( wizardId > 0 );
+	const [ fetchError,  setFetchError  ] = useState( false );
 	const [ currentStep, setCurrentStep ] = useState( 0 );
-	const [ answers, setAnswers ] = useState( {} );
-	const [ showResult, setShowResult ] = useState( false );
-	const [ transitioning, setTransitioning ] = useState( false );
-	const [ transitionDir, setTransitionDir ] = useState( 'forward' );
+	const [ answers,     setAnswers     ] = useState( {} );
+	const [ showResult,  setShowResult  ] = useState( false );
+	const [ transitioning,  setTransitioning  ] = useState( false );
+	const [ transitionDir,  setTransitionDir  ] = useState( 'forward' );
 
 	const headingRef = useRef( null );
 
@@ -109,22 +105,77 @@ export default function Wizard() {
 	useEffect( () => {
 		const el = document.getElementById( 'guidwell' );
 		if ( ! el ) return;
-		if ( settings.primaryColor )    el.style.setProperty( '--guidwell-primary',     settings.primaryColor );
+		if ( settings.primaryColor )    el.style.setProperty( '--guidwell-primary',      settings.primaryColor );
 		if ( settings.primaryDark )     el.style.setProperty( '--guidwell-primary-dark', settings.primaryDark );
-		if ( settings.backgroundColor ) el.style.setProperty( '--guidwell-bg',          settings.backgroundColor );
-		if ( settings.cardBackground )  el.style.setProperty( '--guidwell-card-bg',     settings.cardBackground );
+		if ( settings.backgroundColor ) el.style.setProperty( '--guidwell-bg',           settings.backgroundColor );
+		if ( settings.cardBackground )  el.style.setProperty( '--guidwell-card-bg',      settings.cardBackground );
 	}, [ settings ] );
+
+	// Fetch config from REST API, or fall back to hardcoded config.
+	useEffect( () => {
+		if ( wizardId <= 0 ) {
+			setConfig( HARDCODED_CONFIG );
+			return;
+		}
+
+		const url = `${ apiBase }config/${ wizardId }`;
+		const nonce = window.guidwellData?.nonce || '';
+
+		fetch( url, { headers: { 'X-WP-Nonce': nonce } } )
+			.then( ( res ) => {
+				if ( ! res.ok ) throw new Error( `HTTP ${ res.status }` );
+				return res.json();
+			} )
+			.then( ( data ) => {
+				setConfig( data );
+				setLoading( false );
+			} )
+			.catch( () => {
+				setFetchError( true );
+				setLoading( false );
+			} );
+	}, [ wizardId, apiBase ] );
 
 	// Move focus to heading after each step change.
 	useEffect( () => {
-		if ( ! transitioning && headingRef.current ) {
+		if ( ! transitioning && ! loading && headingRef.current ) {
 			headingRef.current.focus();
 		}
-	}, [ currentStep, showResult, transitioning ] );
+	}, [ currentStep, showResult, transitioning, loading ] );
 
-	const question = questions[ currentStep ];
+	// ── Loading state ────────────────────────────────────────────────────────
+
+	if ( loading ) {
+		return (
+			<div className="guidwell-wrapper">
+				<div className="guidwell-card guidwell-card--loading">
+					<div className="guidwell-spinner" role="status" aria-label={ __( 'Loading wizard…', 'guidwell' ) } />
+				</div>
+			</div>
+		);
+	}
+
+	// ── Error state ──────────────────────────────────────────────────────────
+
+	if ( fetchError ) {
+		return (
+			<div className="guidwell-wrapper">
+				<div className="guidwell-card">
+					<p className="guidwell-load-error">
+						{ __( 'Something went wrong loading the wizard. Please refresh the page.', 'guidwell' ) }
+					</p>
+				</div>
+			</div>
+		);
+	}
+
+	// ── Wizard ───────────────────────────────────────────────────────────────
+
+	const { questions, plans } = config;
+
+	const question      = questions[ currentStep ];
 	const selectedAnswer = answers[ question?.id ] ?? null;
-	const totalSteps = questions.length;
+	const totalSteps    = questions.length;
 
 	function transition( direction, callback ) {
 		setTransitionDir( direction );

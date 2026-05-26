@@ -349,6 +349,43 @@
 }
 
 /* --------------------------------------------------------------------------
+   Loading Spinner
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-card--loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 300px;
+}
+
+#guidwell .guidwell-spinner {
+	width: 40px;
+	height: 40px;
+	border: 3px solid var(--guidwell-border);
+	border-top-color: var(--guidwell-primary);
+	border-radius: 50%;
+	animation: guidwell-spin 0.7s linear infinite;
+}
+
+@keyframes guidwell-spin {
+	to { transform: rotate(360deg); }
+}
+
+/* --------------------------------------------------------------------------
+   Load Error
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-load-error {
+	font-size: 15px;
+	color: var(--guidwell-muted);
+	text-align: center;
+	line-height: 1.6;
+	padding: 40px 0;
+	margin: 0;
+}
+
+/* --------------------------------------------------------------------------
    Responsive — under 600px
    -------------------------------------------------------------------------- */
 
