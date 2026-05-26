@@ -1,0 +1,399 @@
+/* ==========================================================================
+   Guidwell Wizard — all styles scoped under #guidwell
+   All color values reference CSS custom properties only.
+   ========================================================================== */
+
+#guidwell {
+	--guidwell-primary:      #4a90a4;
+	--guidwell-primary-dark: #3a7a8c;
+	--guidwell-bg:           #f8f8f6;
+	--guidwell-card-bg:      #ffffff;
+	--guidwell-border:       #e0e0e0;
+	--guidwell-text:         #1a1a2e;
+	--guidwell-muted:        #6b7280;
+	--guidwell-selected-bg:  #eef6f8;
+	--guidwell-radius-card:  16px;
+	--guidwell-radius-btn:   8px;
+	--guidwell-shadow:       0 4px 24px rgba(0, 0, 0, 0.08);
+
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	color: var(--guidwell-text);
+	background-color: var(--guidwell-bg);
+}
+
+/* Focus styles */
+#guidwell *:focus-visible {
+	outline: 2px solid var(--guidwell-primary);
+	outline-offset: 2px;
+}
+
+#guidwell *:focus:not(:focus-visible) {
+	outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 80px 24px;
+	min-height: 400px;
+	background-color: var(--guidwell-bg);
+}
+
+#guidwell .guidwell-card {
+	width: 100%;
+	max-width: 680px;
+	background-color: var(--guidwell-card-bg);
+	border-radius: var(--guidwell-radius-card);
+	box-shadow: var(--guidwell-shadow);
+	padding: 48px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Progress Bar
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-progress {
+	margin-bottom: 36px;
+}
+
+#guidwell .guidwell-progress-track {
+	height: 4px;
+	background-color: var(--guidwell-border);
+	border-radius: 100px;
+	overflow: hidden;
+}
+
+#guidwell .guidwell-progress-fill {
+	height: 100%;
+	background-color: var(--guidwell-primary);
+	border-radius: 100px;
+	transition: width 0.4s ease;
+}
+
+#guidwell .guidwell-step-counter {
+	font-size: 12px;
+	color: var(--guidwell-muted);
+	margin: 8px 0 0 0;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Question & Heading
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-question-text {
+	font-size: 26px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--guidwell-text);
+	margin: 0 0 28px 0;
+}
+
+/* --------------------------------------------------------------------------
+   Answer Cards
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-answers {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+#guidwell .guidwell-answer-card {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 16px 20px;
+	background-color: var(--guidwell-card-bg);
+	border: 1.5px solid var(--guidwell-border);
+	border-radius: 10px;
+	border-left-width: 1.5px;
+	cursor: pointer;
+	text-align: left;
+	font-size: 16px;
+	font-weight: 500;
+	font-family: inherit;
+	color: var(--guidwell-text);
+	transition:
+		border-color 0.2s ease,
+		background-color 0.2s ease,
+		box-shadow 0.2s ease;
+	position: relative;
+}
+
+#guidwell .guidwell-answer-card:hover {
+	border-color: var(--guidwell-primary);
+	background-color: var(--guidwell-selected-bg);
+}
+
+#guidwell .guidwell-answer-card--selected {
+	border-color: var(--guidwell-primary);
+	border-left: 4px solid var(--guidwell-primary);
+	background-color: var(--guidwell-selected-bg);
+	box-shadow: 0 2px 12px rgba(74, 144, 164, 0.12);
+	padding-left: 17px; /* compensate for extra border width */
+}
+
+#guidwell .guidwell-answer-label {
+	flex: 1;
+}
+
+#guidwell .guidwell-answer-check {
+	flex-shrink: 0;
+	margin-left: 12px;
+	display: flex;
+	align-items: center;
+	color: var(--guidwell-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Navigation Buttons
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-nav {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 32px;
+	gap: 12px;
+}
+
+#guidwell .guidwell-btn {
+	padding: 14px 32px;
+	border-radius: var(--guidwell-radius-btn);
+	font-size: 16px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	transition:
+		background-color 0.2s ease,
+		border-color 0.2s ease,
+		opacity 0.2s ease;
+	text-align: center;
+	line-height: 1;
+}
+
+#guidwell .guidwell-btn--next {
+	background-color: var(--guidwell-primary);
+	color: #ffffff;
+	border: none;
+	margin-left: auto;
+}
+
+#guidwell .guidwell-btn--next:hover:not(:disabled) {
+	background-color: var(--guidwell-primary-dark);
+}
+
+#guidwell .guidwell-btn--next:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+#guidwell .guidwell-btn--back {
+	background-color: transparent;
+	color: var(--guidwell-text);
+	border: 1.5px solid var(--guidwell-border);
+}
+
+#guidwell .guidwell-btn--back:hover {
+	border-color: var(--guidwell-primary);
+	color: var(--guidwell-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Step Transitions
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-step {
+	will-change: opacity, transform;
+}
+
+#guidwell .guidwell-step-visible {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+#guidwell .guidwell-step-enter {
+	opacity: 0;
+	transform: translateX(32px);
+}
+
+#guidwell .guidwell-step-enter-active {
+	opacity: 1;
+	transform: translateX(0);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#guidwell .guidwell-step-exit {
+	opacity: 1;
+	transform: translateX(0);
+}
+
+#guidwell .guidwell-step-exit-active {
+	opacity: 0;
+	transform: translateX(-32px);
+	transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Result Screen
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-result {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	animation: guidwell-result-enter 0.4s ease-out both;
+	padding: 8px 0;
+}
+
+@keyframes guidwell-result-enter {
+	from {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+#guidwell .guidwell-result-check {
+	color: var(--guidwell-primary);
+	margin-bottom: 20px;
+	line-height: 1;
+}
+
+#guidwell .guidwell-result-eyebrow {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--guidwell-muted);
+	margin: 0 0 8px 0;
+}
+
+#guidwell .guidwell-result-name {
+	font-size: 32px;
+	font-weight: 700;
+	color: var(--guidwell-primary);
+	margin: 0 0 12px 0;
+	line-height: 1.2;
+}
+
+#guidwell .guidwell-result-price {
+	font-size: 48px;
+	font-weight: 800;
+	color: var(--guidwell-text);
+	margin: 0 0 20px 0;
+	line-height: 1;
+	letter-spacing: -0.02em;
+}
+
+#guidwell .guidwell-result-description {
+	font-size: 16px;
+	line-height: 1.6;
+	color: var(--guidwell-muted);
+	max-width: 440px;
+	margin: 0 0 32px 0;
+}
+
+#guidwell .guidwell-result-cta {
+	display: block;
+	width: 100%;
+	max-width: 440px;
+	padding: 18px 32px;
+	background-color: var(--guidwell-primary);
+	color: #ffffff;
+	text-decoration: none;
+	border-radius: 10px;
+	font-size: 17px;
+	font-weight: 700;
+	font-family: inherit;
+	text-align: center;
+	transition: background-color 0.2s ease;
+	box-sizing: border-box;
+}
+
+#guidwell .guidwell-result-cta:hover {
+	background-color: var(--guidwell-primary-dark);
+}
+
+#guidwell .guidwell-result-restart {
+	margin-top: 20px;
+	background: none;
+	border: none;
+	font-size: 14px;
+	color: var(--guidwell-muted);
+	cursor: pointer;
+	font-family: inherit;
+	padding: 4px 8px;
+	transition: color 0.2s ease;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+#guidwell .guidwell-result-restart:hover {
+	color: var(--guidwell-text);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — under 600px
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+	#guidwell .guidwell-wrapper {
+		padding: 0;
+		align-items: stretch;
+	}
+
+	#guidwell .guidwell-card {
+		border-radius: 0;
+		box-shadow: none;
+		padding: 24px;
+		min-height: 100vh;
+	}
+
+	#guidwell .guidwell-question-text {
+		font-size: 22px;
+	}
+
+	#guidwell .guidwell-answer-card {
+		font-size: 15px;
+	}
+
+	#guidwell .guidwell-nav {
+		flex-direction: column-reverse;
+		gap: 0;
+	}
+
+	#guidwell .guidwell-btn--next {
+		width: 100%;
+		margin-left: 0;
+	}
+
+	#guidwell .guidwell-btn--back {
+		background: none;
+		border: none;
+		color: var(--guidwell-muted);
+		font-weight: 500;
+		padding: 12px 0 0 0;
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+
+	#guidwell .guidwell-result-cta {
+		max-width: 100%;
+	}
+}
