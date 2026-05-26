@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import QuestionStep from './QuestionStep';
 import ResultScreen from './ResultScreen';
 import ProgressBar from './ProgressBar';
+import scoreAnswers from '../utils/scoreAnswers';
 
 const HARDCODED_CONFIG = {
 	questions: [
@@ -86,23 +87,6 @@ const HARDCODED_CONFIG = {
 	],
 };
 
-function computeResult( answers, questions, plans ) {
-	const scores = {};
-	plans.forEach( ( p ) => { scores[ p.slug ] = 0; } );
-
-	questions.forEach( ( q ) => {
-		const selectedId = answers[ q.id ];
-		if ( ! selectedId ) return;
-		const answer = q.answers.find( ( a ) => a.id === selectedId );
-		if ( ! answer ) return;
-		Object.entries( answer.weights ).forEach( ( [ slug, weight ] ) => {
-			if ( slug in scores ) scores[ slug ] += weight;
-		} );
-	} );
-
-	const topSlug = Object.entries( scores ).sort( ( a, b ) => b[ 1 ] - a[ 1 ] )[ 0 ][ 0 ];
-	return plans.find( ( p ) => p.slug === topSlug ) || plans[ 0 ];
-}
 
 export default function Wizard() {
 	const config = ( window.guidwellData?.config && Object.keys( window.guidwellData.config ).length )
@@ -184,7 +168,8 @@ export default function Wizard() {
 		: 'guidwell-step-visible';
 
 	if ( showResult ) {
-		const result = computeResult( answers, questions, plans );
+		const slug   = scoreAnswers( answers, config );
+		const result = plans.find( ( p ) => p.slug === slug ) ?? null;
 		return (
 			<div className="guidwell-wrapper">
 				<div className="guidwell-card">

@@ -22,6 +22,9 @@ yarn-error.log*
 # WordPress
 wp-config.php
 
+# wp-env Docker environment data
+.wp-env/
+
 # IDE
 .vscode/
 .idea/
