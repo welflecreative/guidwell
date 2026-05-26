@@ -90,7 +90,7 @@ const HARDCODED_CONFIG = {
 export default function Wizard() {
 	const { wizardId = 0, apiBase = '', settings = {} } = window.guidwellData || {};
 
-	const [ config,      setConfig      ] = useState( null );
+	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,     setLoading     ] = useState( wizardId > 0 );
 	const [ fetchError,  setFetchError  ] = useState( false );
 	const [ currentStep, setCurrentStep ] = useState( 0 );
