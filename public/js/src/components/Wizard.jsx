@@ -93,7 +93,7 @@ function SpinnerFallback() {
 }
 
 export default function Wizard() {
-	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {} } = window.guidwellData || {};
+	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [] } = window.guidwellData || {};
 
 	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,     setLoading     ] = useState( wizardId > 0 );
@@ -241,7 +241,7 @@ export default function Wizard() {
 		: '';
 
 	if ( showResult ) {
-		const topPlans  = getTopPlans( answers, config, 2 );
+		const topPlans  = getTopPlans( answers, config, 3 );
 		const allScores = getAllScores( answers, config );
 		const insight   = generateInsight( answers, config );
 		return (
@@ -255,6 +255,7 @@ export default function Wizard() {
 							onRestart={ handleRestart }
 							config={ config }
 							answers={ answers }
+							featuresList={ featuresList }
 							contact={ contact }
 							apiBase={ apiBase }
 							wizardId={ wizardId }
