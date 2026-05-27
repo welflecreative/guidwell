@@ -179,17 +179,29 @@ function PodiumCardContent( { plan, cardInsight, isFirst } ) {
 
 	return (
 		<div className="guidwell-podium-card">
-			{ plan.name     && <p className="guidwell-podium-card__name">{ plan.name }</p> }
-			{ plan.price    && <p className="guidwell-podium-card__price">{ plan.price }</p> }
+			{ plan.name  && <p className="guidwell-podium-card__name">{ plan.name }</p> }
+			{ plan.price && <p className="guidwell-podium-card__price">{ plan.price }</p> }
 			<hr className="guidwell-podium-card__divider" />
-			{ fitReason     && <p className="guidwell-podium-card__fit-reason">{ fitReason }</p> }
-			{ whyItMatters  && <p className="guidwell-podium-card__why">{ whyItMatters }</p> }
-			{ plan.description && <p className="guidwell-podium-card__description">{ plan.description }</p> }
-			{ upsellReason && (
-				<div className="guidwell-upsell-banner">
-					<span className="guidwell-upsell-banner__label">{ __( 'Why consider upgrading:', 'guidwell' ) }</span>
-					<p className="guidwell-upsell-banner__text">{ upsellReason }</p>
-				</div>
+			{ isFirst ? (
+				<>
+					{ fitReason    && <p className="guidwell-podium-card__fit-reason">{ fitReason }</p> }
+					{ whyItMatters && <p className="guidwell-podium-card__why">{ whyItMatters }</p> }
+					{ plan.description && <p className="guidwell-podium-card__description">{ plan.description }</p> }
+				</>
+			) : (
+				<>
+					{ plan.description && (
+						<p className="guidwell-podium-card__description guidwell-podium-card__description--clamped">
+							{ plan.description }
+						</p>
+					) }
+					{ upsellReason && (
+						<div className="guidwell-upsell-banner">
+							<span className="guidwell-upsell-banner__label">{ __( 'Why consider upgrading:', 'guidwell' ) }</span>
+							<p className="guidwell-upsell-banner__text">{ upsellReason }</p>
+						</div>
+					) }
+				</>
 			) }
 			<div className="guidwell-podium-card__cta-wrap">
 				<CtaElement ctaUrl={ plan.ctaUrl } ctaLabel={ plan.ctaLabel } className={ ctaClass } />
@@ -364,7 +376,7 @@ function Carousel( { topPlans, cardInsights } ) {
 									</div>
 								) }
 								{ isActive && plan.ctaLabel && (
-									<div className="guidwell-podium-card__cta-wrap" style={ { opacity: 1, maxHeight: '60px', overflow: 'visible' } }>
+									<div className="guidwell-podium-card__cta-wrap">
 										<CtaElement ctaUrl={ plan.ctaUrl } ctaLabel={ plan.ctaLabel } className={ ctaClass } />
 									</div>
 								) }
