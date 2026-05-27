@@ -78,6 +78,23 @@ class Guidwell_API {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/features',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_features' ],
+					'permission_callback' => '__return_true',
+				],
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'save_features' ],
+					'permission_callback' => [ $this, 'can_manage_options' ],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/config/(?P<wizard_id>\d+)',
 			[
 				[
@@ -436,6 +453,66 @@ class Guidwell_API {
 		if ( $count >= $max ) return false;
 		set_transient( $key, $count + 1, HOUR_IN_SECONDS );
 		return true;
+	}
+
+	// -------------------------------------------------------------------------
+	// GET /guidwell/v1/features  (public)
+	// -------------------------------------------------------------------------
+
+	public function get_features(): WP_REST_Response {
+		$raw      = get_option( 'guidwell_features_list', '[]' );
+		$features = json_decode( $raw, true );
+		return rest_ensure_response( is_array( $features ) ? $features : [] );
+	}
+
+	// -------------------------------------------------------------------------
+	// POST /guidwell/v1/features  (admin only)
+	// -------------------------------------------------------------------------
+
+	public function save_features( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$body = $request->get_json_params();
+
+		if ( ! is_array( $body ) ) {
+			return new WP_Error( 'guidwell_invalid_body', __( 'Request body must be a JSON array.', 'guidwell' ), [ 'status' => 400 ] );
+		}
+
+		if ( count( $body ) > 100 ) {
+			return new WP_Error( 'guidwell_too_many_features', __( 'Maximum 100 features allowed.', 'guidwell' ), [ 'status' => 400 ] );
+		}
+
+		$clean = [];
+		foreach ( $body as $i => $item ) {
+			if (
+				! is_array( $item ) ||
+				empty( $item['id'] ) || ! is_string( $item['id'] ) ||
+				! isset( $item['label'] ) || ! is_string( $item['label'] ) || trim( $item['label'] ) === ''
+			) {
+				return new WP_Error(
+					'guidwell_invalid_feature',
+					/* translators: %d: feature index */
+					sprintf( __( 'Feature %d must have a non-empty id and label.', 'guidwell' ), $i + 1 ),
+					[ 'status' => 400 ]
+				);
+			}
+
+			$label = sanitize_text_field( $item['label'] );
+			if ( mb_strlen( $label ) > 120 ) {
+				return new WP_Error(
+					'guidwell_feature_label_too_long',
+					/* translators: %d: feature index */
+					sprintf( __( 'Feature %d label exceeds 120 characters.', 'guidwell' ), $i + 1 ),
+					[ 'status' => 400 ]
+				);
+			}
+
+			$clean[] = [
+				'id'    => sanitize_key( $item['id'] ),
+				'label' => $label,
+			];
+		}
+
+		update_option( 'guidwell_features_list', wp_json_encode( $clean ) );
+		return rest_ensure_response( $clean );
 	}
 
 	private function validate_config( array $config ): true|WP_Error {

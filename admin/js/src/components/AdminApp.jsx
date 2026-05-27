@@ -4,6 +4,7 @@ import QuestionEditor from './QuestionEditor';
 import PlanEditor from './PlanEditor';
 import SettingsTab from './SettingsTab';
 import NotificationsTab from './NotificationsTab';
+import FeaturesTab from './FeaturesTab';
 import Sortable from 'sortablejs';
 
 const { apiBase, nonce, wizardId: INITIAL_WIZARD_ID, settings: INITIAL_SETTINGS } =
@@ -31,6 +32,7 @@ const STARTER_CONFIG = {
 export default function AdminApp() {
 	const [ wizardId,     setWizardId     ] = useState( INITIAL_WIZARD_ID || 0 );
 	const [ config,       setConfig       ] = useState( null );
+	const [ features,     setFeatures     ] = useState( [] );
 	const [ activeTab,    setActiveTab    ] = useState( 'builder' );
 	const [ selectedId,   setSelectedId   ] = useState( null );
 	const [ savingStatus, setSavingStatus ] = useState( 'idle' );
@@ -59,6 +61,15 @@ export default function AdminApp() {
 			} );
 	}, [] );
 
+	// ── Fetch features on mount ──────────────────────────────────────────────
+
+	useEffect( () => {
+		fetch( `${ apiBase }features`, { headers: { 'X-WP-Nonce': nonce } } )
+			.then( ( r ) => r.ok ? r.json() : [] )
+			.then( ( data ) => setFeatures( Array.isArray( data ) ? data : [] ) )
+			.catch( () => {} );
+	}, [] );
+
 	// ── Sidebar question drag-and-drop ───────────────────────────────────────
 
 	useEffect( () => {
@@ -82,6 +93,21 @@ export default function AdminApp() {
 	}, [ !! config ] );
 
 	// ── Config updaters ──────────────────────────────────────────────────────
+
+	function handleFeaturesChange( newFeatures ) {
+		const newIds    = new Set( newFeatures.map( ( f ) => f.id ) );
+		const hasDeleted = features.some( ( f ) => ! newIds.has( f.id ) );
+		setFeatures( newFeatures );
+		if ( hasDeleted && config ) {
+			setConfig( ( c ) => ( {
+				...c,
+				plans: c.plans.map( ( p ) => ( {
+					...p,
+					features: ( p.features || [] ).filter( ( id ) => newIds.has( id ) ),
+				} ) ),
+			} ) );
+		}
+	}
 
 	const updateQuestion = useCallback( ( updated ) => {
 		setConfig( ( c ) => ( {
@@ -230,6 +256,9 @@ export default function AdminApp() {
 				<button className={ `gw-tab${ activeTab === 'builder'       ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'builder' ) }>
 					{ __( 'Wizard Builder', 'guidwell' ) }
 				</button>
+				<button className={ `gw-tab${ activeTab === 'features'      ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'features' ) }>
+					{ __( 'Features', 'guidwell' ) }
+				</button>
 				<button className={ `gw-tab${ activeTab === 'settings'      ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'settings' ) }>
 					{ __( 'Settings', 'guidwell' ) }
 				</button>
@@ -245,7 +274,14 @@ export default function AdminApp() {
 				</div>
 			) }
 
-			{ activeTab === 'settings' ? (
+			{ activeTab === 'features' ? (
+				<FeaturesTab
+					features={ features }
+					onFeaturesChange={ handleFeaturesChange }
+					apiBase={ apiBase }
+					nonce={ nonce }
+				/>
+			) : activeTab === 'settings' ? (
 				<SettingsTab
 					initialSettings={ INITIAL_SETTINGS }
 					apiBase={ apiBase }
@@ -358,6 +394,8 @@ export default function AdminApp() {
 									key={ selectedPlan.slug }
 									plan={ selectedPlan }
 									onUpdate={ updatePlan }
+									features={ features }
+									onGoToFeaturesTab={ () => setActiveTab( 'features' ) }
 								/>
 							) }
 							{ ! selectedQuestion && ! selectedPlan && (

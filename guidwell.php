@@ -89,6 +89,11 @@ function guidwell_enqueue_assets(): void {
 				'sendOnResult'        => ! empty( $contact_settings['sendOnResult'] ),
 				'collectVisitorEmail' => ! empty( $contact_settings['collectVisitorEmail'] ),
 			],
+			'features' => ( function () {
+				$raw  = get_option( 'guidwell_features_list', '[]' );
+				$list = json_decode( $raw, true );
+				return is_array( $list ) ? $list : [];
+			} )(),
 		]
 	);
 }

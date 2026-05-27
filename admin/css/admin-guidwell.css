@@ -790,3 +790,291 @@
 	border-color: var(--gw-error);
 	color: var(--gw-error);
 }
+
+/* --------------------------------------------------------------------------
+   Features tab
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-features {
+	max-width: 600px;
+	padding: 28px 0;
+}
+
+#guidwell-admin .gw-features-header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+#guidwell-admin .gw-features-title {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--gw-text);
+	margin: 0 0 6px 0;
+}
+
+#guidwell-admin .gw-features-subtitle {
+	font-size: 13px;
+	color: var(--gw-muted);
+	margin: 0;
+	line-height: 1.5;
+}
+
+#guidwell-admin .gw-autosave {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	font-size: 12px;
+	color: var(--gw-muted);
+	white-space: nowrap;
+	flex-shrink: 0;
+	margin-top: 4px;
+}
+
+#guidwell-admin .gw-autosave--error {
+	color: var(--gw-error);
+}
+
+#guidwell-admin .gw-autosave--fade {
+	animation: gw-autosave-fade 1.5s ease forwards;
+}
+
+@keyframes gw-autosave-fade {
+	0%, 60% { opacity: 1; }
+	100%     { opacity: 0; }
+}
+
+#guidwell-admin .gw-autosave__spinner {
+	display: inline-block;
+	width: 10px;
+	height: 10px;
+	border: 1.5px solid rgba(107, 114, 128, 0.3);
+	border-top-color: var(--gw-muted);
+	border-radius: 50%;
+	animation: gw-spin 0.6s linear infinite;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-features-add-row {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 8px;
+}
+
+#guidwell-admin .gw-features-add-input {
+	flex: 1;
+	border-width: 1.5px;
+}
+
+#guidwell-admin .gw-features-add-error {
+	font-size: 12px;
+	color: var(--gw-error);
+	margin: 0 0 16px 0;
+}
+
+#guidwell-admin .gw-features-empty {
+	text-align: center;
+	color: var(--gw-muted);
+	font-size: 14px;
+	padding: 40px 0;
+	margin: 0;
+}
+
+#guidwell-admin .gw-features-list {
+	list-style: none;
+	margin: 16px 0 0 0;
+	padding: 0;
+}
+
+#guidwell-admin .gw-feature-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px 4px;
+	border-bottom: 1px solid var(--gw-border);
+}
+
+#guidwell-admin .gw-feature-row--last {
+	border-bottom: none;
+}
+
+#guidwell-admin .gw-feature-row__label {
+	flex: 1;
+	font-size: 14px;
+	color: var(--gw-text);
+}
+
+#guidwell-admin .gw-feature-row__actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-feature-row__edit-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 13px;
+	font-family: inherit;
+	color: var(--gw-primary);
+	padding: 2px 4px;
+	line-height: 1;
+}
+
+#guidwell-admin .gw-feature-row__edit-btn:hover {
+	text-decoration: underline;
+}
+
+#guidwell-admin .gw-feature-row__delete-btn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 16px;
+	font-family: inherit;
+	color: var(--gw-muted);
+	padding: 2px 4px;
+	line-height: 1;
+	border-radius: 3px;
+	transition: color 0.15s ease;
+}
+
+#guidwell-admin .gw-feature-row__delete-btn:hover {
+	color: var(--gw-error);
+}
+
+#guidwell-admin .gw-feature-row__edit {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex: 1;
+}
+
+#guidwell-admin .gw-feature-row__edit-input {
+	flex: 1;
+	padding: 6px 10px;
+	font-size: 13px;
+}
+
+#guidwell-admin .gw-feature-row__action-btn {
+	background: none;
+	border: 1px solid var(--gw-border);
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 13px;
+	font-family: inherit;
+	padding: 4px 8px;
+	line-height: 1;
+	transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+#guidwell-admin .gw-feature-row__action-btn--confirm {
+	color: #27ae60;
+	border-color: #27ae60;
+}
+
+#guidwell-admin .gw-feature-row__action-btn--confirm:hover {
+	background: #27ae60;
+	color: #fff;
+}
+
+#guidwell-admin .gw-feature-row__action-btn--cancel {
+	color: var(--gw-muted);
+}
+
+#guidwell-admin .gw-feature-row__action-btn--cancel:hover {
+	border-color: var(--gw-muted);
+	color: var(--gw-text);
+}
+
+#guidwell-admin .gw-feature-row__confirm-delete {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex: 1;
+	flex-wrap: wrap;
+}
+
+#guidwell-admin .gw-feature-row__confirm-text {
+	font-size: 13px;
+	color: var(--gw-text);
+	flex: 1;
+}
+
+#guidwell-admin .gw-feature-row__confirm-btns {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-feature-row__action-btn--delete {
+	color: var(--gw-error);
+	border-color: var(--gw-error);
+}
+
+#guidwell-admin .gw-feature-row__action-btn--delete:hover {
+	background: var(--gw-error);
+	color: #fff;
+}
+
+#guidwell-admin .gw-features-count {
+	font-size: 12px;
+	color: var(--gw-muted);
+	margin: 12px 0 0 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Plan editor — feature checklist
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-features-controls {
+	font-size: 12px;
+	color: var(--gw-primary);
+	margin-bottom: 10px;
+}
+
+#guidwell-admin .gw-link-btn {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-size: inherit;
+	font-family: inherit;
+	color: var(--gw-primary);
+	text-decoration: underline;
+}
+
+#guidwell-admin .gw-link-btn:hover {
+	color: var(--gw-primary-dark);
+}
+
+#guidwell-admin .gw-feature-checklist {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#guidwell-admin .gw-feature-checklist__row {
+	padding: 6px 0;
+}
+
+#guidwell-admin .gw-feature-checklist__label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	color: var(--gw-text);
+	cursor: pointer;
+	user-select: none;
+}
+
+#guidwell-admin .gw-feature-checklist__label input[type="checkbox"] {
+	width: 15px;
+	height: 15px;
+	accent-color: var(--gw-primary);
+	flex-shrink: 0;
+	cursor: pointer;
+}
