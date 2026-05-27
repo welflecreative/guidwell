@@ -15,6 +15,7 @@
 	--guidwell-radius-card:  16px;
 	--guidwell-radius-btn:   8px;
 	--guidwell-shadow:       0 4px 24px rgba(0, 0, 0, 0.08);
+	--guidwell-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	color: var(--guidwell-text);
@@ -59,7 +60,8 @@
 	box-shadow: var(--guidwell-shadow);
 	padding: 48px;
 	box-sizing: border-box;
-	overflow: hidden;
+	transform-origin: center center;
+	transform-style: preserve-3d;
 }
 
 /* --------------------------------------------------------------------------
@@ -218,38 +220,47 @@
 }
 
 /* --------------------------------------------------------------------------
-   Step Transitions
+   Card flip transition
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-step {
-	will-change: opacity, transform;
+#guidwell .guidwell-wrapper {
+	perspective: 1200px;
 }
 
-#guidwell .guidwell-step-visible {
-	opacity: 1;
-	transform: translateX(0);
+#guidwell .guidwell-card--flip-exit {
+	animation: guidwell-flip-exit-fwd 0.28s ease-in both;
 }
 
-#guidwell .guidwell-step-enter {
-	opacity: 0;
-	transform: translateX(32px);
+#guidwell .guidwell-card--flip-exit-back {
+	animation: guidwell-flip-exit-back 0.28s ease-in both;
 }
 
-#guidwell .guidwell-step-enter-active {
-	opacity: 1;
-	transform: translateX(0);
-	transition: opacity 0.3s ease, transform 0.3s ease;
+#guidwell .guidwell-card--flip-enter {
+	animation: guidwell-flip-enter-fwd 0.3s ease-out both;
 }
 
-#guidwell .guidwell-step-exit {
-	opacity: 1;
-	transform: translateX(0);
+#guidwell .guidwell-card--flip-enter-back {
+	animation: guidwell-flip-enter-back 0.3s ease-out both;
 }
 
-#guidwell .guidwell-step-exit-active {
-	opacity: 0;
-	transform: translateX(-32px);
-	transition: opacity 0.3s ease, transform 0.3s ease;
+@keyframes guidwell-flip-exit-fwd {
+	from { transform: rotateY(0deg); }
+	to   { transform: rotateY(90deg); }
+}
+
+@keyframes guidwell-flip-exit-back {
+	from { transform: rotateY(0deg); }
+	to   { transform: rotateY(-90deg); }
+}
+
+@keyframes guidwell-flip-enter-fwd {
+	from { transform: rotateY(-90deg); }
+	to   { transform: rotateY(0deg); }
+}
+
+@keyframes guidwell-flip-enter-back {
+	from { transform: rotateY(90deg); }
+	to   { transform: rotateY(0deg); }
 }
 
 /* --------------------------------------------------------------------------
@@ -832,4 +843,603 @@
 	width: 14px;
 	height: 14px;
 	border-width: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Podium display — desktop (768px+)
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-podium {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	gap: 0;
+	perspective: 1200px;
+	perspective-origin: 50% 40%;
+	padding: 48px 24px 64px;
+	position: relative;
+	overflow: visible;
+}
+
+#guidwell .guidwell-podium-slot {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	transition:
+		transform    340ms var(--guidwell-ease),
+		opacity      340ms var(--guidwell-ease),
+		z-index      0ms;
+}
+
+/* ── Resting positions ── */
+
+#guidwell .guidwell-podium-slot--p1 {
+	z-index: 3;
+	margin-bottom: 0;
+	transform: translateZ(0px) scale(1);
+	opacity: 1;
+}
+
+#guidwell .guidwell-podium-slot--p2 {
+	z-index: 2;
+	margin-right: -24px;
+	margin-bottom: 20px;
+	transform: translateZ(-80px) translateX(32px) scale(0.92);
+	opacity: 0.78;
+}
+
+#guidwell .guidwell-podium-slot--p3 {
+	z-index: 1;
+	margin-left: -24px;
+	margin-bottom: 40px;
+	transform: translateZ(-160px) translateX(-32px) scale(0.84);
+	opacity: 0.58;
+}
+
+/* ── Hover state ── */
+
+#guidwell .guidwell-podium-slot--hovered {
+	transform: translateZ(60px) scale(1.04) !important;
+	opacity: 1 !important;
+	z-index: 10 !important;
+}
+
+/* ── Dimmed states (when another slot is hovered) ── */
+
+#guidwell .guidwell-podium-slot--p1.guidwell-podium-slot--dimmed {
+	transform: translateZ(-20px) scale(0.97);
+	opacity: 0.65;
+}
+
+#guidwell .guidwell-podium-slot--p2.guidwell-podium-slot--dimmed {
+	transform: translateZ(-100px) translateX(32px) scale(0.88);
+	opacity: 0.55;
+}
+
+#guidwell .guidwell-podium-slot--p3.guidwell-podium-slot--dimmed {
+	transform: translateZ(-180px) translateX(-32px) scale(0.80);
+	opacity: 0.45;
+}
+
+/* ── Badges ── */
+
+#guidwell .guidwell-podium-badge {
+	display: inline-block;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	padding: 5px 14px;
+	border-radius: 4px;
+	margin-bottom: 10px;
+	white-space: nowrap;
+}
+
+#guidwell .guidwell-podium-badge--p1 {
+	background: var(--guidwell-primary);
+	color: #fff;
+}
+
+#guidwell .guidwell-podium-badge--p2 {
+	background: var(--guidwell-muted);
+	color: #fff;
+}
+
+#guidwell .guidwell-podium-badge--p3 {
+	background: #d1d5db;
+	color: #374151;
+}
+
+/* ── Inner cards ── */
+
+#guidwell .guidwell-podium-card {
+	background: var(--guidwell-card-bg);
+	border-radius: var(--guidwell-radius-card);
+	padding: 32px 28px;
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+	will-change: transform, opacity, box-shadow;
+	position: relative;
+	box-sizing: border-box;
+	transition: box-shadow 340ms var(--guidwell-ease), border-color 340ms var(--guidwell-ease);
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-podium-card {
+	width: 320px;
+	box-shadow: 0 16px 48px rgba(0,0,0,0.16);
+	border: 2px solid var(--guidwell-primary);
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card {
+	width: 272px;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+	border: 1.5px solid var(--guidwell-border);
+}
+
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card {
+	width: 240px;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+	border: 1.5px solid var(--guidwell-border);
+}
+
+#guidwell .guidwell-podium-slot--hovered .guidwell-podium-card {
+	box-shadow: 0 24px 64px rgba(0,0,0,0.20);
+	border-color: var(--guidwell-primary);
+}
+
+/* ── Card name ── */
+
+#guidwell .guidwell-podium-card__name {
+	margin: 0 0 6px 0;
+	line-height: 1.2;
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-podium-card__name {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--guidwell-primary);
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card__name,
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card__name {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--guidwell-text);
+}
+
+/* ── Card price ── */
+
+#guidwell .guidwell-podium-card__price {
+	line-height: 1;
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-podium-card__price {
+	font-size: 44px;
+	font-weight: 800;
+	color: var(--guidwell-text);
+	margin: 0 0 16px 0;
+	letter-spacing: -0.02em;
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card__price,
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card__price {
+	font-size: 32px;
+	font-weight: 700;
+	color: var(--guidwell-text);
+	margin: 0 0 12px 0;
+}
+
+/* ── Divider ── */
+
+#guidwell .guidwell-podium-card__divider {
+	border: none;
+	border-top: 1px solid var(--guidwell-border);
+	margin: 0 0 16px 0;
+}
+
+/* ── fit-reason — hidden on p2/p3 at rest, revealed on hover ── */
+
+#guidwell .guidwell-podium-card__fit-reason {
+	font-size: 13px;
+	font-style: italic;
+	line-height: 1.5;
+	margin: 0;
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-podium-card__fit-reason {
+	color: var(--guidwell-muted);
+	margin-bottom: 10px;
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card__fit-reason,
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card__fit-reason {
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+	transition: opacity 200ms ease, max-height 200ms ease;
+	color: var(--guidwell-muted);
+}
+
+#guidwell .guidwell-podium-slot--hovered .guidwell-podium-card__fit-reason {
+	opacity: 1;
+	max-height: 60px;
+	margin-bottom: 10px;
+	transition: opacity 300ms ease 50ms, max-height 300ms ease 50ms;
+}
+
+/* ── why-it-matters — hidden on p2/p3 at rest ── */
+
+#guidwell .guidwell-podium-card__why {
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1.5;
+	margin: 0;
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-podium-card__why {
+	color: var(--guidwell-text);
+	margin-bottom: 20px;
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card__why,
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card__why {
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+	transition: opacity 200ms ease, max-height 200ms ease;
+	color: var(--guidwell-text);
+}
+
+#guidwell .guidwell-podium-slot--hovered .guidwell-podium-card__why {
+	opacity: 1;
+	max-height: 60px;
+	margin-bottom: 14px;
+	transition: opacity 300ms ease 100ms, max-height 300ms ease 100ms;
+}
+
+/* ── Description ── */
+
+#guidwell .guidwell-podium-card__description {
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--guidwell-muted);
+	margin: 0;
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-podium-card__description {
+	margin-bottom: 24px;
+	flex-grow: 1;
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card__description,
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card__description {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-height: 22px;
+	margin-bottom: 0;
+	transition: max-height 300ms var(--guidwell-ease);
+}
+
+#guidwell .guidwell-podium-slot--hovered .guidwell-podium-card__description {
+	white-space: normal;
+	max-height: 200px;
+	margin-bottom: 16px;
+}
+
+/* ── Upsell banner ── */
+
+#guidwell .guidwell-upsell-banner {
+	background: var(--guidwell-selected-bg);
+	border-left: 3px solid var(--guidwell-primary);
+	border-radius: 6px;
+	padding: 10px 14px;
+	margin-bottom: 16px;
+	font-style: italic;
+}
+
+#guidwell .guidwell-podium-slot--p1 .guidwell-upsell-banner {
+	display: none;
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-upsell-banner,
+#guidwell .guidwell-podium-slot--p3 .guidwell-upsell-banner {
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+	padding: 0;
+	margin-bottom: 0;
+	border: none;
+	background: transparent;
+	transition: opacity 200ms ease, max-height 200ms ease;
+}
+
+#guidwell .guidwell-podium-slot--hovered .guidwell-upsell-banner {
+	opacity: 1;
+	max-height: 80px;
+	overflow: visible;
+	padding: 10px 14px;
+	margin-bottom: 16px;
+	background: var(--guidwell-selected-bg);
+	border-left: 3px solid var(--guidwell-primary);
+	border-radius: 6px;
+	transition: opacity 300ms ease 150ms, max-height 300ms ease 150ms;
+}
+
+#guidwell .guidwell-upsell-banner__label {
+	display: block;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--guidwell-primary);
+	margin-bottom: 4px;
+	font-style: normal;
+}
+
+#guidwell .guidwell-upsell-banner__text {
+	font-size: 13px;
+	color: var(--guidwell-text);
+	margin: 0;
+	line-height: 1.4;
+}
+
+/* ── CTA wrap — hidden on p2/p3 at rest ── */
+
+#guidwell .guidwell-podium-card__cta-wrap {
+	margin-top: auto;
+}
+
+#guidwell .guidwell-podium-slot--p2 .guidwell-podium-card__cta-wrap,
+#guidwell .guidwell-podium-slot--p3 .guidwell-podium-card__cta-wrap {
+	opacity: 0;
+	max-height: 0;
+	overflow: hidden;
+	transition: opacity 200ms ease, max-height 200ms ease;
+}
+
+#guidwell .guidwell-podium-slot--hovered .guidwell-podium-card__cta-wrap {
+	opacity: 1;
+	max-height: 60px;
+	overflow: visible;
+	transition: opacity 300ms ease 200ms, max-height 300ms ease 200ms;
+}
+
+/* ── CTA button/link ── */
+
+#guidwell .guidwell-podium-card__cta {
+	display: block;
+	width: 100%;
+	border-radius: var(--guidwell-radius-btn);
+	font-family: inherit;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	box-sizing: border-box;
+	line-height: 1;
+	padding: 14px;
+	font-size: 15px;
+	font-weight: 700;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#guidwell .guidwell-podium-card__cta--filled {
+	background-color: var(--guidwell-primary);
+	color: #fff;
+	border: none;
+}
+
+#guidwell .guidwell-podium-card__cta--filled:hover {
+	background-color: var(--guidwell-primary-dark);
+}
+
+#guidwell .guidwell-podium-card__cta--ghost {
+	background: transparent;
+	border: 1.5px solid var(--guidwell-primary);
+	color: var(--guidwell-primary);
+}
+
+#guidwell .guidwell-podium-card__cta--ghost:hover {
+	background-color: var(--guidwell-selected-bg);
+}
+
+/* ── Single-plan fallback ── */
+
+#guidwell .guidwell-single-card {
+	border: 2px solid var(--guidwell-primary);
+	border-radius: var(--guidwell-radius-card);
+	padding: 36px;
+	box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+#guidwell .guidwell-single-card__name {
+	font-size: 26px;
+	font-weight: 700;
+	color: var(--guidwell-primary);
+	margin: 0 0 8px 0;
+}
+
+#guidwell .guidwell-single-card__price {
+	font-size: 52px;
+	font-weight: 800;
+	color: var(--guidwell-text);
+	line-height: 1;
+	margin: 0 0 16px 0;
+	letter-spacing: -0.02em;
+}
+
+#guidwell .guidwell-single-card__divider {
+	border: none;
+	border-top: 1px solid var(--guidwell-border);
+	margin: 0 0 16px 0;
+}
+
+#guidwell .guidwell-single-card__fit-reason {
+	font-size: 13px;
+	font-style: italic;
+	color: var(--guidwell-muted);
+	line-height: 1.5;
+	margin: 0 0 10px 0;
+}
+
+#guidwell .guidwell-single-card__why {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--guidwell-text);
+	line-height: 1.5;
+	margin: 0 0 20px 0;
+}
+
+#guidwell .guidwell-single-card__description {
+	font-size: 15px;
+	line-height: 1.7;
+	color: var(--guidwell-muted);
+	margin: 0 0 28px 0;
+}
+
+#guidwell .guidwell-single-card__cta {
+	display: block;
+	width: 100%;
+	background-color: var(--guidwell-primary);
+	color: #fff;
+	border: none;
+	border-radius: var(--guidwell-radius-btn);
+	font-family: inherit;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+	padding: 16px;
+	font-size: 16px;
+	font-weight: 700;
+	box-sizing: border-box;
+	line-height: 1;
+	transition: background-color 0.2s ease;
+}
+
+#guidwell .guidwell-single-card__cta:hover {
+	background-color: var(--guidwell-primary-dark);
+}
+
+/* --------------------------------------------------------------------------
+   Carousel — mobile only (< 768px)
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-carousel {
+	display: none;
+	position: relative;
+	overflow: hidden;
+	padding: 24px 0 32px;
+	outline: none;
+}
+
+#guidwell .guidwell-carousel-track {
+	display: flex;
+	gap: 16px;
+	transition: transform 340ms var(--guidwell-ease);
+	will-change: transform;
+	align-items: flex-start;
+}
+
+#guidwell .guidwell-carousel-track--dragging {
+	transition: none !important;
+}
+
+#guidwell .guidwell-carousel-card {
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	transition: opacity 340ms var(--guidwell-ease), transform 340ms var(--guidwell-ease);
+}
+
+#guidwell .guidwell-carousel-card .guidwell-podium-card {
+	width: 100%;
+	border: 1.5px solid var(--guidwell-border);
+	box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+}
+
+#guidwell .guidwell-carousel-card--active .guidwell-podium-card {
+	border-color: var(--guidwell-primary);
+	box-shadow: 0 16px 48px rgba(0,0,0,0.16);
+}
+
+#guidwell .guidwell-carousel-card:not(.guidwell-carousel-card--active) {
+	opacity: 0.55;
+	transform: scale(0.88);
+	cursor: pointer;
+}
+
+#guidwell .guidwell-carousel-card--active .guidwell-podium-card__name {
+	font-size: 24px;
+	font-weight: 700;
+	color: var(--guidwell-primary);
+}
+
+#guidwell .guidwell-carousel-card:not(.guidwell-carousel-card--active) .guidwell-podium-card__name {
+	font-size: 18px;
+	font-weight: 600;
+	color: var(--guidwell-text);
+}
+
+#guidwell .guidwell-carousel-card--active .guidwell-podium-card__price {
+	font-size: 44px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+}
+
+#guidwell .guidwell-carousel-card:not(.guidwell-carousel-card--active) .guidwell-podium-card__price {
+	font-size: 32px;
+	font-weight: 700;
+}
+
+#guidwell .guidwell-carousel-card:not(.guidwell-carousel-card--active) .guidwell-podium-card__description {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#guidwell .guidwell-carousel-card__fit-reason {
+	font-size: 13px;
+	font-style: italic;
+	color: var(--guidwell-muted);
+	line-height: 1.5;
+	margin: 0 0 10px 0;
+}
+
+#guidwell .guidwell-carousel-card__why {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--guidwell-text);
+	line-height: 1.5;
+	margin: 0 0 14px 0;
+}
+
+#guidwell .guidwell-carousel-upsell {
+	background: var(--guidwell-selected-bg);
+	border-left: 3px solid var(--guidwell-primary);
+	border-radius: 6px;
+	padding: 10px 14px;
+	margin-bottom: 16px;
+}
+
+#guidwell .guidwell-carousel-indicator {
+	text-align: center;
+	font-size: 12px;
+	color: var(--guidwell-muted);
+	margin: 12px 0 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — podium/carousel breakpoint
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+	#guidwell .guidwell-podium {
+		display: none;
+	}
+
+	#guidwell .guidwell-carousel {
+		display: block;
+	}
 }

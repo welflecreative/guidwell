@@ -57,7 +57,7 @@ export default function scoreAnswers( answers, config ) {
  * @param {number} count
  * @returns {Array<{ score: number } & Object>}
  */
-export function getTopPlans( answers, config, count = 2 ) {
+export function getTopPlans( answers, config, count = 3 ) {
 	const { plans = [] } = config;
 	const scores = computeScores( answers, config );
 	return sortedByScore( plans, scores )

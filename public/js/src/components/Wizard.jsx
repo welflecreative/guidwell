@@ -95,14 +95,13 @@ function SpinnerFallback() {
 export default function Wizard() {
 	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {} } = window.guidwellData || {};
 
-	const [ config,       setConfig       ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
-	const [ loading,      setLoading      ] = useState( wizardId > 0 );
-	const [ fetchError,   setFetchError   ] = useState( false );
-	const [ currentStep,  setCurrentStep  ] = useState( 0 );
-	const [ answers,      setAnswers      ] = useState( {} );
-	const [ showResult,   setShowResult   ] = useState( false );
-	const [ transitioning,   setTransitioning  ] = useState( false );
-	const [ transitionDir,   setTransitionDir  ] = useState( 'forward' );
+	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
+	const [ loading,     setLoading     ] = useState( wizardId > 0 );
+	const [ fetchError,  setFetchError  ] = useState( false );
+	const [ currentStep, setCurrentStep ] = useState( 0 );
+	const [ answers,     setAnswers     ] = useState( {} );
+	const [ showResult,  setShowResult  ] = useState( false );
+	const [ flipPhase,   setFlipPhase   ] = useState( 'idle' );
 
 	const headingRef = useRef( null );
 
@@ -159,10 +158,9 @@ export default function Wizard() {
 
 	// Move focus to heading after each step change.
 	useEffect( () => {
-		if ( ! transitioning && ! loading && headingRef.current ) {
-			headingRef.current.focus();
-		}
-	}, [ currentStep, showResult, transitioning, loading ] );
+		if ( flipPhase !== 'idle' || loading ) return;
+		if ( headingRef.current ) headingRef.current.focus();
+	}, [ currentStep, showResult, flipPhase, loading ] );
 
 	// ── Loading ──────────────────────────────────────────────────────────────
 
@@ -192,12 +190,12 @@ export default function Wizard() {
 	const totalSteps     = questions.length;
 
 	function transition( direction, callback ) {
-		setTransitionDir( direction );
-		setTransitioning( true );
+		setFlipPhase( direction === 'forward' ? 'exit-forward' : 'exit-backward' );
 		setTimeout( () => {
 			callback();
-			setTransitioning( false );
-		}, 300 );
+			setFlipPhase( direction === 'forward' ? 'enter-forward' : 'enter-backward' );
+			setTimeout( () => setFlipPhase( 'idle' ), 300 );
+		}, 280 );
 	}
 
 	function handleAnswerSelect( answerId ) {
@@ -213,7 +211,7 @@ export default function Wizard() {
 	}
 
 	function handleNext() {
-		if ( ! selectedAnswer || transitioning ) return;
+		if ( ! selectedAnswer || flipPhase !== 'idle' ) return;
 		if ( currentStep < totalSteps - 1 ) {
 			transition( 'forward', () => setCurrentStep( ( s ) => s + 1 ) );
 		} else {
@@ -222,7 +220,7 @@ export default function Wizard() {
 	}
 
 	function handleBack() {
-		if ( transitioning ) return;
+		if ( flipPhase !== 'idle' ) return;
 		if ( showResult ) {
 			transition( 'backward', () => setShowResult( false ) );
 		} else if ( currentStep > 0 ) {
@@ -236,11 +234,11 @@ export default function Wizard() {
 		setCurrentStep( 0 );
 	}
 
-	const stepClass = transitioning
-		? ( transitionDir === 'forward'
-			? 'guidwell-step-exit guidwell-step-exit-active'
-			: 'guidwell-step-enter guidwell-step-enter-active' )
-		: 'guidwell-step-visible';
+	const cardFlipClass = flipPhase === 'exit-forward'   ? ' guidwell-card--flip-exit'
+		: flipPhase === 'exit-backward'  ? ' guidwell-card--flip-exit-back'
+		: flipPhase === 'enter-forward'  ? ' guidwell-card--flip-enter'
+		: flipPhase === 'enter-backward' ? ' guidwell-card--flip-enter-back'
+		: '';
 
 	if ( showResult ) {
 		const topPlans  = getTopPlans( answers, config, 2 );
@@ -249,13 +247,12 @@ export default function Wizard() {
 		return (
 			<Suspense fallback={ <SpinnerFallback /> }>
 				<div className="guidwell-wrapper">
-					<div className="guidwell-card">
+					<div className={ `guidwell-card${ cardFlipClass }` }>
 						<ResultScreen
 							topPlans={ topPlans }
 							allScores={ allScores }
 							insight={ insight }
 							onRestart={ handleRestart }
-							headingRef={ headingRef }
 							config={ config }
 							answers={ answers }
 							contact={ contact }
@@ -271,9 +268,9 @@ export default function Wizard() {
 
 	return (
 		<div className="guidwell-wrapper">
-			<div className="guidwell-card">
+			<div className={ `guidwell-card${ cardFlipClass }` }>
 				<ProgressBar current={ currentStep + 1 } total={ totalSteps } />
-				<div className={ `guidwell-step ${ stepClass }` }>
+				<div className="guidwell-step">
 					<QuestionStep
 						question={ question }
 						selectedAnswer={ selectedAnswer }
