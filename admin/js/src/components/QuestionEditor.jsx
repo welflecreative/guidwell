@@ -61,7 +61,7 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 	}
 
 	function setAnswerWeight( answerId, planSlug, value ) {
-		const weight = Math.max( 0, Math.min( 10, parseInt( value, 10 ) || 0 ) );
+		const weight = Math.max( 0, Math.min( plans.length, parseInt( value, 10 ) || 0 ) );
 		onUpdate( {
 			...question,
 			answers: question.answers.map( ( a ) =>
@@ -129,7 +129,7 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 										type="number"
 										className="gw-weight-input"
 										min="0"
-										max="10"
+										max={ plans.length }
 										value={ answer.weights[ plan.slug ] ?? 0 }
 										onChange={ ( e ) => setAnswerWeight( answer.id, plan.slug, e.target.value ) }
 									/>

@@ -548,6 +548,68 @@
 	flex: 1;
 }
 
+#guidwell-admin .gw-color-swatch {
+	width: 32px;
+	height: 32px;
+	border-radius: 6px;
+	border: 1px solid var(--gw-border);
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-input--error {
+	border-color: #dc3545;
+}
+
+#guidwell-admin .gw-settings-section {
+	margin-bottom: 28px;
+	padding-bottom: 28px;
+	border-bottom: 1px solid var(--gw-border);
+}
+
+#guidwell-admin .gw-settings-heading {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--gw-text);
+	margin: 0 0 4px 0;
+}
+
+#guidwell-admin .gw-settings-subheading {
+	font-size: 13px;
+	color: var(--gw-muted);
+	margin: 0 0 14px 0;
+	line-height: 1.5;
+}
+
+#guidwell-admin .gw-detection-badge {
+	font-size: 13px;
+	border-radius: 6px;
+	padding: 8px 14px;
+	margin-bottom: 14px;
+	line-height: 1.4;
+}
+
+#guidwell-admin .gw-checkbox-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	color: var(--gw-text);
+}
+
+#guidwell-admin .gw-checkbox-row--disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+#guidwell-admin .gw-checkbox-row--disabled label {
+	cursor: not-allowed;
+}
+
+#guidwell-admin .gw-field-note--theme {
+	font-style: italic;
+	margin-top: 4px;
+}
+
 #guidwell-admin .gw-btn-primary {
 	padding: 9px 20px;
 	background: var(--gw-primary);
@@ -599,4 +661,132 @@
 	#guidwell-admin .gw-panel {
 		padding: 20px;
 	}
+}
+
+/* --------------------------------------------------------------------------
+   Toggle switch (Notifications tab)
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-toggle-row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 10px 0;
+	cursor: pointer;
+}
+
+#guidwell-admin .gw-toggle-text {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+#guidwell-admin .gw-toggle-label {
+	font-size: 13px;
+	font-weight: 500;
+	color: var(--gw-text);
+}
+
+#guidwell-admin .gw-toggle-sublabel {
+	font-size: 11px;
+	color: var(--gw-muted);
+	line-height: 1.4;
+}
+
+#guidwell-admin .gw-toggle {
+	position: relative;
+	width: 40px;
+	height: 22px;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-toggle__input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+#guidwell-admin .gw-toggle__track {
+	display: block;
+	width: 40px;
+	height: 22px;
+	border-radius: 11px;
+	background: var(--gw-border);
+	transition: background 0.2s ease;
+	cursor: pointer;
+}
+
+#guidwell-admin .gw-toggle__track::after {
+	content: '';
+	display: block;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #fff;
+	margin: 3px;
+	transition: transform 0.2s ease;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+#guidwell-admin .gw-toggle--on .gw-toggle__track {
+	background: var(--gw-primary);
+}
+
+#guidwell-admin .gw-toggle--on .gw-toggle__track::after {
+	transform: translateX(18px);
+}
+
+/* --------------------------------------------------------------------------
+   SMTP collapsible panel
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-smtp-panel {
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+}
+
+#guidwell-admin .gw-smtp-panel__inner {
+	padding-top: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Test email button
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-btn-test {
+	padding: 8px 18px;
+	background: none;
+	border: 1px solid var(--gw-primary);
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	font-weight: 500;
+	font-family: inherit;
+	color: var(--gw-primary);
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+#guidwell-admin .gw-btn-test:hover:not(:disabled) {
+	background: var(--gw-primary);
+	color: #fff;
+}
+
+#guidwell-admin .gw-btn-test:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+#guidwell-admin .gw-btn-test--success {
+	border-color: #28a745;
+	color: #28a745;
+}
+
+#guidwell-admin .gw-btn-test--error {
+	border-color: var(--gw-error);
+	color: var(--gw-error);
 }

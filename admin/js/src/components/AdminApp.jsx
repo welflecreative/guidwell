@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import QuestionEditor from './QuestionEditor';
 import PlanEditor from './PlanEditor';
 import SettingsTab from './SettingsTab';
+import NotificationsTab from './NotificationsTab';
 import Sortable from 'sortablejs';
 
 const { apiBase, nonce, wizardId: INITIAL_WIZARD_ID, settings: INITIAL_SETTINGS } =
@@ -113,6 +114,53 @@ export default function AdminApp() {
 		if ( selectedId === `question_${ id }` ) setSelectedId( null );
 	}
 
+	function addPlan() {
+		const slug = `plan_${ Date.now() }`;
+		const newPlan = {
+			slug,
+			tier:        config.plans.length + 1,
+			name:        '',
+			price:       '',
+			description: '',
+			ctaLabel:    __( 'Get Started', 'guidwell' ),
+			ctaUrl:      '#',
+		};
+		setConfig( ( c ) => ( {
+			...c,
+			plans: [ ...c.plans, newPlan ],
+			questions: c.questions.map( ( q ) => ( {
+				...q,
+				answers: q.answers.map( ( a ) => ( {
+					...a,
+					weights: { ...a.weights, [ slug ]: 0 },
+				} ) ),
+			} ) ),
+		} ) );
+		setSelectedId( `plan_${ slug }` );
+	}
+
+	function deletePlan( slug ) {
+		if ( config.plans.length <= 2 ) return;
+		setConfig( ( c ) => {
+			const plans = c.plans
+				.filter( ( p ) => p.slug !== slug )
+				.map( ( p, i ) => ( { ...p, tier: i + 1 } ) );
+			const newMax = plans.length;
+			const questions = c.questions.map( ( q ) => ( {
+				...q,
+				answers: q.answers.map( ( a ) => {
+					const { [ slug ]: _removed, ...rest } = a.weights;
+					const clamped = Object.fromEntries(
+						Object.entries( rest ).map( ( [ k, v ] ) => [ k, Math.min( v, newMax ) ] )
+					);
+					return { ...a, weights: clamped };
+				} ),
+			} ) );
+			return { ...c, plans, questions };
+		} );
+		if ( selectedId === `plan_${ slug }` ) setSelectedId( null );
+	}
+
 	// ── Save ─────────────────────────────────────────────────────────────────
 
 	async function handleSave() {
@@ -179,11 +227,14 @@ export default function AdminApp() {
 	return (
 		<div id="guidwell-admin">
 			<div className="gw-tabs">
-				<button className={ `gw-tab${ activeTab === 'builder'  ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'builder' ) }>
+				<button className={ `gw-tab${ activeTab === 'builder'       ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'builder' ) }>
 					{ __( 'Wizard Builder', 'guidwell' ) }
 				</button>
-				<button className={ `gw-tab${ activeTab === 'settings' ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'settings' ) }>
+				<button className={ `gw-tab${ activeTab === 'settings'      ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'settings' ) }>
 					{ __( 'Settings', 'guidwell' ) }
+				</button>
+				<button className={ `gw-tab${ activeTab === 'notifications' ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'notifications' ) }>
+					{ __( 'Notifications', 'guidwell' ) }
 				</button>
 			</div>
 
@@ -197,6 +248,12 @@ export default function AdminApp() {
 			{ activeTab === 'settings' ? (
 				<SettingsTab
 					initialSettings={ INITIAL_SETTINGS }
+					apiBase={ apiBase }
+					nonce={ nonce }
+					onNotify={ setNotification }
+				/>
+			) : activeTab === 'notifications' ? (
+				<NotificationsTab
 					apiBase={ apiBase }
 					nonce={ nonce }
 					onNotify={ setNotification }
@@ -253,10 +310,25 @@ export default function AdminApp() {
 											className={ `gw-sidebar-item${ selectedId === `plan_${ p.slug }` ? ' gw-sidebar-item--active' : '' }` }
 											onClick={ () => setSelectedId( `plan_${ p.slug }` ) }
 										>
-											<span className="gw-sidebar-item__label">{ p.name || p.slug }</span>
+											<span className="gw-sidebar-item__label">
+												{ p.name || <em style={ { opacity: 0.5 } }>{ __( '(untitled)', 'guidwell' ) }</em> }
+											</span>
+											{ config.plans.length > 2 && (
+												<button
+													className="gw-sidebar-item__delete"
+													onClick={ ( e ) => { e.stopPropagation(); deletePlan( p.slug ); } }
+													aria-label={ __( 'Delete plan', 'guidwell' ) }
+												>×</button>
+											) }
 										</li>
 									) ) }
 								</ul>
+							</div>
+
+							<div style={ { padding: '0 16px 8px' } }>
+								<button className="gw-btn-add" onClick={ addPlan }>
+									+ { __( 'Add Plan', 'guidwell' ) }
+								</button>
 							</div>
 
 							<div className="gw-sidebar-footer">

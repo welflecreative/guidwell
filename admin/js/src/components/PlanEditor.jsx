@@ -43,23 +43,7 @@ export default function PlanEditor( { plan, onUpdate } ) {
 				/>
 			</div>
 
-			<div className="gw-field">
-				<label className="gw-label">
-					{ __( 'Tier', 'guidwell' ) }
-					<span className="gw-label-hint">({ __( 'read-only', 'guidwell' ) })</span>
-				</label>
-				<input
-					type="number"
-					className="gw-input"
-					value={ plan.tier }
-					readOnly
-				/>
-				<p className="gw-field-note">
-					{ __( 'Tier determines tie-breaking order. Lower number = lower cost plan.', 'guidwell' ) }
-				</p>
-			</div>
-
-			<div className="gw-field">
+<div className="gw-field">
 				<label className="gw-label">{ __( 'Description', 'guidwell' ) }</label>
 				<AutoResizeTextarea
 					value={ plan.description }

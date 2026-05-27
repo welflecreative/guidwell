@@ -7,6 +7,8 @@ class Guidwell_Uninstall {
 	public static function run(): void {
 		self::delete_wizard_posts();
 		delete_option( 'guidwell_settings' );
+		delete_option( 'guidwell_contact_settings' );
+		delete_option( 'guidwell_smtp_key' );
 	}
 
 	private static function delete_wizard_posts(): void {

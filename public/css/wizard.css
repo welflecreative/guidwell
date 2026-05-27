@@ -19,6 +19,13 @@
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	color: var(--guidwell-text);
 	background-color: var(--guidwell-bg);
+
+	/* Break out of the theme's content-width constraint */
+	width: 100vw !important;
+	max-width: none !important;
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
 }
 
 /* Focus styles */
@@ -46,7 +53,7 @@
 
 #guidwell .guidwell-card {
 	width: 100%;
-	max-width: 680px;
+	max-width: clamp(600px, 65vw, 1080px);
 	background-color: var(--guidwell-card-bg);
 	border-radius: var(--guidwell-radius-card);
 	box-shadow: var(--guidwell-shadow);
@@ -252,87 +259,353 @@
 #guidwell .guidwell-result {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	animation: guidwell-result-enter 0.4s ease-out both;
-	will-change: transform, opacity;
-	padding: 8px 0;
+	gap: 32px;
+	padding: 4px 0;
 }
 
-@keyframes guidwell-result-enter {
-	from {
-		opacity: 0;
-		transform: scale(0.96);
-	}
-	to {
-		opacity: 1;
-		transform: scale(1);
-	}
+/* Insight banner */
+
+#guidwell .guidwell-insight {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+	background: var(--guidwell-selected-bg);
+	border-left: 4px solid var(--guidwell-primary);
+	border-radius: 10px;
+	padding: 18px 24px;
+	animation: guidwell-fade-in 0.2s ease-out both;
 }
 
-#guidwell .guidwell-result-check {
+@keyframes guidwell-fade-in {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+#guidwell .guidwell-insight__icon {
 	color: var(--guidwell-primary);
-	margin-bottom: 20px;
+	flex-shrink: 0;
 	line-height: 1;
+	margin-top: 1px;
 }
 
-#guidwell .guidwell-result-eyebrow {
-	font-size: 13px;
+#guidwell .guidwell-insight__text {
+	font-size: 15px;
+	font-style: italic;
+	color: var(--guidwell-text);
+	line-height: 1.5;
+	margin: 0;
+}
+
+/* Plan comparison layout */
+
+#guidwell .guidwell-comparison {
+	display: flex;
+	align-items: stretch;
+	gap: 16px;
+}
+
+#guidwell .guidwell-comparison__col {
+	display: flex;
+	flex-direction: column;
+}
+
+#guidwell .guidwell-comparison__col--recommended {
+	flex: 1.4;
+}
+
+#guidwell .guidwell-comparison__col--runner-up {
+	flex: 1;
+}
+
+#guidwell .guidwell-comparison--single .guidwell-comparison__col--recommended {
+	flex: 1;
+}
+
+/* Plan badges */
+
+#guidwell .guidwell-plan-badge {
+	display: inline-block;
+	font-size: 11px;
 	font-weight: 600;
-	letter-spacing: 0.08em;
 	text-transform: uppercase;
-	color: var(--guidwell-muted);
-	margin: 0 0 8px 0;
+	letter-spacing: 0.08em;
+	padding: 5px 12px;
+	border-radius: 4px;
+	margin-bottom: 8px;
+	white-space: nowrap;
+	align-self: flex-start;
 }
 
-#guidwell .guidwell-result-name {
-	font-size: 32px;
+#guidwell .guidwell-plan-badge--recommended {
+	background-color: var(--guidwell-primary);
+	color: #ffffff;
+}
+
+#guidwell .guidwell-plan-badge--runner-up {
+	background-color: var(--guidwell-muted);
+	color: #ffffff;
+}
+
+/* Plan cards */
+
+#guidwell .guidwell-plan-card {
+	display: flex;
+	flex-direction: column;
+	border-radius: var(--guidwell-radius-card);
+	box-sizing: border-box;
+	flex: 1;
+}
+
+#guidwell .guidwell-plan-card--recommended {
+	background: var(--guidwell-card-bg);
+	border: 2.5px solid var(--guidwell-primary);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+	padding: 36px;
+	animation: guidwell-card-up 0.38s ease-out 0.1s both;
+}
+
+#guidwell .guidwell-plan-card--runner-up {
+	background: var(--guidwell-card-bg);
+	border: 1.5px solid var(--guidwell-border);
+	box-shadow: var(--guidwell-shadow);
+	padding: 28px;
+	animation: guidwell-card-up-faded 0.38s ease-out 0.22s both;
+}
+
+@keyframes guidwell-card-up {
+	from { opacity: 0; transform: translateY(24px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes guidwell-card-up-faded {
+	from { opacity: 0;    transform: translateY(24px); }
+	to   { opacity: 0.92; transform: translateY(0); }
+}
+
+#guidwell .guidwell-plan-card__name--recommended {
+	font-size: 26px;
 	font-weight: 700;
 	color: var(--guidwell-primary);
-	margin: 0 0 12px 0;
+	margin: 0 0 8px 0;
 	line-height: 1.2;
 }
 
-#guidwell .guidwell-result-price {
-	font-size: 48px;
+#guidwell .guidwell-plan-card__name--runner-up {
+	font-size: 20px;
+	font-weight: 600;
+	color: var(--guidwell-text);
+	margin: 0 0 8px 0;
+	line-height: 1.2;
+}
+
+#guidwell .guidwell-plan-card__price--recommended {
+	font-size: 52px;
 	font-weight: 800;
 	color: var(--guidwell-text);
-	margin: 0 0 20px 0;
 	line-height: 1;
+	margin: 0 0 16px 0;
 	letter-spacing: -0.02em;
 }
 
-#guidwell .guidwell-result-description {
-	font-size: 16px;
+#guidwell .guidwell-plan-card__price--runner-up {
+	font-size: 36px;
+	font-weight: 700;
+	color: var(--guidwell-text);
+	line-height: 1;
+	margin: 0 0 16px 0;
+}
+
+#guidwell .guidwell-plan-card__divider {
+	border: none;
+	border-top: 1px solid var(--guidwell-border);
+	margin: 0 0 16px 0;
+}
+
+#guidwell .guidwell-plan-card__description--recommended {
+	font-size: 15px;
+	line-height: 1.7;
+	color: var(--guidwell-muted);
+	margin: 0 0 28px 0;
+	flex-grow: 1;
+}
+
+#guidwell .guidwell-plan-card__description--runner-up {
+	font-size: 14px;
 	line-height: 1.6;
 	color: var(--guidwell-muted);
-	max-width: 440px;
-	margin: 0 0 32px 0;
+	margin: 0 0 24px 0;
+	flex-grow: 1;
 }
 
-#guidwell .guidwell-result-cta {
+#guidwell .guidwell-plan-card__cta {
 	display: block;
 	width: 100%;
-	max-width: 440px;
-	padding: 18px 32px;
-	background-color: var(--guidwell-primary);
-	color: #ffffff;
-	text-decoration: none;
-	border-radius: 10px;
-	font-size: 17px;
-	font-weight: 700;
+	border-radius: var(--guidwell-radius-btn);
 	font-family: inherit;
 	text-align: center;
-	transition: background-color 0.2s ease;
+	text-decoration: none;
+	cursor: pointer;
 	box-sizing: border-box;
+	line-height: 1;
+	transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-#guidwell .guidwell-result-cta:hover {
+#guidwell .guidwell-plan-card__cta--filled {
+	background-color: var(--guidwell-primary);
+	color: #ffffff;
+	border: none;
+	padding: 16px;
+	font-size: 16px;
+	font-weight: 700;
+}
+
+#guidwell .guidwell-plan-card__cta--filled:hover {
 	background-color: var(--guidwell-primary-dark);
 }
 
+#guidwell .guidwell-plan-card__cta--ghost {
+	background: transparent;
+	border: 1.5px solid var(--guidwell-primary);
+	color: var(--guidwell-primary);
+	padding: 13px;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+#guidwell .guidwell-plan-card__cta--ghost:hover {
+	background-color: var(--guidwell-selected-bg);
+}
+
+/* Scoring report */
+
+#guidwell .guidwell-report__toggle {
+	width: 100%;
+	background: transparent;
+	border: 1px solid var(--guidwell-border);
+	border-radius: 8px;
+	padding: 12px 20px;
+	font-size: 14px;
+	color: var(--guidwell-muted);
+	font-weight: 500;
+	font-family: inherit;
+	cursor: pointer;
+	text-align: left;
+	transition: background-color 0.15s ease;
+}
+
+#guidwell .guidwell-report__toggle:hover {
+	background-color: var(--guidwell-selected-bg);
+}
+
+#guidwell .guidwell-report__toggle--open {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+#guidwell .guidwell-report__panel {
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.3s ease;
+	border: 1px solid var(--guidwell-border);
+	border-top: none;
+	border-bottom-left-radius: 8px;
+	border-bottom-right-radius: 8px;
+}
+
+#guidwell .guidwell-report__panel-inner {
+	padding: 24px;
+	background: var(--guidwell-card-bg);
+}
+
+#guidwell .guidwell-report__section-label {
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	color: var(--guidwell-muted);
+	margin: 0 0 16px 0;
+}
+
+#guidwell .guidwell-report__answer-row {
+	margin-bottom: 14px;
+}
+
+#guidwell .guidwell-report__answer-question {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--guidwell-text);
+	margin: 0 0 4px 0;
+}
+
+#guidwell .guidwell-report__answer-selected {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--guidwell-primary);
+	margin: 0;
+}
+
+#guidwell .guidwell-report__divider {
+	border: none;
+	border-top: 1px solid var(--guidwell-border);
+	margin: 20px 0;
+}
+
+#guidwell .guidwell-report__score-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+#guidwell .guidwell-report__score-name {
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--guidwell-text);
+	min-width: 80px;
+	flex-shrink: 0;
+}
+
+#guidwell .guidwell-report__score-star {
+	color: var(--guidwell-primary);
+}
+
+#guidwell .guidwell-report__score-bar-wrap {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+#guidwell .guidwell-report__score-bar-track {
+	flex: 1;
+	height: 8px;
+	background: var(--guidwell-border);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+#guidwell .guidwell-report__score-bar-fill {
+	height: 100%;
+	border-radius: 4px;
+	width: 0;
+	transition: width 0.6s ease-out;
+}
+
+#guidwell .guidwell-report__score-number {
+	font-size: 13px;
+	color: var(--guidwell-muted);
+	min-width: 24px;
+	text-align: right;
+	flex-shrink: 0;
+}
+
+/* Result footer */
+
+#guidwell .guidwell-result-footer {
+	text-align: center;
+}
+
 #guidwell .guidwell-result-restart {
-	margin-top: 20px;
 	background: none;
 	border: none;
 	font-size: 14px;
@@ -431,7 +704,132 @@
 		text-underline-offset: 2px;
 	}
 
-	#guidwell .guidwell-result-cta {
-		max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive — result screen under 640px
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 640px) {
+	#guidwell .guidwell-comparison {
+		flex-direction: column;
+		gap: 16px;
 	}
+
+	#guidwell .guidwell-comparison__col--recommended,
+	#guidwell .guidwell-comparison__col--runner-up {
+		flex: none;
+	}
+
+	#guidwell .guidwell-plan-card--recommended,
+	#guidwell .guidwell-plan-card--runner-up {
+		padding: 28px;
+	}
+
+	#guidwell .guidwell-plan-card__price--recommended {
+		font-size: 40px;
+	}
+
+	#guidwell .guidwell-email-capture__row {
+		flex-direction: column;
+	}
+
+	#guidwell .guidwell-email-capture__btn {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+/* --------------------------------------------------------------------------
+   Email capture (result screen)
+   -------------------------------------------------------------------------- */
+
+#guidwell .guidwell-email-capture {
+	margin: 24px 0;
+	padding: 20px 24px;
+	background: var(--guidwell-card-bg);
+	border: 1px solid var(--guidwell-border);
+	border-radius: var(--guidwell-radius-card);
+}
+
+#guidwell .guidwell-email-capture__label {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--guidwell-text);
+	margin: 0 0 12px 0;
+}
+
+#guidwell .guidwell-email-capture__row {
+	display: flex;
+	gap: 10px;
+	align-items: stretch;
+}
+
+#guidwell .guidwell-email-capture__input {
+	flex: 1;
+	padding: 10px 14px;
+	font-size: 14px;
+	font-family: inherit;
+	color: var(--guidwell-text);
+	background: var(--guidwell-bg);
+	border: 1px solid var(--guidwell-border);
+	border-radius: var(--guidwell-radius-btn);
+	outline: none;
+	transition: border-color 0.15s ease;
+}
+
+#guidwell .guidwell-email-capture__input:focus {
+	border-color: var(--guidwell-primary);
+}
+
+#guidwell .guidwell-email-capture__input:disabled {
+	opacity: 0.6;
+}
+
+#guidwell .guidwell-email-capture__btn {
+	padding: 10px 20px;
+	background: var(--guidwell-primary);
+	color: #fff;
+	border: none;
+	border-radius: var(--guidwell-radius-btn);
+	font-size: 14px;
+	font-weight: 600;
+	font-family: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	white-space: nowrap;
+	transition: background 0.15s ease;
+}
+
+#guidwell .guidwell-email-capture__btn:hover:not(:disabled) {
+	background: var(--guidwell-primary-dark);
+}
+
+#guidwell .guidwell-email-capture__btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+#guidwell .guidwell-email-capture__btn--error {
+	background: #dc2626;
+}
+
+#guidwell .guidwell-email-capture--sent {
+	text-align: center;
+	padding: 16px 24px;
+}
+
+#guidwell .guidwell-email-capture__success {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--guidwell-primary);
+	margin: 0;
+}
+
+#guidwell .guidwell-spinner--sm {
+	width: 14px;
+	height: 14px;
+	border-width: 2px;
 }

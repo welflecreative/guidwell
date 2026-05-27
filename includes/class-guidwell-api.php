@@ -41,6 +41,43 @@ class Guidwell_API {
 
 		register_rest_route(
 			self::NAMESPACE,
+			'/contact-settings',
+			[
+				[
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => [ $this, 'get_contact_settings' ],
+					'permission_callback' => [ $this, 'can_manage_options' ],
+				],
+				[
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => [ $this, 'save_contact_settings' ],
+					'permission_callback' => [ $this, 'can_manage_options' ],
+				],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/send-result',
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'send_result' ],
+				'permission_callback' => '__return_true',
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/test-email',
+			[
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => [ $this, 'send_test_email' ],
+				'permission_callback' => [ $this, 'can_manage_options' ],
+			]
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
 			'/config/(?P<wizard_id>\d+)',
 			[
 				[
@@ -123,17 +160,25 @@ class Guidwell_API {
 			);
 		}
 
-		$allowed = [ 'primaryColor', 'primaryDark', 'backgroundColor', 'cardBackground' ];
-		$clean   = [];
+		$color_fields = [ 'primaryColor', 'primaryDark', 'backgroundColor', 'cardBackground' ];
+		$clean        = [];
 
-		foreach ( $allowed as $key ) {
-			if ( isset( $body[ $key ] ) ) {
+		foreach ( $color_fields as $key ) {
+			if ( isset( $body[ $key ] ) && $body[ $key ] !== '' ) {
 				$value = sanitize_hex_color( $body[ $key ] );
-				if ( $value ) {
-					$clean[ $key ] = $value;
+				if ( null === $value ) {
+					return new WP_Error(
+						'guidwell_invalid_color',
+						/* translators: %s: field name */
+						sprintf( __( 'Invalid color value for field: %s', 'guidwell' ), $key ),
+						[ 'status' => 400 ]
+					);
 				}
+				$clean[ $key ] = $value;
 			}
 		}
+
+		$clean['useThemeColors'] = ! empty( $body['useThemeColors'] );
 
 		update_option( 'guidwell_settings', $clean );
 
@@ -219,6 +264,180 @@ class Guidwell_API {
 		return $post;
 	}
 
+	// -------------------------------------------------------------------------
+	// GET /guidwell/v1/contact-settings
+	// -------------------------------------------------------------------------
+
+	public function get_contact_settings(): WP_REST_Response {
+		$settings = guidwell_get_contact_settings();
+		$settings['smtpPasswordSet'] = ! empty( $settings['smtpPassword'] );
+		$settings['smtpPassword']    = '';
+		return rest_ensure_response( $settings );
+	}
+
+	// -------------------------------------------------------------------------
+	// POST /guidwell/v1/contact-settings
+	// -------------------------------------------------------------------------
+
+	public function save_contact_settings( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$body = $request->get_json_params();
+		if ( ! is_array( $body ) ) {
+			return new WP_Error( 'guidwell_invalid_body', __( 'Request body must be a JSON object.', 'guidwell' ), [ 'status' => 400 ] );
+		}
+
+		$existing = guidwell_get_contact_settings();
+		$clean    = [];
+
+		// Required email
+		$recipient = sanitize_email( $body['recipientEmail'] ?? '' );
+		if ( ! empty( $body['recipientEmail'] ) && ! is_email( $recipient ) ) {
+			return new WP_Error( 'guidwell_invalid_email', __( 'recipientEmail is not a valid email address.', 'guidwell' ), [ 'status' => 400 ] );
+		}
+		$clean['recipientEmail'] = $recipient;
+
+		// Optional email fields
+		foreach ( [ 'senderEmail' ] as $field ) {
+			if ( ! empty( $body[ $field ] ) ) {
+				$val = sanitize_email( $body[ $field ] );
+				if ( ! is_email( $val ) ) {
+					return new WP_Error( 'guidwell_invalid_email', sprintf( __( '%s is not a valid email address.', 'guidwell' ), $field ), [ 'status' => 400 ] );
+				}
+				$clean[ $field ] = $val;
+			}
+		}
+
+		// String fields
+		$string_fields = [ 'recipientName', 'senderName', 'emailSubject', 'headerText', 'smtpHost', 'smtpUsername', 'smtpEncryption' ];
+		foreach ( $string_fields as $field ) {
+			if ( isset( $body[ $field ] ) ) {
+				$clean[ $field ] = sanitize_text_field( $body[ $field ] );
+			}
+		}
+
+		if ( isset( $body['footerText'] ) ) {
+			$clean['footerText'] = wp_kses_post( $body['footerText'] );
+		}
+
+		// Boolean fields
+		foreach ( [ 'sendOnResult', 'collectVisitorEmail', 'useCustomSmtp' ] as $field ) {
+			$clean[ $field ] = ! empty( $body[ $field ] );
+		}
+
+		// Port
+		if ( isset( $body['smtpPort'] ) ) {
+			$clean['smtpPort'] = max( 1, min( 65535, absint( $body['smtpPort'] ) ) );
+		}
+
+		// Encryption
+		if ( isset( $body['smtpEncryption'] ) ) {
+			$allowed = [ 'tls', 'ssl', 'none' ];
+			$clean['smtpEncryption'] = in_array( $body['smtpEncryption'], $allowed, true ) ? $body['smtpEncryption'] : 'tls';
+		}
+
+		// Password: only encrypt and save if a new value was provided
+		if ( ! empty( $body['smtpPassword'] ) ) {
+			$clean['smtpPassword'] = Guidwell_SMTP::encrypt_password( $body['smtpPassword'] );
+		} else {
+			$clean['smtpPassword'] = $existing['smtpPassword'] ?? '';
+		}
+
+		update_option( 'guidwell_contact_settings', $clean );
+
+		$response = guidwell_get_contact_settings();
+		$response['smtpPasswordSet'] = ! empty( $response['smtpPassword'] );
+		$response['smtpPassword']    = '';
+		return rest_ensure_response( $response );
+	}
+
+	// -------------------------------------------------------------------------
+	// POST /guidwell/v1/send-result  (public, rate-limited)
+	// -------------------------------------------------------------------------
+
+	public function send_result( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$ip_key = 'guidwell_rl_' . md5( $_SERVER['REMOTE_ADDR'] ?? 'unknown' );
+		if ( ! $this->check_rate_limit( $ip_key, 5 ) ) {
+			return new WP_Error( 'guidwell_rate_limit', __( 'Too many requests. Please try again later.', 'guidwell' ), [ 'status' => 429 ] );
+		}
+
+		$body = $request->get_json_params();
+		if ( ! is_array( $body ) ) {
+			return new WP_Error( 'guidwell_invalid_body', __( 'Invalid request body.', 'guidwell' ), [ 'status' => 400 ] );
+		}
+
+		$wizard_id = absint( $body['wizardId'] ?? 0 );
+		if ( $wizard_id > 0 ) {
+			$post = get_post( $wizard_id );
+			if ( ! $post || $post->post_type !== 'guidwell_wizard' || $post->post_status !== 'publish' ) {
+				return new WP_Error( 'guidwell_invalid_wizard', __( 'Invalid wizard ID.', 'guidwell' ), [ 'status' => 400 ] );
+			}
+		}
+
+		$sanitize_plan = function ( $plan ) {
+			if ( ! is_array( $plan ) ) return null;
+			return [
+				'name'        => sanitize_text_field( $plan['name']        ?? '' ),
+				'price'       => sanitize_text_field( $plan['price']       ?? '' ),
+				'description' => sanitize_text_field( $plan['description'] ?? '' ),
+				'ctaLabel'    => sanitize_text_field( $plan['ctaLabel']    ?? '' ),
+				'ctaUrl'      => esc_url_raw( $plan['ctaUrl']              ?? '' ),
+			];
+		};
+
+		$data = [
+			'recommendedPlan' => $sanitize_plan( $body['recommendedPlan'] ?? null ),
+			'runnerUpPlan'    => isset( $body['runnerUpPlan'] ) ? $sanitize_plan( $body['runnerUpPlan'] ) : null,
+			'insight'         => sanitize_text_field( $body['insight'] ?? '' ),
+			'visitorEmail'    => sanitize_email( $body['visitorEmail'] ?? '' ) ?: null,
+			'wizardId'        => $wizard_id,
+		];
+
+		if ( ! $data['recommendedPlan'] || empty( $data['recommendedPlan']['name'] ) ) {
+			return new WP_Error( 'guidwell_invalid_plan', __( 'recommendedPlan is required.', 'guidwell' ), [ 'status' => 400 ] );
+		}
+
+		$contact = guidwell_get_contact_settings();
+		if ( empty( $contact['sendOnResult'] ) ) {
+			return rest_ensure_response( [ 'success' => true, 'skipped' => true ] );
+		}
+
+		$result = Guidwell_Mailer::send_result_email( $data, $contact );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return rest_ensure_response( [ 'success' => true ] );
+	}
+
+	// -------------------------------------------------------------------------
+	// POST /guidwell/v1/test-email  (admin only, rate-limited)
+	// -------------------------------------------------------------------------
+
+	public function send_test_email( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		$user_key = 'guidwell_test_rl_' . get_current_user_id();
+		if ( ! $this->check_rate_limit( $user_key, 3 ) ) {
+			return new WP_Error( 'guidwell_rate_limit', __( 'Too many test emails. Please wait before sending another.', 'guidwell' ), [ 'status' => 429 ] );
+		}
+
+		$contact = guidwell_get_contact_settings();
+		$result  = Guidwell_Mailer::send_test_email( $contact );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return rest_ensure_response( [ 'success' => true, 'sentTo' => $contact['recipientEmail'] ] );
+	}
+
+	// -------------------------------------------------------------------------
+	// Rate limit helper
+	// -------------------------------------------------------------------------
+
+	private function check_rate_limit( string $key, int $max ): bool {
+		$count = (int) get_transient( $key );
+		if ( $count >= $max ) return false;
+		set_transient( $key, $count + 1, HOUR_IN_SECONDS );
+		return true;
+	}
+
 	private function validate_config( array $config ): true|WP_Error {
 		// questions
 		if ( empty( $config['questions'] ) || ! is_array( $config['questions'] ) || count( $config['questions'] ) < 1 ) {
@@ -260,7 +479,7 @@ class Guidwell_API {
 			);
 		}
 
-		$required_plan_fields = [ 'slug', 'tier', 'name', 'price', 'ctaLabel', 'ctaUrl' ];
+		$required_plan_fields = [ 'slug', 'tier', 'name', 'ctaLabel' ];
 		foreach ( $config['plans'] as $i => $plan ) {
 			foreach ( $required_plan_fields as $field ) {
 				if ( ! isset( $plan[ $field ] ) || $plan[ $field ] === '' ) {

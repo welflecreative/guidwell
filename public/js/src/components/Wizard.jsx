@@ -2,7 +2,10 @@ import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { __ } from '@wordpress/i18n';
 import QuestionStep from './QuestionStep';
 import ProgressBar from './ProgressBar';
-import scoreAnswers from '../utils/scoreAnswers';
+import scoreAnswers, { getTopPlans, getAllScores } from '../utils/scoreAnswers';
+import generateInsight from '../utils/generateInsight';
+import detectThemeColors from '../utils/detectThemeColors';
+import darkenHex from '../utils/darkenHex';
 
 const ResultScreen = lazy( () => import( './ResultScreen' ) );
 
@@ -90,8 +93,7 @@ function SpinnerFallback() {
 }
 
 export default function Wizard() {
-	const { wizardId = 0, apiBase = '', settings = {} } = window.guidwellData || {};
-	const contactEmail = settings.contactEmail || '';
+	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {} } = window.guidwellData || {};
 
 	const [ config,       setConfig       ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,      setLoading      ] = useState( wizardId > 0 );
@@ -108,10 +110,27 @@ export default function Wizard() {
 	useEffect( () => {
 		const el = document.getElementById( 'guidwell' );
 		if ( ! el ) return;
-		if ( settings.primaryColor )    el.style.setProperty( '--guidwell-primary',      settings.primaryColor );
-		if ( settings.primaryDark )     el.style.setProperty( '--guidwell-primary-dark', settings.primaryDark );
-		if ( settings.backgroundColor ) el.style.setProperty( '--guidwell-bg',           settings.backgroundColor );
-		if ( settings.cardBackground )  el.style.setProperty( '--guidwell-card-bg',      settings.cardBackground );
+
+		if ( settings?.useThemeColors ) {
+			const detected = detectThemeColors();
+			if ( detected ) {
+				if ( detected.primaryColor ) {
+					el.style.setProperty( '--guidwell-primary',      detected.primaryColor );
+					el.style.setProperty( '--guidwell-primary-dark', darkenHex( detected.primaryColor, 15 ) );
+				}
+				if ( detected.backgroundColor ) {
+					el.style.setProperty( '--guidwell-bg', detected.backgroundColor );
+				}
+				return;
+			}
+		}
+
+		if ( settings?.primaryColor ) {
+			el.style.setProperty( '--guidwell-primary',      settings.primaryColor );
+			el.style.setProperty( '--guidwell-primary-dark', settings.primaryDark || darkenHex( settings.primaryColor, 15 ) );
+		}
+		if ( settings?.backgroundColor ) el.style.setProperty( '--guidwell-bg',      settings.backgroundColor );
+		if ( settings?.cardBackground )   el.style.setProperty( '--guidwell-card-bg', settings.cardBackground );
 	}, [ settings ] );
 
 	// Fetch config from REST API, or fall back to hardcoded config.
@@ -224,17 +243,25 @@ export default function Wizard() {
 		: 'guidwell-step-visible';
 
 	if ( showResult ) {
-		const slug   = scoreAnswers( answers, config );
-		const result = plans.find( ( p ) => p.slug === slug ) ?? null;
+		const topPlans  = getTopPlans( answers, config, 2 );
+		const allScores = getAllScores( answers, config );
+		const insight   = generateInsight( answers, config );
 		return (
 			<Suspense fallback={ <SpinnerFallback /> }>
 				<div className="guidwell-wrapper">
 					<div className="guidwell-card">
 						<ResultScreen
-							plan={ result }
-							contactEmail={ contactEmail }
+							topPlans={ topPlans }
+							allScores={ allScores }
+							insight={ insight }
 							onRestart={ handleRestart }
 							headingRef={ headingRef }
+							config={ config }
+							answers={ answers }
+							contact={ contact }
+							apiBase={ apiBase }
+							wizardId={ wizardId }
+							nonce={ nonce }
 						/>
 					</div>
 				</div>

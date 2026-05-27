@@ -22,6 +22,10 @@ define( 'GUIDWELL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-cpt.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-api.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-shortcode.php';
+require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-mailer.php';
+require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-smtp.php';
+
+Guidwell_SMTP::init();
 
 if ( is_admin() ) {
 	require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-admin.php';
@@ -29,6 +33,7 @@ if ( is_admin() ) {
 
 /**
  * Enqueue frontend assets only on pages that use the [guidwell] shortcode.
+ * Data is localized here (not in the shortcode render) to guarantee correct timing.
  */
 function guidwell_enqueue_assets(): void {
 	global $post;
@@ -51,8 +56,70 @@ function guidwell_enqueue_assets(): void {
 		GUIDWELL_VERSION,
 		true
 	);
+
+	// Respect [guidwell id="X"] if present; otherwise use the first published wizard.
+	$wizard_id = 0;
+	if ( preg_match( '/\[guidwell[^\]]*\bid=["\']?(\d+)["\']?/i', $post->post_content, $m ) ) {
+		$wizard_id = absint( $m[1] );
+	}
+	if ( $wizard_id <= 0 ) {
+		$posts = get_posts( [
+			'post_type'      => 'guidwell_wizard',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'orderby'        => 'date',
+			'order'          => 'ASC',
+			'fields'         => 'ids',
+		] );
+		$wizard_id = ! empty( $posts ) ? (int) $posts[0] : 0;
+	}
+
+	$contact_settings = guidwell_get_contact_settings();
+
+	wp_localize_script(
+		'guidwell-wizard',
+		'guidwellData',
+		[
+			'wizardId' => $wizard_id,
+			'apiBase'  => rest_url( 'guidwell/v1/' ),
+			'nonce'    => wp_create_nonce( 'wp_rest' ),
+			'settings' => guidwell_get_settings(),
+			'config'   => [],
+			'contact'  => [
+				'sendOnResult'        => ! empty( $contact_settings['sendOnResult'] ),
+				'collectVisitorEmail' => ! empty( $contact_settings['collectVisitorEmail'] ),
+			],
+		]
+	);
 }
 add_action( 'wp_enqueue_scripts', 'guidwell_enqueue_assets' );
+
+/**
+ * Retrieve contact/notification settings with defaults.
+ *
+ * @return array<string, mixed>
+ */
+function guidwell_get_contact_settings(): array {
+	$defaults = [
+		'recipientEmail'      => '',
+		'recipientName'       => '',
+		'senderName'          => __( 'Guidwell', 'guidwell' ),
+		'senderEmail'         => get_option( 'admin_email' ),
+		'emailSubject'        => '',
+		'headerText'          => '',
+		'footerText'          => '',
+		'sendOnResult'        => false,
+		'collectVisitorEmail' => false,
+		'useCustomSmtp'       => false,
+		'smtpHost'            => '',
+		'smtpPort'            => 587,
+		'smtpUsername'        => '',
+		'smtpPassword'        => '',
+		'smtpEncryption'      => 'tls',
+	];
+
+	return wp_parse_args( get_option( 'guidwell_contact_settings', [] ), $defaults );
+}
 
 /**
  * Retrieve plugin settings from wp_options with defaults.
@@ -65,6 +132,7 @@ function guidwell_get_settings(): array {
 		'primaryDark'       => '#3a7a8c',
 		'backgroundColor'   => '#f8f8f6',
 		'cardBackground'    => '#ffffff',
+		'useThemeColors'    => false,
 	];
 
 	$saved = get_option( 'guidwell_settings', [] );
