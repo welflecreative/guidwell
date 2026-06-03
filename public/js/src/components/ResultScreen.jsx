@@ -97,27 +97,19 @@ function EmailCapture( { apiBase, wizardId, nonce, topPlans, insight } ) {
 	);
 }
 
-// ── Collapsible scoring report ────────────────────────────────────────────────
+// ── Scoring report ────────────────────────────────────────────────────────────
 
 function ScoringReport( { allScores, topPlans, config, answers } ) {
-	const [ isOpen,     setIsOpen     ] = useState( false );
-	const [ barsActive, setBarsActive ] = useState( false );
-	const panelRef = useRef( null );
+	const [ barsActive,   setBarsActive   ] = useState( false );
+	const [ showAnswers,  setShowAnswers  ] = useState( false );
 
 	useEffect( () => {
-		if ( ! panelRef.current ) return;
-		if ( isOpen ) {
-			panelRef.current.style.maxHeight = panelRef.current.scrollHeight + 'px';
-			const t = setTimeout( () => setBarsActive( true ), 50 );
-			return () => clearTimeout( t );
-		} else {
-			panelRef.current.style.maxHeight = '0';
-			setBarsActive( false );
-		}
-	}, [ isOpen ] );
+		const t = setTimeout( () => setBarsActive( true ), 120 );
+		return () => clearTimeout( t );
+	}, [] );
 
-	const { questions = [] }  = config || {};
-	const recommendedSlug     = topPlans[ 0 ]?.slug;
+	const { questions = [] } = config || {};
+	const recommendedSlug   = topPlans[ 0 ]?.slug;
 
 	function barColor( plan ) {
 		if ( plan.slug === recommendedSlug ) return 'var(--guidwell-primary)';
@@ -127,53 +119,61 @@ function ScoringReport( { allScores, topPlans, config, answers } ) {
 
 	return (
 		<div className="guidwell-report">
-			<button
-				type="button"
-				className={ `guidwell-report__toggle${ isOpen ? ' guidwell-report__toggle--open' : '' }` }
-				onClick={ () => setIsOpen( ( o ) => ! o ) }
-				aria-expanded={ isOpen }
-				aria-controls="guidwell-report-panel"
-			>
-				{ isOpen ? '▼' : '▶' } { __( 'How we scored this', 'guidwell' ) }
-			</button>
-			<div id="guidwell-report-panel" className="guidwell-report__panel" ref={ panelRef } style={ { maxHeight: 0 } }>
-				<div className="guidwell-report__panel-inner">
-					<p className="guidwell-report__section-label">{ __( 'Your answers', 'guidwell' ) }</p>
-					{ questions.map( ( question ) => {
-						const selectedId     = answers?.[ question.id ];
-						const selectedAnswer = question.answers?.find( ( a ) => a.id === selectedId );
-						if ( ! selectedAnswer ) return null;
-						return (
-							<div key={ question.id } className="guidwell-report__answer-row">
-								<p className="guidwell-report__answer-question">{ question.text }</p>
-								<p className="guidwell-report__answer-selected">→ { selectedAnswer.label }</p>
+			<p className="guidwell-report__heading">{ __( 'How we scored this', 'guidwell' ) }</p>
+			<div className="guidwell-report__panel-inner">
+
+				{ /* Score bars — always visible */ }
+				<p className="guidwell-report__section-label">{ __( 'Score breakdown', 'guidwell' ) }</p>
+				{ allScores.map( ( plan, index ) => (
+					<div key={ plan.slug } className="guidwell-report__score-row">
+						<span className="guidwell-report__score-name">
+							{ plan.name || plan.slug }
+							{ plan.slug === recommendedSlug && <span className="guidwell-report__score-star"> ✦</span> }
+						</span>
+						<div className="guidwell-report__score-bar-wrap">
+							<div className="guidwell-report__score-bar-track">
+								<div
+									className="guidwell-report__score-bar-fill"
+									style={ {
+										width:           barsActive ? `${ plan.percentageOfMax }%` : '0%',
+										backgroundColor: barColor( plan ),
+										transitionDelay: `${ index * 80 }ms`,
+									} }
+								/>
 							</div>
-						);
-					} ) }
-					<hr className="guidwell-report__divider" />
-					<p className="guidwell-report__section-label">{ __( 'Score breakdown', 'guidwell' ) }</p>
-					{ allScores.map( ( plan, index ) => (
-						<div key={ plan.slug } className="guidwell-report__score-row">
-							<span className="guidwell-report__score-name">
-								{ plan.name || plan.slug }
-								{ plan.slug === recommendedSlug && <span className="guidwell-report__score-star"> ✦</span> }
-							</span>
-							<div className="guidwell-report__score-bar-wrap">
-								<div className="guidwell-report__score-bar-track">
-									<div
-										className="guidwell-report__score-bar-fill"
-										style={ {
-											width:           barsActive ? `${ plan.percentageOfMax }%` : '0%',
-											backgroundColor: barColor( plan ),
-											transitionDelay: `${ index * 80 }ms`,
-										} }
-									/>
-								</div>
-								<span className="guidwell-report__score-number">{ plan.score }</span>
-							</div>
+							<span className="guidwell-report__score-number">{ plan.score }</span>
 						</div>
-					) ) }
-				</div>
+					</div>
+				) ) }
+
+				{ /* Answers — collapsed by default */ }
+				<button
+					type="button"
+					className={ `guidwell-report__answers-toggle${ showAnswers ? ' guidwell-report__answers-toggle--open' : '' }` }
+					onClick={ () => setShowAnswers( ( v ) => ! v ) }
+					aria-expanded={ showAnswers }
+				>
+					{ __( 'Your answers', 'guidwell' ) }
+					<span className="guidwell-report__answers-toggle-icon" aria-hidden="true">
+						{ showAnswers ? '▾' : '▸' }
+					</span>
+				</button>
+				{ showAnswers && (
+					<div className="guidwell-report__answers">
+						{ questions.map( ( question ) => {
+							const selectedId     = answers?.[ question.id ];
+							const selectedAnswer = question.answers?.find( ( a ) => a.id === selectedId );
+							if ( ! selectedAnswer ) return null;
+							return (
+								<div key={ question.id } className="guidwell-report__answer-row">
+									<p className="guidwell-report__answer-question">{ question.text }</p>
+									<p className="guidwell-report__answer-selected">→ { selectedAnswer.label }</p>
+								</div>
+							);
+						} ) }
+					</div>
+				) }
+
 			</div>
 		</div>
 	);
@@ -327,6 +327,118 @@ function AlternativesSection( { topPlans, cardInsights, featuresList } ) {
 	);
 }
 
+// ── Panel navigation hook ─────────────────────────────────────────────────────
+//
+// Manages a fixed-height container with N panels. Scrolling within a panel
+// works naturally via overflow-y: auto. When the user reaches the top or bottom
+// edge of a panel and keeps scrolling, we transition to the adjacent panel with
+// a crossfade + slide animation. Touch swipe works the same way.
+//
+// Uses refs for all mutable scroll/lock state so that the wheel listener (added
+// with capture:true, passive:false) never operates on a stale closure.
+
+function usePanelNavigation( containerRef, panelCount ) {
+	const [ activePanel,  setActivePanel  ] = useState( 0 );
+	const [ exitingPanel, setExitingPanel ] = useState( null );
+	const [ goingForward, setGoingForward ] = useState( true );
+
+	// Mutable refs avoid stale-closure issues in the non-passive wheel handler.
+	const stateRef  = useRef( { active: 0, lock: false } );
+	const panelRefs = useRef( [] );
+
+	// Keep advanceRef pointing at a fresh closure every render so that
+	// panelCount is always current inside the event handler.
+	const advanceRef = useRef( null );
+	advanceRef.current = function doAdvance( nextIndex, forward ) {
+		const s = stateRef.current;
+		if ( s.lock || nextIndex < 0 || nextIndex >= panelCount ) return;
+
+		s.lock = true;
+		setGoingForward( forward );
+		setExitingPanel( s.active );
+		s.active = nextIndex;
+		setActivePanel( nextIndex );
+
+		const nextEl = panelRefs.current[ nextIndex ];
+		if ( nextEl ) nextEl.scrollTop = 0;
+
+		setTimeout( () => {
+			setExitingPanel( null );
+			s.lock = false;
+		}, 800 );
+	};
+
+	// Wheel — capture phase so we intercept before child scroll is applied.
+	useEffect( () => {
+		const container = containerRef.current;
+		if ( ! container ) return;
+
+		function onWheel( e ) {
+			const s      = stateRef.current;
+			const panelEl = panelRefs.current[ s.active ];
+			if ( ! panelEl ) return;
+
+			if ( s.lock ) { e.preventDefault(); return; }
+
+			const scrollable = panelEl.scrollHeight > panelEl.clientHeight + 4;
+			const atBottom   = ! scrollable ||
+				panelEl.scrollTop + panelEl.clientHeight >= panelEl.scrollHeight - 6;
+			const atTop      = ! scrollable || panelEl.scrollTop <= 6;
+
+			if ( e.deltaY > 20 && atBottom ) {
+				e.preventDefault();
+				advanceRef.current( s.active + 1, true );
+			} else if ( e.deltaY < -20 && atTop ) {
+				e.preventDefault();
+				advanceRef.current( s.active - 1, false );
+			}
+		}
+
+		container.addEventListener( 'wheel', onWheel, { passive: false, capture: true } );
+		return () => container.removeEventListener( 'wheel', onWheel, { capture: true } );
+	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	// Touch swipe
+	useEffect( () => {
+		const container = containerRef.current;
+		if ( ! container ) return;
+
+		let startY = 0;
+
+		function onTouchStart( e ) { startY = e.touches[ 0 ].clientY; }
+
+		function onTouchEnd( e ) {
+			const s = stateRef.current;
+			if ( s.lock ) return;
+
+			const delta   = startY - e.changedTouches[ 0 ].clientY;
+			const panelEl = panelRefs.current[ s.active ];
+			if ( ! panelEl || Math.abs( delta ) < 50 ) return;
+
+			const atBottom = panelEl.scrollTop + panelEl.clientHeight >= panelEl.scrollHeight - 6;
+			const atTop    = panelEl.scrollTop <= 6;
+
+			if ( delta > 0 && atBottom )   advanceRef.current( s.active + 1, true );
+			else if ( delta < 0 && atTop ) advanceRef.current( s.active - 1, false );
+		}
+
+		container.addEventListener( 'touchstart', onTouchStart, { passive: true } );
+		container.addEventListener( 'touchend',   onTouchEnd,   { passive: true } );
+		return () => {
+			container.removeEventListener( 'touchstart', onTouchStart );
+			container.removeEventListener( 'touchend',   onTouchEnd );
+		};
+	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
+
+	return {
+		activePanel,
+		exitingPanel,
+		goingForward,
+		panelRefs,
+		doAdvance: ( i, fwd ) => advanceRef.current( i, fwd ),
+	};
+}
+
 // ── Main export ───────────────────────────────────────────────────────────────
 
 export default function ResultScreen( {
@@ -342,7 +454,8 @@ export default function ResultScreen( {
 	wizardId     = 0,
 	nonce        = '',
 } ) {
-	const hasFiredRef = useRef( false );
+	const hasFiredRef  = useRef( false );
+	const containerRef = useRef( null );
 
 	const cardInsights = topPlans.map( ( plan, i ) =>
 		generatePlanInsight( plan, i + 1, answers, config )
@@ -383,50 +496,118 @@ export default function ResultScreen( {
 		);
 	}
 
-	return (
-		<div className="guidwell-result">
+	// Panel order: hero → alternatives (if any) → score/details
+	const panelIds = [ 'hero' ];
+	if ( topPlans.length > 1 ) panelIds.push( 'alternatives' );
+	panelIds.push( 'details' );
 
-			{ /* 1 — Hero: recommended plan card left, justification right */ }
-			<HeroSection
-				plan={ topPlans[ 0 ] }
-				insight={ insight }
-				cardInsight={ cardInsights[ 0 ] }
-				featuresList={ featuresList }
-			/>
+	const { activePanel, exitingPanel, goingForward, panelRefs, doAdvance } =
+		usePanelNavigation( containerRef, panelIds.length );
 
-			{ /* 2 — Alternatives */ }
-			<AlternativesSection
-				topPlans={ topPlans }
-				cardInsights={ cardInsights }
-				featuresList={ featuresList }
-			/>
-
-			{ /* 3 — Email capture */ }
-			<div id="guidwell-email-capture">
-				{ contact.collectVisitorEmail && (
-					<EmailCapture
-						apiBase={ apiBase }
-						wizardId={ wizardId }
-						nonce={ nonce }
-						topPlans={ topPlans }
+	function renderPanelContent( id ) {
+		switch ( id ) {
+			case 'hero':
+				return (
+					<HeroSection
+						plan={ topPlans[ 0 ] }
 						insight={ insight }
+						cardInsight={ cardInsights[ 0 ] }
+						featuresList={ featuresList }
 					/>
+				);
+			case 'alternatives':
+				return (
+					<AlternativesSection
+						topPlans={ topPlans }
+						cardInsights={ cardInsights }
+						featuresList={ featuresList }
+					/>
+				);
+			case 'details':
+				return (
+					<>
+						{ contact.collectVisitorEmail && (
+							<EmailCapture
+								apiBase={ apiBase }
+								wizardId={ wizardId }
+								nonce={ nonce }
+								topPlans={ topPlans }
+								insight={ insight }
+							/>
+						) }
+						<ScoringReport
+							allScores={ allScores }
+							topPlans={ topPlans }
+							config={ config }
+							answers={ answers }
+						/>
+					</>
+				);
+			default:
+				return null;
+		}
+	}
+
+	return (
+		<div className="guidwell-result guidwell-result--panels" ref={ containerRef }>
+
+			{ panelIds.map( ( id, i ) => {
+				const isActive  = i === activePanel;
+				const isExiting = i === exitingPanel;
+
+				let cls = 'guidwell-panel';
+				if ( isActive && exitingPanel !== null ) {
+					cls += goingForward ? ' guidwell-panel--entering-fwd' : ' guidwell-panel--entering-back';
+				} else if ( isActive ) {
+					cls += ' guidwell-panel--active';
+				} else if ( isExiting ) {
+					cls += goingForward ? ' guidwell-panel--exiting-fwd' : ' guidwell-panel--exiting-back';
+				}
+
+				return (
+					<div
+						key={ id }
+						className={ cls }
+						ref={ ( el ) => { panelRefs.current[ i ] = el; } }
+					>
+						<div className="guidwell-panel__inner">
+							{ renderPanelContent( id ) }
+						</div>
+					</div>
+				);
+			} ) }
+
+			{ /* Bottom chrome: scroll hint (non-last panels) or restart (last panel) + dots */ }
+			<div className="guidwell-panel-footer">
+				{ activePanel < panelIds.length - 1 ? (
+					<span className="guidwell-scroll-hint" aria-hidden="true">▾</span>
+				) : (
+					<button
+						type="button"
+						className="guidwell-result-restart"
+						onClick={ onRestart }
+					>
+						{ __( 'Start over', 'guidwell' ) }
+					</button>
 				) }
-			</div>
-
-			{ /* 4 — Collapsible scoring report */ }
-			<ScoringReport
-				allScores={ allScores }
-				topPlans={ topPlans }
-				config={ config }
-				answers={ answers }
-			/>
-
-			{ /* 5 — Footer */ }
-			<div className="guidwell-result-footer">
-				<button type="button" className="guidwell-result-restart" onClick={ onRestart }>
-					{ __( 'Start over', 'guidwell' ) }
-				</button>
+				{ panelIds.length > 1 && (
+					<div
+						className="guidwell-panel-dots"
+						role="tablist"
+						aria-label={ __( 'Result panels', 'guidwell' ) }
+					>
+						{ panelIds.map( ( _, i ) => (
+							<button
+								key={ i }
+								type="button"
+								role="tab"
+								aria-selected={ i === activePanel }
+								className={ `guidwell-panel-dot${ i === activePanel ? ' guidwell-panel-dot--active' : '' }` }
+								onClick={ () => doAdvance( i, i > activePanel ) }
+							/>
+						) ) }
+					</div>
+				) }
 			</div>
 
 		</div>

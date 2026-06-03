@@ -247,7 +247,7 @@ export default function Wizard() {
 		return (
 			<Suspense fallback={ <SpinnerFallback /> }>
 				<div className="guidwell-wrapper">
-					<div className={ `guidwell-card${ cardFlipClass }` }>
+					<div className={ `guidwell-card guidwell-card--result${ cardFlipClass }` }>
 						<ResultScreen
 							topPlans={ topPlans }
 							allScores={ allScores }
@@ -269,20 +269,22 @@ export default function Wizard() {
 
 	return (
 		<div className="guidwell-wrapper">
-			<div className={ `guidwell-card${ cardFlipClass }` }>
-				<ProgressBar current={ currentStep + 1 } total={ totalSteps } />
-				<div className="guidwell-step">
-					<QuestionStep
-						question={ question }
-						selectedAnswer={ selectedAnswer }
-						onSelect={ handleAnswerSelect }
-						onNext={ handleNext }
-						onBack={ handleBack }
-						canGoBack={ currentStep > 0 }
-						isLastStep={ currentStep === totalSteps - 1 }
-						headingRef={ headingRef }
-					/>
+			<div className="guidwell-wizard-frame">
+				<div className={ `guidwell-card${ cardFlipClass }` }>
+					<div className="guidwell-step">
+						<QuestionStep
+							question={ question }
+							selectedAnswer={ selectedAnswer }
+							onSelect={ handleAnswerSelect }
+							onNext={ handleNext }
+							onBack={ handleBack }
+							canGoBack={ currentStep > 0 }
+							isLastStep={ currentStep === totalSteps - 1 }
+							headingRef={ headingRef }
+						/>
+					</div>
 				</div>
+				<ProgressBar current={ currentStep + 1 } total={ totalSteps } />
 			</div>
 		</div>
 	);
