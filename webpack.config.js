@@ -16,6 +16,16 @@ const babelRule = {
 
 const resolve = { extensions: [ '.js', '.jsx' ] };
 
+// WordPress packages are loaded as globals on the page — don't bundle them.
+const wpExternals = {
+	'@wordpress/blocks':      [ 'wp', 'blocks' ],
+	'@wordpress/block-editor': [ 'wp', 'blockEditor' ],
+	'@wordpress/components':  [ 'wp', 'components' ],
+	'@wordpress/data':        [ 'wp', 'data' ],
+	'@wordpress/i18n':        [ 'wp', 'i18n' ],
+	'@wordpress/element':     [ 'wp', 'element' ],
+};
+
 module.exports = [
 	{
 		name: 'wizard',
@@ -37,5 +47,16 @@ module.exports = [
 		},
 		module: { rules: [ babelRule ] },
 		resolve,
+	},
+	{
+		name: 'block',
+		entry: './public/js/src/block/index.js',
+		output: {
+			path:     path.resolve( __dirname, 'public/js/dist' ),
+			filename: 'block.js',
+		},
+		module: { rules: [ babelRule ] },
+		resolve,
+		externals: wpExternals,
 	},
 ];

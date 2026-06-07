@@ -1,0 +1,23 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "guidwell/wizard",
+	"version": "1.0.0",
+	"title": "Guidwell Wizard",
+	"category": "widgets",
+	"icon": "forms",
+	"description": "Embed a Guidwell recommendation wizard on any page or post.",
+	"keywords": [ "guidwell", "quiz", "wizard", "recommendation" ],
+	"textdomain": "guidwell",
+	"attributes": {
+		"wizardId": {
+			"type": "number",
+			"default": 0
+		}
+	},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ]
+	},
+	"editorScript": "file:../dist/block.js"
+}

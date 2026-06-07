@@ -32,14 +32,22 @@ if ( is_admin() ) {
 }
 
 /**
- * Enqueue frontend assets only on pages that use the [guidwell] shortcode.
- * Data is localized here (not in the shortcode render) to guarantee correct timing.
+ * Enqueue and localize the wizard frontend assets.
+ * Called by both the shortcode path (via wp_enqueue_scripts) and the block render callback.
+ *
+ * @param int $wizard_id 0 means auto-select the first published wizard.
  */
-function guidwell_enqueue_assets(): void {
-	global $post;
-
-	if ( ! is_a( $post, 'WP_Post' ) || ! has_shortcode( $post->post_content, 'guidwell' ) ) {
-		return;
+function guidwell_enqueue_wizard_assets( int $wizard_id = 0 ): void {
+	if ( $wizard_id <= 0 ) {
+		$posts = get_posts( [
+			'post_type'      => 'guidwell_wizard',
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'orderby'        => 'date',
+			'order'          => 'ASC',
+			'fields'         => 'ids',
+		] );
+		$wizard_id = ! empty( $posts ) ? (int) $posts[0] : 0;
 	}
 
 	wp_enqueue_style(
@@ -56,23 +64,6 @@ function guidwell_enqueue_assets(): void {
 		GUIDWELL_VERSION,
 		true
 	);
-
-	// Respect [guidwell id="X"] if present; otherwise use the first published wizard.
-	$wizard_id = 0;
-	if ( preg_match( '/\[guidwell[^\]]*\bid=["\']?(\d+)["\']?/i', $post->post_content, $m ) ) {
-		$wizard_id = absint( $m[1] );
-	}
-	if ( $wizard_id <= 0 ) {
-		$posts = get_posts( [
-			'post_type'      => 'guidwell_wizard',
-			'post_status'    => 'publish',
-			'posts_per_page' => 1,
-			'orderby'        => 'date',
-			'order'          => 'ASC',
-			'fields'         => 'ids',
-		] );
-		$wizard_id = ! empty( $posts ) ? (int) $posts[0] : 0;
-	}
 
 	$contact_settings = guidwell_get_contact_settings();
 
@@ -97,7 +88,51 @@ function guidwell_enqueue_assets(): void {
 		]
 	);
 }
+
+/**
+ * Enqueue frontend assets only on pages that contain the [guidwell] shortcode.
+ */
+function guidwell_enqueue_assets(): void {
+	global $post;
+
+	if ( ! is_a( $post, 'WP_Post' ) || ! has_shortcode( $post->post_content, 'guidwell' ) ) {
+		return;
+	}
+
+	// Respect [guidwell id="X"] if present; otherwise auto-select.
+	$wizard_id = 0;
+	if ( preg_match( '/\[guidwell[^\]]*\bid=["\']?(\d+)["\']?/i', $post->post_content, $m ) ) {
+		$wizard_id = absint( $m[1] );
+	}
+
+	guidwell_enqueue_wizard_assets( $wizard_id );
+}
 add_action( 'wp_enqueue_scripts', 'guidwell_enqueue_assets' );
+
+/**
+ * Register the Gutenberg block.
+ */
+function guidwell_register_block(): void {
+	register_block_type(
+		GUIDWELL_PLUGIN_DIR . 'public/js/block.json',
+		[
+			'render_callback' => 'guidwell_render_wizard_block',
+		]
+	);
+}
+add_action( 'init', 'guidwell_register_block' );
+
+/**
+ * Server-side render callback for the guidwell/wizard block.
+ *
+ * @param array<string, mixed> $attributes Block attributes.
+ * @return string
+ */
+function guidwell_render_wizard_block( array $attributes ): string {
+	$wizard_id = isset( $attributes['wizardId'] ) ? absint( $attributes['wizardId'] ) : 0;
+	guidwell_enqueue_wizard_assets( $wizard_id );
+	return '<div id="guidwell"></div>';
+}
 
 /**
  * Retrieve contact/notification settings with defaults.
