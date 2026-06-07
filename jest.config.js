@@ -9,4 +9,7 @@ module.exports = {
 			],
 		} ],
 	},
+	moduleNameMapper: {
+		'^@wordpress/i18n$': '<rootDir>/tests/js/__mocks__/@wordpress/i18n.js',
+	},
 };

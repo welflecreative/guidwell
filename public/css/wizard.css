@@ -1065,7 +1065,7 @@
 	margin-bottom: 0;
 }
 
-#guidwell .guidwell-features-list__check {
+#guidwell .guidwell-features-list__icon {
 	color: var(--guidwell-primary);
 	font-size: 14px;
 	font-weight: 700;
@@ -1074,10 +1074,24 @@
 	line-height: 1.4;
 }
 
+#guidwell .guidwell-features-list--missing .guidwell-features-list__icon {
+	color: #e05252;
+}
+
+#guidwell .guidwell-features-list--missing .guidwell-features-list__label {
+	color: var(--guidwell-muted);
+	text-decoration: line-through;
+	text-decoration-color: rgba(224, 82, 82, 0.45);
+}
+
 #guidwell .guidwell-features-list__label {
 	font-size: 14px;
 	color: var(--guidwell-text);
 	line-height: 1.4;
+}
+
+#guidwell .guidwell-alt-upsell--downgrade .guidwell-alt-upsell__label {
+	color: #e05252;
 }
 
 /* ── Alternatives section ── */
@@ -1323,7 +1337,7 @@
 /* ── Panel inner — padding so content never hides behind the footer chrome ── */
 
 #guidwell .guidwell-panel__inner {
-	padding-bottom: 60px;
+	padding-bottom: 100px;
 }
 
 /* ── Bottom chrome: dots + scroll hint ── */

@@ -17,13 +17,16 @@ function CtaElement( { ctaUrl, ctaLabel, className } ) {
 // guidwellData.features master list via getActivePlanFeatures(plan, featuresList).
 // If no features configured, this block is hidden entirely.
 // Future: pull from API if the features list is large.
-function FeaturesList( { features } ) {
+function FeaturesList( { features, missing = false } ) {
 	if ( ! features?.length ) return null;
+	const listClass = `guidwell-features-list${ missing ? ' guidwell-features-list--missing' : '' }`;
 	return (
-		<ul className="guidwell-features-list">
+		<ul className={ listClass }>
 			{ features.map( ( f ) => (
 				<li key={ f.id } className="guidwell-features-list__item">
-					<span className="guidwell-features-list__check" aria-hidden="true">✓</span>
+					<span className="guidwell-features-list__icon" aria-hidden="true">
+						{ missing ? '✕' : '✓' }
+					</span>
 					<span className="guidwell-features-list__label">{ f.label }</span>
 				</li>
 			) ) }
@@ -239,13 +242,17 @@ function HeroSection( { plan, insight, cardInsight, featuresList } ) {
 // ── Section 2: Alternative plan card ─────────────────────────────────────────
 
 function AltCard( { plan, cardInsight, recommendedPlan, featuresList, isPriority } ) {
-	const { fitReason, upsellReason } = cardInsight || {};
+	const { fitReason, upsellReason, isDowngrade } = cardInsight || {};
 
-	const allFeatures       = getActivePlanFeatures( plan, featuresList );
-	const topPlanFeatureIds = new Set( recommendedPlan?.features || [] );
-	const exclusiveFeatures = allFeatures.filter( ( f ) => ! topPlanFeatureIds.has( f.id ) );
-	const displayFeatures   = exclusiveFeatures.length > 0 ? exclusiveFeatures : allFeatures;
-	const showExclusiveLabel = exclusiveFeatures.length > 0 && allFeatures.length > 0;
+	const planFeatures  = getActivePlanFeatures( plan, featuresList );
+	const recFeatures   = getActivePlanFeatures( recommendedPlan, featuresList );
+	const planFeatureIds = new Set( planFeatures.map( ( f ) => f.id ) );
+	const recFeatureIds  = new Set( recFeatures.map( ( f ) => f.id ) );
+
+	// Features this plan adds over the recommended (shown on upgrade cards).
+	const exclusiveFeatures = planFeatures.filter( ( f ) => ! recFeatureIds.has( f.id ) );
+	// Features the recommended has that this plan lacks (shown on downgrade cards).
+	const missingFeatures   = recFeatures.filter( ( f ) => ! planFeatureIds.has( f.id ) );
 
 	const cardClass = `guidwell-alt-card ${ isPriority ? 'guidwell-alt-card--priority' : 'guidwell-alt-card--secondary' }`;
 
@@ -257,24 +264,47 @@ function AltCard( { plan, cardInsight, recommendedPlan, featuresList, isPriority
 			{ fitReason && (
 				<p className="guidwell-alt-fit-reason">{ fitReason }</p>
 			) }
-			{ upsellReason && (
-				<div className="guidwell-alt-upsell">
-					<span className="guidwell-alt-upsell__label">
-						{ __( 'Why consider upgrading:', 'guidwell' ) }
-					</span>
-					<p className="guidwell-alt-upsell__text">{ upsellReason }</p>
-				</div>
-			) }
-			{ displayFeatures.length > 0 && (
-				<div className="guidwell-alt-features">
-					{ showExclusiveLabel && (
-						<span className="guidwell-alt-features__label">
-							{ __( 'Also includes:', 'guidwell' ) }
-						</span>
+
+			{ isDowngrade ? (
+				<>
+					{ upsellReason && (
+						<div className="guidwell-alt-upsell guidwell-alt-upsell--downgrade">
+							<span className="guidwell-alt-upsell__label">
+								{ __( "What you'd give up:", 'guidwell' ) }
+							</span>
+							<p className="guidwell-alt-upsell__text">{ upsellReason }</p>
+						</div>
 					) }
-					<FeaturesList features={ displayFeatures } />
-				</div>
+					{ missingFeatures.length > 0 && (
+						<div className="guidwell-alt-features">
+							<span className="guidwell-alt-features__label">
+								{ __( 'Not included in this plan:', 'guidwell' ) }
+							</span>
+							<FeaturesList features={ missingFeatures } missing={ true } />
+						</div>
+					) }
+				</>
+			) : (
+				<>
+					{ upsellReason && (
+						<div className="guidwell-alt-upsell">
+							<span className="guidwell-alt-upsell__label">
+								{ __( 'Why consider upgrading:', 'guidwell' ) }
+							</span>
+							<p className="guidwell-alt-upsell__text">{ upsellReason }</p>
+						</div>
+					) }
+					{ exclusiveFeatures.length > 0 && (
+						<div className="guidwell-alt-features">
+							<span className="guidwell-alt-features__label">
+								{ __( 'Also includes:', 'guidwell' ) }
+							</span>
+							<FeaturesList features={ exclusiveFeatures } />
+						</div>
+					) }
+				</>
 			) }
+
 			{ plan.description && (
 				<p className="guidwell-alt-description">{ plan.description }</p>
 			) }
@@ -343,7 +373,8 @@ function usePanelNavigation( containerRef, panelCount ) {
 	const [ goingForward, setGoingForward ] = useState( true );
 
 	// Mutable refs avoid stale-closure issues in the non-passive wheel handler.
-	const stateRef  = useRef( { active: 0, lock: false } );
+	// downDelta/upDelta accumulate wheel intent before a panel advance fires.
+	const stateRef  = useRef( { active: 0, lock: false, downDelta: 0, upDelta: 0 } );
 	const panelRefs = useRef( [] );
 
 	// Keep advanceRef pointing at a fresh closure every render so that
@@ -353,7 +384,9 @@ function usePanelNavigation( containerRef, panelCount ) {
 		const s = stateRef.current;
 		if ( s.lock || nextIndex < 0 || nextIndex >= panelCount ) return;
 
-		s.lock = true;
+		s.lock      = true;
+		s.downDelta = 0;
+		s.upDelta   = 0;
 		setGoingForward( forward );
 		setExitingPanel( s.active );
 		s.active = nextIndex;
@@ -374,7 +407,7 @@ function usePanelNavigation( containerRef, panelCount ) {
 		if ( ! container ) return;
 
 		function onWheel( e ) {
-			const s      = stateRef.current;
+			const s       = stateRef.current;
 			const panelEl = panelRefs.current[ s.active ];
 			if ( ! panelEl ) return;
 
@@ -382,15 +415,31 @@ function usePanelNavigation( containerRef, panelCount ) {
 
 			const scrollable = panelEl.scrollHeight > panelEl.clientHeight + 4;
 			const atBottom   = ! scrollable ||
-				panelEl.scrollTop + panelEl.clientHeight >= panelEl.scrollHeight - 6;
-			const atTop      = ! scrollable || panelEl.scrollTop <= 6;
+				panelEl.scrollTop + panelEl.clientHeight >= panelEl.scrollHeight - 16;
+			const atTop      = ! scrollable || panelEl.scrollTop <= 16;
 
-			if ( e.deltaY > 20 && atBottom ) {
+			if ( e.deltaY > 0 && atBottom ) {
+				// Accumulate scroll intent; require 180px of total delta before advancing
+				// so the user must scroll intentionally, not just graze the boundary.
+				s.downDelta += e.deltaY;
+				s.upDelta    = 0;
 				e.preventDefault();
-				advanceRef.current( s.active + 1, true );
-			} else if ( e.deltaY < -20 && atTop ) {
+				if ( s.downDelta >= 180 ) {
+					s.downDelta = 0;
+					advanceRef.current( s.active + 1, true );
+				}
+			} else if ( e.deltaY < 0 && atTop ) {
+				s.upDelta   += Math.abs( e.deltaY );
+				s.downDelta  = 0;
 				e.preventDefault();
-				advanceRef.current( s.active - 1, false );
+				if ( s.upDelta >= 180 ) {
+					s.upDelta = 0;
+					advanceRef.current( s.active - 1, false );
+				}
+			} else {
+				// Scrolling within the panel content — reset accumulators.
+				s.downDelta = 0;
+				s.upDelta   = 0;
 			}
 		}
 

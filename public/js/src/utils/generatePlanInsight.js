@@ -2,13 +2,19 @@ import { __ } from '@wordpress/i18n';
 import { getTopPlans } from './scoreAnswers';
 
 /**
- * Generates per-plan copy for the podium result display.
+ * Generates per-plan copy for the result display.
+ *
+ * Returns:
+ *  - fitReason    — why this plan suits the user's answers
+ *  - upsellReason — upgrade nudge (higher tier) or downgrade warning (lower tier)
+ *  - whyItMatters — tier-based value statement (shown on hero panel only)
+ *  - isDowngrade  — true when this plan is a lower tier than the recommended plan
  *
  * @param {Object} plan           Plan object (with .slug, .tier, .name)
  * @param {1|2|3}  podiumPosition 1 = recommended, 2 = second, 3 = third
  * @param {Object} answers        { [questionId]: answerId }
  * @param {Object} config         { questions, plans }
- * @returns {{ fitReason: string, upsellReason: string|null, whyItMatters: string }}
+ * @returns {{ fitReason: string, upsellReason: string|null, whyItMatters: string, isDowngrade: boolean }}
  */
 export default function generatePlanInsight( plan, podiumPosition, answers, config ) {
 	const { questions = [] } = config || {};
@@ -31,6 +37,11 @@ export default function generatePlanInsight( plan, podiumPosition, answers, conf
 	const byAsc  = [ ...answered ].sort( ( a, b ) => a.weight - b.weight );
 	const lowest = byAsc[ 0 ]?.label;
 
+	// Tier diff vs. the position-1 (recommended) plan.
+	const recommendedPlan = podiumPosition > 1 ? getTopPlans( answers, config, 1 )[ 0 ] : null;
+	const tierDiff        = recommendedPlan ? ( plan.tier ?? 1 ) - ( recommendedPlan.tier ?? 1 ) : 0;
+	const isDowngrade     = podiumPosition > 1 && tierDiff < 0;
+
 	// ── fitReason ─────────────────────────────────────────────────────────────
 
 	const genericFit = __( 'This option aligns with your overall profile.', 'guidwell' );
@@ -38,19 +49,19 @@ export default function generatePlanInsight( plan, podiumPosition, answers, conf
 
 	if ( podiumPosition === 1 ) {
 		if ( top1 && top2 ) {
-			fitReason = `${ __( 'Your answers — particularly', 'guidwell' ) } ${ top1 } ${ __( 'and', 'guidwell' ) } ${ top2 } — ${ __( 'point strongly toward this option.', 'guidwell' ) }`;
+			fitReason = `${ __( 'Your answers — particularly', 'guidwell' ) } "${ top1 }" ${ __( 'and', 'guidwell' ) } "${ top2 }" — ${ __( 'point strongly toward this option.', 'guidwell' ) }`;
 		} else if ( top1 ) {
-			fitReason = `${ __( 'Your answers — particularly', 'guidwell' ) } ${ top1 } — ${ __( 'point strongly toward this option.', 'guidwell' ) }`;
+			fitReason = `${ __( 'Your answers — particularly', 'guidwell' ) } "${ top1 }" — ${ __( 'point strongly toward this option.', 'guidwell' ) }`;
 		} else {
 			fitReason = genericFit;
 		}
 	} else if ( podiumPosition === 2 ) {
 		fitReason = top1
-			? `${ __( 'Your answers also align with this option, especially', 'guidwell' ) } ${ top1 }.`
+			? `${ __( 'Your answers also align with this option — especially your choice of', 'guidwell' ) } "${ top1 }."`
 			: genericFit;
 	} else {
 		fitReason = top1
-			? `${ __( 'Elements of your answers, including', 'guidwell' ) } ${ top1 }, ${ __( 'are reflected in this option too.', 'guidwell' ) }`
+			? `${ __( 'Elements of your answers — including', 'guidwell' ) } "${ top1 }" — ${ __( 'are reflected in this option too.', 'guidwell' ) }`
 			: genericFit;
 	}
 
@@ -58,26 +69,23 @@ export default function generatePlanInsight( plan, podiumPosition, answers, conf
 
 	let upsellReason = null;
 
-	if ( podiumPosition === 2 ) {
-		const topPlan = getTopPlans( answers, config, 1 )[ 0 ];
-		const tierDiff = topPlan ? ( plan.tier ?? 1 ) - ( topPlan.tier ?? 1 ) : 0;
+	if ( podiumPosition > 1 ) {
+		const recName = recommendedPlan?.name || __( 'the recommended plan', 'guidwell' );
 
 		if ( tierDiff > 0 ) {
-			const diff = ( plan.tier ?? 1 ) >= 3
+			// Higher tier — upgrade nudge toward this plan.
+			const upgradeValue = ( plan.tier ?? 1 ) >= 3
 				? __( 'full-service execution and dedicated strategy', 'guidwell' )
 				: __( 'expanded support and deeper collaboration', 'guidwell' );
-			upsellReason = `${ __( 'Stepping up to', 'guidwell' ) } ${ plan.name } ${ __( 'means', 'guidwell' ) } ${ diff } — ${ __( 'worth considering if your needs grow.', 'guidwell' ) }`;
+			upsellReason = `${ __( 'If your needs grow, stepping up to', 'guidwell' ) } ${ plan.name } ${ __( 'unlocks', 'guidwell' ) } ${ upgradeValue }.`;
 		} else if ( tierDiff < 0 ) {
-			upsellReason = lowest
-				? `${ __( 'This lighter option could work well if', 'guidwell' ) } ${ lowest } ${ __( 'is your main consideration.', 'guidwell' ) }`
-				: __( 'Stepping up unlocks more comprehensive support.', 'guidwell' );
+			// Lower tier — reinforce the recommended plan's value; warn what they'd lose.
+			upsellReason = `${ recName } ${ __( 'gives you more for your investment. Choosing this option means giving up meaningful support — worth factoring in before deciding.', 'guidwell' ) }`;
 		}
-		// tierDiff === 0: leave null
-	} else if ( podiumPosition === 3 ) {
-		upsellReason = `${ plan.name } ${ __( 'is the full-service option — if you want everything handled end-to-end, this is it.', 'guidwell' ) }`;
+		// tierDiff === 0: leave null — same tier, no direction to push
 	}
 
-	// ── whyItMatters (tier-based) ─────────────────────────────────────────────
+	// ── whyItMatters (shown on hero panel only) ───────────────────────────────
 
 	const tier = plan?.tier ?? 1;
 	let whyItMatters;
@@ -92,5 +100,5 @@ export default function generatePlanInsight( plan, podiumPosition, answers, conf
 		whyItMatters = __( 'Complete ownership of your marketing — from strategy to daily execution.', 'guidwell' );
 	}
 
-	return { fitReason, upsellReason, whyItMatters };
+	return { fitReason, upsellReason, whyItMatters, isDowngrade };
 }

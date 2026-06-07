@@ -39,8 +39,8 @@ export default function generateInsight( answers, config ) {
 	if ( top.length === 0 ) return '';
 
 	if ( top.length === 1 ) {
-		return `Based on your answers — particularly that ${ top[ 0 ].label } — this looks like your strongest fit.`;
+		return `Based on your answers — particularly "${ top[ 0 ].label }" — this looks like your strongest fit.`;
 	}
 
-	return `Based on your answers — particularly that ${ top[ 0 ].label } and ${ top[ 1 ].label } — this looks like your strongest fit.`;
+	return `Based on your answers — particularly "${ top[ 0 ].label }" and "${ top[ 1 ].label }" — this looks like your strongest fit.`;
 }
