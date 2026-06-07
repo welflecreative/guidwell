@@ -19,5 +19,5 @@
 		"html": false,
 		"align": [ "wide", "full" ]
 	},
-	"editorScript": "file:../dist/block.js"
+	"editorScript": "guidwell-block-editor"
 }

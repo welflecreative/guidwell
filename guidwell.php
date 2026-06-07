@@ -113,6 +113,16 @@ add_action( 'wp_enqueue_scripts', 'guidwell_enqueue_assets' );
  * Register the Gutenberg block.
  */
 function guidwell_register_block(): void {
+	// Register the editor script manually so we can declare WP package
+	// dependencies explicitly — plain webpack doesn't emit an .asset.php file.
+	wp_register_script(
+		'guidwell-block-editor',
+		GUIDWELL_PLUGIN_URL . 'public/js/dist/block.js',
+		[ 'wp-blocks', 'wp-block-editor', 'wp-components', 'wp-data', 'wp-i18n', 'wp-element' ],
+		GUIDWELL_VERSION,
+		true
+	);
+
 	register_block_type(
 		GUIDWELL_PLUGIN_DIR . 'public/js/block.json',
 		[
