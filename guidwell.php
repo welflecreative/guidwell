@@ -19,6 +19,7 @@ define( 'GUIDWELL_VERSION', '1.0.0' );
 define( 'GUIDWELL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GUIDWELL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
+require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-tiers.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-cpt.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-api.php';
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-shortcode.php';
@@ -85,6 +86,7 @@ function guidwell_enqueue_wizard_assets( int $wizard_id = 0 ): void {
 				$list = json_decode( $raw, true );
 				return is_array( $list ) ? $list : [];
 			} )(),
+			'tier'     => Guidwell_Tiers::current_summary(),
 		]
 	);
 }

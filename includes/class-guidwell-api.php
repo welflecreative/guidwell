@@ -138,6 +138,22 @@ class Guidwell_API {
 	// -------------------------------------------------------------------------
 
 	public function create_wizard( WP_REST_Request $request ): WP_REST_Response|WP_Error {
+		// Tier limit: enforce max active wizards.
+		if ( Guidwell_Tiers::limit( 'active_wizards' ) !== null ) {
+			$existing = (int) wp_count_posts( 'guidwell_wizard' )->publish;
+			if ( Guidwell_Tiers::exceeds_limit( 'active_wizards', $existing ) ) {
+				return new WP_Error(
+					'guidwell_tier_limit',
+					sprintf(
+						/* translators: %d: wizard limit for current tier */
+						__( 'Your current plan allows a maximum of %d active wizard(s). Upgrade to create more.', 'guidwell' ),
+						Guidwell_Tiers::limit( 'active_wizards' )
+					),
+					[ 'status' => 403 ]
+				);
+			}
+		}
+
 		$title = sanitize_text_field(
 			$request->get_param( 'title' ) ?? __( 'My Wizard', 'guidwell' )
 		);
@@ -522,6 +538,20 @@ class Guidwell_API {
 				'guidwell_invalid_config',
 				__( 'Config must include at least one question.', 'guidwell' ),
 				[ 'status' => 400 ]
+			);
+		}
+
+		// Tier limit: enforce max questions per wizard.
+		if ( Guidwell_Tiers::exceeds_limit( 'questions_per_wizard', count( $config['questions'] ) ) ) {
+			$limit = Guidwell_Tiers::limit( 'questions_per_wizard' );
+			return new WP_Error(
+				'guidwell_tier_limit',
+				sprintf(
+					/* translators: %d: question limit for current tier */
+					__( 'Your current plan allows a maximum of %d questions per wizard. Upgrade to add more.', 'guidwell' ),
+					$limit
+				),
+				[ 'status' => 403 ]
 			);
 		}
 

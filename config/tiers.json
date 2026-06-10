@@ -1,0 +1,111 @@
+{
+	"tiers": [
+		{
+			"slug": "free",
+			"label": "Free",
+			"price": null,
+			"billing": null,
+			"limits": {
+				"questions_per_wizard": 5,
+				"active_wizards": 1,
+				"sites": 1
+			}
+		},
+		{
+			"slug": "starter",
+			"label": "Starter",
+			"price": 79,
+			"billing": "yearly",
+			"limits": {
+				"questions_per_wizard": null,
+				"active_wizards": 1,
+				"sites": 1
+			}
+		},
+		{
+			"slug": "pro",
+			"label": "Pro",
+			"price": 149,
+			"billing": "yearly",
+			"limits": {
+				"questions_per_wizard": null,
+				"active_wizards": null,
+				"sites": 3
+			}
+		},
+		{
+			"slug": "agency",
+			"label": "Agency",
+			"price": 299,
+			"billing": "yearly",
+			"limits": {
+				"questions_per_wizard": null,
+				"active_wizards": null,
+				"sites": null
+			}
+		}
+	],
+
+	"features": {
+		"custom_branding": {
+			"label": "Custom colors & branding",
+			"tiers": ["starter", "pro", "agency"],
+			"upgrade_message": "Upgrade to match your site's colors and style."
+		},
+		"email_capture": {
+			"label": "Email capture & lead generation",
+			"tiers": ["starter", "pro", "agency"],
+			"upgrade_message": "Collect visitor emails and send result summaries directly to them."
+		},
+		"result_notifications": {
+			"label": "Admin result notifications",
+			"tiers": ["starter", "pro", "agency"],
+			"upgrade_message": "Get notified by email whenever a visitor completes the wizard."
+		},
+		"csv_export": {
+			"label": "CSV export",
+			"tiers": ["starter", "pro", "agency"],
+			"upgrade_message": "Export your wizard configuration to CSV for backup or editing."
+		},
+		"csv_import": {
+			"label": "CSV import",
+			"tiers": ["pro", "agency"],
+			"upgrade_message": "Import wizard configuration from a CSV file to save setup time."
+		},
+		"json_io": {
+			"label": "JSON import & export",
+			"tiers": ["agency"],
+			"upgrade_message": "Full JSON import/export — ideal for templating across multiple installs."
+		},
+		"analytics_basic": {
+			"label": "Basic analytics",
+			"tiers": ["pro", "agency"],
+			"upgrade_message": "See completion rates and which plans visitors are matched to most."
+		},
+		"analytics_full": {
+			"label": "Full analytics & reporting",
+			"tiers": ["agency"],
+			"upgrade_message": "Cross-platform analytics, drop-off tracking, and monthly strategy reports."
+		},
+		"white_label": {
+			"label": "White-label (remove badge)",
+			"tiers": ["agency"],
+			"upgrade_message": "Remove the 'Powered by Guidwell' badge for client sites."
+		},
+		"email_integrations": {
+			"label": "Email integrations (Mailchimp, ConvertKit)",
+			"tiers": ["agency"],
+			"upgrade_message": "Connect results directly to your email marketing platform."
+		},
+		"unlimited_wizards": {
+			"label": "Unlimited active wizards",
+			"tiers": ["pro", "agency"],
+			"upgrade_message": "Create a separate wizard for each service or audience segment."
+		},
+		"multi_site": {
+			"label": "Multi-site licensing",
+			"tiers": ["pro", "agency"],
+			"upgrade_message": "Use Guidwell on up to 3 sites (Pro) or unlimited sites (Agency)."
+		}
+	}
+}
