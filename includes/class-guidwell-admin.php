@@ -7,6 +7,7 @@ class Guidwell_Admin {
 	public function __construct() {
 		add_action( 'admin_menu',             [ $this, 'add_menu' ] );
 		add_action( 'admin_enqueue_scripts',  [ $this, 'enqueue_scripts' ] );
+		add_action( 'admin_notices',          [ $this, 'overage_notices' ] );
 	}
 
 	public function add_menu(): void {
@@ -23,6 +24,43 @@ class Guidwell_Admin {
 
 	public function render_page(): void {
 		require_once GUIDWELL_PLUGIN_DIR . 'admin/views/admin-main.php';
+	}
+
+	/**
+	 * Renders WP admin notices when the current install exceeds the active tier's limits.
+	 * Shown on all admin pages so it's hard to miss after a downgrade.
+	 */
+	public function overage_notices(): void {
+		$overages = Guidwell_Tiers::overage_report();
+		if ( empty( $overages ) ) {
+			return;
+		}
+
+		$tier_label = ucfirst( Guidwell_Tiers::current() );
+
+		echo '<div class="notice notice-warning">';
+		echo '<p><strong>' . esc_html(
+			sprintf(
+				/* translators: %s: tier name */
+				__( 'Guidwell — %s plan limit exceeded', 'guidwell' ),
+				$tier_label
+			)
+		) . '</strong></p>';
+		echo '<ul style="list-style:disc;padding-left:1.5em;margin:.25em 0 .75em;">';
+		foreach ( $overages as $item ) {
+			echo '<li>' . esc_html( $item['message'] ) . '</li>';
+		}
+		echo '</ul>';
+		echo '<p>';
+		printf(
+			/* translators: %s: admin URL */
+			esc_html__( 'Your existing content is safe and remains live. %s', 'guidwell' ),
+			'<a href="' . esc_url( admin_url( 'admin.php?page=guidwell' ) ) . '">'
+				. esc_html__( 'Manage your wizards →', 'guidwell' )
+			. '</a>'
+		);
+		echo '</p>';
+		echo '</div>';
 	}
 
 	public function enqueue_scripts( string $hook ): void {
@@ -53,6 +91,7 @@ class Guidwell_Admin {
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'wizardId' => $this->get_first_wizard_id(),
 				'settings' => guidwell_get_settings(),
+				'tier'     => Guidwell_Tiers::current_summary(),
 			]
 		);
 	}

@@ -1078,3 +1078,47 @@
 	flex-shrink: 0;
 	cursor: pointer;
 }
+
+/* ── Tier gate — shown in place of locked action buttons ── */
+
+#guidwell-admin .gw-tier-gate {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px 12px;
+	background: #fff8e6;
+	border: 1px solid #f0c040;
+	border-radius: 6px;
+	font-size: 13px;
+}
+
+#guidwell-admin .gw-tier-gate__icon {
+	font-size: 14px;
+	line-height: 1;
+}
+
+#guidwell-admin .gw-tier-gate__text {
+	color: #7a5c00;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+#guidwell-admin .gw-tier-gate__count {
+	font-weight: 400;
+	color: #a07a00;
+}
+
+#guidwell-admin .gw-tier-gate__link {
+	font-size: 12px;
+	color: var(--gw-primary);
+	text-decoration: none;
+	font-weight: 600;
+	margin-top: 2px;
+}
+
+#guidwell-admin .gw-tier-gate__link:hover {
+	text-decoration: underline;
+}
+

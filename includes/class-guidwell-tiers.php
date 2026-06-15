@@ -139,9 +139,80 @@ class Guidwell_Tiers {
 		}
 
 		return [
-			'tier'     => $slug,
-			'limits'   => $limits,
-			'features' => $features,
+			'tier'        => $slug,
+			'limits'      => $limits,
+			'features'    => $features,
+			'upgrade_url' => self::config()['upgrade_url'] ?? '',
 		];
+	}
+
+	// ── Overage detection ─────────────────────────────────────────────────────
+
+	/**
+	 * Scans the current install and returns an array of overage items.
+	 * Empty array means everything is within limits.
+	 *
+	 * Each item: [ 'type', 'message', 'count', 'limit' ]
+	 *
+	 * Called on admin pages only — never on the frontend.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function overage_report(): array {
+		$overages = [];
+
+		// ── Wizard count ──────────────────────────────────────────────────────
+		$wizard_limit = self::limit( 'active_wizards' );
+		if ( $wizard_limit !== null ) {
+			$active = (int) wp_count_posts( 'guidwell_wizard' )->publish;
+			if ( $active > $wizard_limit ) {
+				$overages[] = [
+					'type'    => 'wizard_count',
+					'count'   => $active,
+					'limit'   => $wizard_limit,
+					'message' => sprintf(
+						/* translators: 1: active wizard count 2: tier limit */
+						__( 'You have %1$d active wizard(s) but your current plan allows %2$d. Your wizards are still live, but you cannot create new ones until you are within the limit or upgrade.', 'guidwell' ),
+						$active,
+						$wizard_limit
+					),
+				];
+			}
+		}
+
+		// ── Questions per wizard ──────────────────────────────────────────────
+		$question_limit = self::limit( 'questions_per_wizard' );
+		if ( $question_limit !== null ) {
+			$wizards = get_posts( [
+				'post_type'      => 'guidwell_wizard',
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+			] );
+
+			foreach ( $wizards as $wizard_id ) {
+				$raw    = get_post_meta( $wizard_id, '_guidwell_wizard_config', true );
+				$config = $raw ? json_decode( $raw, true ) : null;
+				$count  = is_array( $config['questions'] ?? null ) ? count( $config['questions'] ) : 0;
+
+				if ( $count > $question_limit ) {
+					$overages[] = [
+						'type'      => 'question_count',
+						'wizard_id' => $wizard_id,
+						'count'     => $count,
+						'limit'     => $question_limit,
+						'message'   => sprintf(
+							/* translators: 1: wizard title 2: question count 3: tier limit */
+							__( '"%1$s" has %2$d questions but your current plan allows %3$d. It is still live, but saving changes is blocked until the question count is reduced or you upgrade.', 'guidwell' ),
+							get_the_title( $wizard_id ),
+							$count,
+							$question_limit
+						),
+					];
+				}
+			}
+		}
+
+		return $overages;
 	}
 }

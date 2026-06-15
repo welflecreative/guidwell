@@ -7,8 +7,17 @@ import NotificationsTab from './NotificationsTab';
 import FeaturesTab from './FeaturesTab';
 import Sortable from 'sortablejs';
 
-const { apiBase, nonce, wizardId: INITIAL_WIZARD_ID, settings: INITIAL_SETTINGS } =
-	window.guidwellAdminData || {};
+const {
+	apiBase,
+	nonce,
+	wizardId:  INITIAL_WIZARD_ID,
+	settings:  INITIAL_SETTINGS,
+	tier:      TIER_DATA = {},
+} = window.guidwellAdminData || {};
+
+// null = unlimited
+const QUESTION_LIMIT = TIER_DATA?.limits?.questions_per_wizard ?? null;
+const UPGRADE_URL    = TIER_DATA?.upgrade_url || 'https://welflecreative.com/guidwell';
 
 const STARTER_CONFIG = {
 	questions: [
@@ -330,9 +339,30 @@ export default function AdminApp() {
 							</div>
 
 							<div style={ { padding: '0 16px 8px' } }>
-								<button className="gw-btn-add" onClick={ addQuestion }>
-									+ { __( 'Add Question', 'guidwell' ) }
-								</button>
+								{ QUESTION_LIMIT !== null && config.questions.length >= QUESTION_LIMIT ? (
+									<div className="gw-tier-gate">
+										<span className="gw-tier-gate__icon" aria-hidden="true">🔒</span>
+										<span className="gw-tier-gate__text">
+											{ __( 'Question limit reached', 'guidwell' ) }
+											{ ' ' }
+											<span className="gw-tier-gate__count">
+												({ config.questions.length }/{ QUESTION_LIMIT })
+											</span>
+										</span>
+										<a
+											href={ UPGRADE_URL }
+											target="_blank"
+											rel="noreferrer"
+											className="gw-tier-gate__link"
+										>
+											{ __( 'Upgrade to add more →', 'guidwell' ) }
+										</a>
+									</div>
+								) : (
+									<button className="gw-btn-add" onClick={ addQuestion }>
+										+ { __( 'Add Question', 'guidwell' ) }
+									</button>
+								) }
 							</div>
 
 							<hr className="gw-sidebar-divider" />

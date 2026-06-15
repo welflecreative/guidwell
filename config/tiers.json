@@ -1,4 +1,6 @@
 {
+	"upgrade_url": "https://welflecreative.com/guidwell",
+
 	"tiers": [
 		{
 			"slug": "free",
