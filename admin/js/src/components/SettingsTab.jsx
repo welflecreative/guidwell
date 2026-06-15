@@ -2,6 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import detectThemeColors from '../../../../public/js/src/utils/detectThemeColors';
 
+const {
+	tier: TIER_DATA = {},
+} = window.guidwellAdminData || {};
+
+const CAN_EXPORT  = TIER_DATA?.features?.json_export?.allowed ?? false;
+const CAN_IMPORT  = TIER_DATA?.features?.json_import?.allowed ?? false;
+const UPGRADE_URL = TIER_DATA?.upgrade_url || 'https://welflecreative.com/guidwell';
+
 const COLOR_FIELDS = [
 	{
 		key:      'primaryColor',
@@ -90,7 +98,7 @@ function ColorRow( { field, value, onChange, dimmed } ) {
 	);
 }
 
-export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify } ) {
+export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify, config, onConfigChange } ) {
 	const [ settings,         setSettings         ] = useState( initialSettings || {} );
 	const [ manualSettings,   setManualSettings   ] = useState( initialSettings || {} );
 	const [ useThemeColors,   setUseThemeColors   ] = useState( !! initialSettings?.useThemeColors );
@@ -149,6 +157,42 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 		} finally {
 			setSaving( false );
 		}
+	}
+
+	function handleExport() {
+		const filename = `guidwell-wizard-${ new Date().toISOString().slice( 0, 10 ) }.json`;
+		const blob = new Blob( [ JSON.stringify( config, null, 2 ) ], { type: 'application/json' } );
+		const url  = URL.createObjectURL( blob );
+		const a    = document.createElement( 'a' );
+		a.href     = url;
+		a.download = filename;
+		document.body.appendChild( a );
+		a.click();
+		document.body.removeChild( a );
+		URL.revokeObjectURL( url );
+	}
+
+	function handleImportFile( e ) {
+		const file = e.target.files[ 0 ];
+		if ( ! file ) return;
+		const reader = new FileReader();
+		reader.onload = ( evt ) => {
+			try {
+				const data = JSON.parse( evt.target.result );
+				if ( ! Array.isArray( data.questions ) || ! Array.isArray( data.plans ) ) {
+					throw new Error( __( 'Invalid file — missing questions or plans.', 'guidwell' ) );
+				}
+				onConfigChange( { ...data, _imported: true } );
+				onNotify( {
+					type:    'info',
+					message: __( 'Wizard imported — review the builder above and click Save All Changes when ready.', 'guidwell' ),
+				} );
+			} catch ( err ) {
+				onNotify( { type: 'error', message: err.message || __( 'Could not read the JSON file.', 'guidwell' ) } );
+			}
+			e.target.value = '';
+		};
+		reader.readAsText( file );
 	}
 
 	const detectionPending = detectionResult === undefined;
@@ -240,6 +284,66 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 				{ saving && <span className="gw-btn-spinner" /> }
 				{ saveLabel }
 			</button>
+
+			{ /* ── Section 4: Backup & Transfer ── */ }
+			<div className="gw-settings-section gw-settings-section--transfer">
+				<h3 className="gw-settings-heading">{ __( 'Backup & Transfer', 'guidwell' ) }</h3>
+				<p className="gw-settings-subheading">
+					{ __( 'Export your wizard as a JSON file to back it up or copy it to another site. Import a previously exported file to restore or duplicate a wizard.', 'guidwell' ) }
+				</p>
+
+				<div className="gw-transfer-row">
+
+					{ /* Export */ }
+					<div className="gw-transfer-card">
+						<p className="gw-transfer-card__label">{ __( 'Export', 'guidwell' ) }</p>
+						<p className="gw-transfer-card__desc">
+							{ __( 'Downloads a .json file of your current wizard to your computer.', 'guidwell' ) }
+						</p>
+						{ CAN_EXPORT ? (
+							<button className="gw-btn-secondary" onClick={ handleExport } disabled={ ! config }>
+								{ __( '↓ Download wizard.json', 'guidwell' ) }
+							</button>
+						) : (
+							<div className="gw-tier-gate">
+								<span className="gw-tier-gate__icon" aria-hidden="true">🔒</span>
+								<span className="gw-tier-gate__text">{ __( 'Starter plan required', 'guidwell' ) }</span>
+								<a href={ UPGRADE_URL } target="_blank" rel="noreferrer" className="gw-tier-gate__link">
+									{ __( 'Upgrade →', 'guidwell' ) }
+								</a>
+							</div>
+						) }
+					</div>
+
+					{ /* Import */ }
+					<div className="gw-transfer-card">
+						<p className="gw-transfer-card__label">{ __( 'Import', 'guidwell' ) }</p>
+						<p className="gw-transfer-card__desc">
+							{ __( 'Loads a wizard from a .json file. You can review all changes before saving.', 'guidwell' ) }
+						</p>
+						{ CAN_IMPORT ? (
+							<label className="gw-btn-secondary gw-btn-file">
+								{ __( '↑ Choose JSON file…', 'guidwell' ) }
+								<input
+									type="file"
+									accept=".json,application/json"
+									className="gw-file-input"
+									onChange={ handleImportFile }
+								/>
+							</label>
+						) : (
+							<div className="gw-tier-gate">
+								<span className="gw-tier-gate__icon" aria-hidden="true">🔒</span>
+								<span className="gw-tier-gate__text">{ __( 'Pro plan required', 'guidwell' ) }</span>
+								<a href={ UPGRADE_URL } target="_blank" rel="noreferrer" className="gw-tier-gate__link">
+									{ __( 'Upgrade →', 'guidwell' ) }
+								</a>
+							</div>
+						) }
+					</div>
+
+				</div>
+			</div>
 
 		</div>
 	);

@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 
-export default function ProgressBar( { current, total } ) {
-	const pct = Math.round( ( current / total ) * 100 );
+export default function ProgressBar( { current, total, treeMode = false } ) {
+	const pct = total > 0 ? Math.min( 100, Math.round( ( current / total ) * 100 ) ) : 0;
 
 	return (
 		<div className="guidwell-progress">
@@ -18,7 +18,7 @@ export default function ProgressBar( { current, total } ) {
 					style={ { width: `${ pct }%` } }
 				/>
 			</div>
-			{ total > 1 && (
+			{ ! treeMode && total > 1 && (
 				<p className="guidwell-step-counter">
 					{ /* translators: 1: current step number, 2: total steps */ }
 					{ __( 'Step', 'guidwell' ) } { current } { __( 'of', 'guidwell' ) } { total }

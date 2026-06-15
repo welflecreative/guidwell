@@ -10,7 +10,9 @@
 			"limits": {
 				"questions_per_wizard": 5,
 				"active_wizards": 1,
-				"sites": 1
+				"sites": 1,
+				"logic_tree_depth": 0,
+				"logic_tree_nodes": 0
 			}
 		},
 		{
@@ -21,7 +23,9 @@
 			"limits": {
 				"questions_per_wizard": null,
 				"active_wizards": 1,
-				"sites": 1
+				"sites": 1,
+				"logic_tree_depth": 1,
+				"logic_tree_nodes": 5
 			}
 		},
 		{
@@ -32,7 +36,9 @@
 			"limits": {
 				"questions_per_wizard": null,
 				"active_wizards": null,
-				"sites": 3
+				"sites": 3,
+				"logic_tree_depth": 3,
+				"logic_tree_nodes": 15
 			}
 		},
 		{
@@ -43,7 +49,9 @@
 			"limits": {
 				"questions_per_wizard": null,
 				"active_wizards": null,
-				"sites": null
+				"sites": null,
+				"logic_tree_depth": null,
+				"logic_tree_nodes": null
 			}
 		}
 	],
@@ -64,20 +72,20 @@
 			"tiers": ["starter", "pro", "agency"],
 			"upgrade_message": "Get notified by email whenever a visitor completes the wizard."
 		},
-		"csv_export": {
-			"label": "CSV export",
+		"json_export": {
+			"label": "JSON export",
 			"tiers": ["starter", "pro", "agency"],
-			"upgrade_message": "Export your wizard configuration to CSV for backup or editing."
+			"upgrade_message": "Export your wizard as a JSON file to back it up or copy it to another site."
 		},
-		"csv_import": {
-			"label": "CSV import",
+		"json_import": {
+			"label": "JSON import",
 			"tiers": ["pro", "agency"],
-			"upgrade_message": "Import wizard configuration from a CSV file to save setup time."
+			"upgrade_message": "Import a previously exported wizard JSON file to restore or duplicate a wizard."
 		},
-		"json_io": {
-			"label": "JSON import & export",
-			"tiers": ["agency"],
-			"upgrade_message": "Full JSON import/export — ideal for templating across multiple installs."
+		"conditional_logic": {
+			"label": "Conditional logic trees",
+			"tiers": ["starter", "pro", "agency"],
+			"upgrade_message": "Upgrade to build branching wizards where each answer leads down a different path."
 		},
 		"analytics_basic": {
 			"label": "Basic analytics",

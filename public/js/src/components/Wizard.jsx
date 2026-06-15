@@ -98,7 +98,7 @@ export default function Wizard() {
 	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,     setLoading     ] = useState( wizardId > 0 );
 	const [ fetchError,  setFetchError  ] = useState( false );
-	const [ currentStep, setCurrentStep ] = useState( 0 );
+	const [ stepHistory, setStepHistory ] = useState( [] );
 	const [ answers,     setAnswers     ] = useState( {} );
 	const [ showResult,  setShowResult  ] = useState( false );
 	const [ flipPhase,   setFlipPhase   ] = useState( 'idle' );
@@ -136,6 +136,7 @@ export default function Wizard() {
 	useEffect( () => {
 		if ( wizardId <= 0 ) {
 			setConfig( HARDCODED_CONFIG );
+			setStepHistory( [ HARDCODED_CONFIG.questions[ 0 ]?.id ] );
 			return;
 		}
 
@@ -148,6 +149,7 @@ export default function Wizard() {
 			} )
 			.then( ( data ) => {
 				setConfig( data );
+				setStepHistory( [ data.questions[ 0 ]?.id ] );
 				setLoading( false );
 			} )
 			.catch( () => {
@@ -160,7 +162,23 @@ export default function Wizard() {
 	useEffect( () => {
 		if ( flipPhase !== 'idle' || loading ) return;
 		if ( headingRef.current ) headingRef.current.focus();
-	}, [ currentStep, showResult, flipPhase, loading ] );
+	}, [ stepHistory, showResult, flipPhase, loading ] );
+
+	// Close result modal on Escape key.
+	useEffect( () => {
+		if ( ! showResult ) return;
+		function onKey( e ) { if ( e.key === 'Escape' ) setShowResult( false ); }
+		document.addEventListener( 'keydown', onKey );
+		return () => document.removeEventListener( 'keydown', onKey );
+	}, [ showResult ] );
+
+	// Lock body scroll while result modal is open.
+	useEffect( () => {
+		if ( ! showResult ) return;
+		const prev = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		return () => { document.body.style.overflow = prev; };
+	}, [ showResult ] );
 
 	// ── Loading ──────────────────────────────────────────────────────────────
 
@@ -185,9 +203,20 @@ export default function Wizard() {
 	// ── Wizard ───────────────────────────────────────────────────────────────
 
 	const { questions, plans } = config;
-	const question       = questions[ currentStep ];
+	const isTreeMode     = config.mode === 'tree';
+	const currentQId     = stepHistory[ stepHistory.length - 1 ];
+	const question       = isTreeMode
+		? questions.find( ( q ) => q.id === currentQId ) ?? questions[ 0 ]
+		: questions[ stepHistory.length - 1 ] ?? questions[ 0 ];
 	const selectedAnswer = answers[ question?.id ] ?? null;
 	const totalSteps     = questions.length;
+
+	// In tree mode: "last step" means neither the selected answer nor the question's default chain has a next target.
+	const selectedAnswerObj = question?.answers.find( ( a ) => a.id === selectedAnswer ) ?? null;
+	const effectiveNext = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
+	const isLastStep = isTreeMode
+		? selectedAnswer !== null && effectiveNext === null
+		: stepHistory.length === totalSteps;
 
 	function transition( direction, callback ) {
 		setFlipPhase( direction === 'forward' ? 'exit-forward' : 'exit-backward' );
@@ -200,38 +229,67 @@ export default function Wizard() {
 
 	function handleAnswerSelect( answerId ) {
 		setAnswers( ( prev ) => {
-			// Clear answers for all steps after the current one so stale
-			// forward selections never influence the final score.
 			const updated = { ...prev };
-			questions.slice( currentStep + 1 ).forEach( ( q ) => {
-				delete updated[ q.id ];
-			} );
+			if ( isTreeMode ) {
+				// Clear answers for any questions further along the current path.
+				const currentIdx = stepHistory.indexOf( currentQId );
+				stepHistory.slice( currentIdx + 1 ).forEach( ( id ) => {
+					delete updated[ id ];
+				} );
+			} else {
+				// Linear: clear all answers after the current position.
+				questions.slice( stepHistory.length ).forEach( ( q ) => {
+					delete updated[ q.id ];
+				} );
+			}
 			return { ...updated, [ question.id ]: answerId };
 		} );
 	}
 
 	function handleNext() {
 		if ( ! selectedAnswer || flipPhase !== 'idle' ) return;
-		if ( currentStep < totalSteps - 1 ) {
-			transition( 'forward', () => setCurrentStep( ( s ) => s + 1 ) );
+
+		if ( isTreeMode ) {
+			const nextId = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
+			if ( nextId === null ) {
+				// Open result modal directly — no card-flip needed.
+				setShowResult( true );
+				return;
+			}
+			transition( 'forward', () => {
+				// Prune any stale answers from branches the user navigated away from.
+				const validIds = new Set( stepHistory.map( String ) );
+				setAnswers( ( prev ) =>
+					Object.fromEntries( Object.entries( prev ).filter( ( [ k ] ) => validIds.has( String( k ) ) ) )
+				);
+				setStepHistory( ( h ) => [ ...h, nextId ] );
+			} );
 		} else {
-			transition( 'forward', () => setShowResult( true ) );
+			if ( stepHistory.length < totalSteps ) {
+				transition( 'forward', () =>
+					setStepHistory( ( h ) => [ ...h, questions[ h.length ]?.id ] )
+				);
+			} else {
+				setShowResult( true );
+			}
 		}
 	}
 
 	function handleBack() {
 		if ( flipPhase !== 'idle' ) return;
-		if ( showResult ) {
-			transition( 'backward', () => setShowResult( false ) );
-		} else if ( currentStep > 0 ) {
-			transition( 'backward', () => setCurrentStep( ( s ) => s - 1 ) );
+		if ( stepHistory.length > 1 ) {
+			transition( 'backward', () => setStepHistory( ( h ) => h.slice( 0, -1 ) ) );
 		}
+	}
+
+	function handleCloseResult() {
+		setShowResult( false );
 	}
 
 	function handleRestart() {
 		setAnswers( {} );
 		setShowResult( false );
-		setCurrentStep( 0 );
+		setStepHistory( [ questions[ 0 ]?.id ] );
 	}
 
 	const cardFlipClass = flipPhase === 'exit-forward'   ? ' guidwell-card--flip-exit'
@@ -240,52 +298,75 @@ export default function Wizard() {
 		: flipPhase === 'enter-backward' ? ' guidwell-card--flip-enter-back'
 		: '';
 
-	if ( showResult ) {
-		const topPlans  = getTopPlans( answers, config, 3 );
-		const allScores = getAllScores( answers, config );
-		const insight   = generateInsight( answers, config );
-		return (
-			<Suspense fallback={ <SpinnerFallback /> }>
-				<div className="guidwell-wrapper">
-					<div className={ `guidwell-card guidwell-card--result${ cardFlipClass }` }>
-						<ResultScreen
-							topPlans={ topPlans }
-							allScores={ allScores }
-							insight={ insight }
-							onRestart={ handleRestart }
-							config={ config }
-							answers={ answers }
-							featuresList={ featuresList }
-							contact={ contact }
-							apiBase={ apiBase }
-							wizardId={ wizardId }
-							nonce={ nonce }
-						/>
-					</div>
-				</div>
-			</Suspense>
-		);
-	}
+	// Compute result data only when modal is open.
+	const topPlans  = showResult ? getTopPlans( answers, config, 3 ) : [];
+	const allScores = showResult ? getAllScores( answers, config ) : [];
+	const insight   = showResult ? generateInsight( answers, config ) : '';
 
 	return (
-		<div className="guidwell-wrapper">
-			<div className="guidwell-wizard-frame">
-				<div className={ `guidwell-card${ cardFlipClass }` }>
-					<div className="guidwell-step">
-						<QuestionStep
-							question={ question }
-							selectedAnswer={ selectedAnswer }
-							onSelect={ handleAnswerSelect }
-							onNext={ handleNext }
-							onBack={ handleBack }
-							canGoBack={ currentStep > 0 }
-							isLastStep={ currentStep === totalSteps - 1 }
-							headingRef={ headingRef }
-						/>
+		<>
+			<div className="guidwell-wrapper">
+				<div className="guidwell-wizard-frame">
+					<div className={ `guidwell-card${ cardFlipClass }` }>
+						<div className="guidwell-step">
+							<QuestionStep
+								question={ question }
+								selectedAnswer={ selectedAnswer }
+								onSelect={ handleAnswerSelect }
+								onNext={ handleNext }
+								onBack={ handleBack }
+								canGoBack={ stepHistory.length > 1 }
+								isLastStep={ isLastStep }
+								headingRef={ headingRef }
+							/>
+						</div>
 					</div>
+					<ProgressBar
+						current={ stepHistory.length }
+						total={ totalSteps }
+						treeMode={ isTreeMode }
+					/>
 				</div>
-				<ProgressBar current={ currentStep + 1 } total={ totalSteps } />
 			</div>
-		</div>
+
+			{ showResult && (
+				<Suspense fallback={ null }>
+					<div
+						className="guidwell-modal-overlay"
+						onClick={ handleCloseResult }
+						role="dialog"
+						aria-modal="true"
+						aria-label={ __( 'Your results', 'guidwell' ) }
+					>
+						<div
+							className="guidwell-modal"
+							onClick={ ( e ) => e.stopPropagation() }
+						>
+							<button
+								type="button"
+								className="guidwell-modal-close"
+								onClick={ handleCloseResult }
+								aria-label={ __( 'Close results', 'guidwell' ) }
+							>
+								&times;
+							</button>
+							<ResultScreen
+								topPlans={ topPlans }
+								allScores={ allScores }
+								insight={ insight }
+								onRestart={ handleRestart }
+								config={ config }
+								answers={ answers }
+								featuresList={ featuresList }
+								contact={ contact }
+								apiBase={ apiBase }
+								wizardId={ wizardId }
+								nonce={ nonce }
+							/>
+						</div>
+					</div>
+				</Suspense>
+			) }
+		</>
 	);
 }

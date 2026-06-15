@@ -268,6 +268,18 @@ class Guidwell_API {
 			);
 		}
 
+		// Guardrail: JSON import requires the json_import tier feature.
+		if ( ! empty( $body['_imported'] ) ) {
+			if ( ! Guidwell_Tiers::can( 'json_import' ) ) {
+				return new WP_Error(
+					'guidwell_tier_required',
+					__( 'JSON import requires a Pro plan or higher. Upgrade at welflecreative.com/guidwell.', 'guidwell' ),
+					[ 'status' => 403 ]
+				);
+			}
+			unset( $body['_imported'] ); // strip before validation and storage
+		}
+
 		$validation = $this->validate_config( $body );
 		if ( is_wp_error( $validation ) ) {
 			return $validation;
@@ -600,7 +612,149 @@ class Guidwell_API {
 			}
 		}
 
+		// Tree mode validation.
+		if ( ( $config['mode'] ?? 'linear' ) === 'tree' ) {
+			$tree_check = $this->validate_tree_config( $config['questions'] );
+			if ( is_wp_error( $tree_check ) ) {
+				return $tree_check;
+			}
+		}
+
 		return true;
+	}
+
+	/**
+	 * Validates tree-mode limits: feature access, node count, and branch depth.
+	 *
+	 * @param array<int, array<string, mixed>> $questions
+	 */
+	private function validate_tree_config( array $questions ): true|WP_Error {
+		if ( ! Guidwell_Tiers::can( 'conditional_logic' ) ) {
+			return new WP_Error(
+				'guidwell_tier_limit',
+				__( 'Your current plan does not include conditional logic trees. Upgrade to enable branching wizards.', 'guidwell' ),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$node_count = $this->count_reachable_nodes( $questions );
+		if ( Guidwell_Tiers::exceeds_limit( 'logic_tree_nodes', $node_count ) ) {
+			$limit = Guidwell_Tiers::limit( 'logic_tree_nodes' );
+			return new WP_Error(
+				'guidwell_tier_limit',
+				sprintf(
+					/* translators: %d: node limit for current tier */
+					__( 'Your current plan allows a maximum of %d nodes in a logic tree. Upgrade to add more branches.', 'guidwell' ),
+					$limit
+				),
+				[ 'status' => 403 ]
+			);
+		}
+
+		$depth = $this->calculate_tree_depth( $questions );
+		if ( Guidwell_Tiers::exceeds_limit( 'logic_tree_depth', $depth ) ) {
+			$limit = Guidwell_Tiers::limit( 'logic_tree_depth' );
+			return new WP_Error(
+				'guidwell_tier_limit',
+				sprintf(
+					/* translators: %d: depth limit for current tier */
+					__( 'Your current plan allows a maximum branch depth of %d. Upgrade to create deeper trees.', 'guidwell' ),
+					$limit
+				),
+				[ 'status' => 403 ]
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Counts unique nodes reachable from the entry node (questions[0]) via answer->next links.
+	 *
+	 * @param array<int, array<string, mixed>> $questions
+	 */
+	private function count_reachable_nodes( array $questions ): int {
+		if ( empty( $questions ) ) {
+			return 0;
+		}
+
+		$q_map = [];
+		foreach ( $questions as $q ) {
+			$q_map[ $q['id'] ] = $q;
+		}
+
+		$entry_id = $questions[0]['id'];
+		$visited  = [];
+		$queue    = [ $entry_id ];
+
+		while ( ! empty( $queue ) ) {
+			$node_id = array_shift( $queue );
+			if ( in_array( $node_id, $visited, true ) ) {
+				continue;
+			}
+			$visited[] = $node_id;
+
+			$q = $q_map[ $node_id ] ?? null;
+			if ( ! $q ) {
+				continue;
+			}
+
+			foreach ( $q['answers'] as $answer ) {
+				$next = $answer['next'] ?? null;
+				if ( $next !== null && isset( $q_map[ $next ] ) && ! in_array( $next, $visited, true ) ) {
+					$queue[] = $next;
+				}
+			}
+		}
+
+		return count( $visited );
+	}
+
+	/**
+	 * Calculates the maximum branch depth reachable from the entry node.
+	 * Uses iterative DFS with cycle detection.
+	 *
+	 * @param array<int, array<string, mixed>> $questions
+	 */
+	private function calculate_tree_depth( array $questions ): int {
+		if ( empty( $questions ) ) {
+			return 0;
+		}
+
+		$q_map = [];
+		foreach ( $questions as $q ) {
+			$q_map[ $q['id'] ] = $q;
+		}
+
+		$entry_id  = $questions[0]['id'];
+		$max_depth = 0;
+		// Stack entries: [ node_id, current_depth, visited_ids_on_this_path ]
+		$stack = [ [ $entry_id, 1, [] ] ];
+
+		while ( ! empty( $stack ) ) {
+			[ $node_id, $depth, $path_visited ] = array_pop( $stack );
+
+			if ( in_array( $node_id, $path_visited, true ) ) {
+				continue;
+			}
+
+			$max_depth     = max( $max_depth, $depth );
+			$path_visited[] = $node_id;
+
+			$q = $q_map[ $node_id ] ?? null;
+			if ( ! $q ) {
+				continue;
+			}
+
+			foreach ( $q['answers'] as $answer ) {
+				$next = $answer['next'] ?? null;
+				if ( $next !== null && isset( $q_map[ $next ] ) ) {
+					$stack[] = [ $next, $depth + 1, $path_visited ];
+				}
+			}
+		}
+
+		return $max_depth;
 	}
 }
 

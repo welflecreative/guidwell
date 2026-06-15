@@ -31,6 +31,11 @@ class Guidwell_Admin {
 	 * Shown on all admin pages so it's hard to miss after a downgrade.
 	 */
 	public function overage_notices(): void {
+		$screen = get_current_screen();
+		if ( ! $screen || $screen->id !== 'toplevel_page_guidwell' ) {
+			return;
+		}
+
 		$overages = Guidwell_Tiers::overage_report();
 		if ( empty( $overages ) ) {
 			return;

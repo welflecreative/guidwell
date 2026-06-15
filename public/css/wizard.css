@@ -1337,7 +1337,7 @@
 /* ── Panel inner — padding so content never hides behind the footer chrome ── */
 
 #guidwell .guidwell-panel__inner {
-	padding-bottom: 100px;
+	padding: 48px 48px 100px;
 }
 
 /* ── Bottom chrome: dots + scroll hint ── */
@@ -1469,6 +1469,96 @@
 		height: calc(100vh - 52px);
 		height: calc(100svh - 52px);
 		min-height: 360px;
+	}
+}
+
+/* ── Result modal overlay ─────────────────────────────────────────────────────
+   Rendered via React portal onto document.body so it sits above all page content.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.guidwell-modal-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 99999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.55);
+	backdrop-filter: blur(2px);
+	-webkit-backdrop-filter: blur(2px);
+	animation: guidwell-overlay-in 0.2s ease;
+}
+
+@keyframes guidwell-overlay-in {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+.guidwell-modal {
+	position: relative;
+	width: 85vw;
+	height: 85vh;
+	max-width: 1200px;
+	background: var(--guidwell-card-bg, #fff);
+	border-radius: 16px;
+	box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	animation: guidwell-modal-in 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+@keyframes guidwell-modal-in {
+	from { opacity: 0; transform: scale(0.94) translateY(12px); }
+	to   { opacity: 1; transform: scale(1)    translateY(0); }
+}
+
+/* ResultScreen fills the modal height; panels use 100% of that instead of the
+   viewport-relative calc used when the result is shown inline in the card. */
+.guidwell-modal .guidwell-result {
+	flex: 1;
+	min-height: 0;
+}
+
+.guidwell-modal .guidwell-result--panels {
+	height: 100%;
+	min-height: 0;
+	max-height: none;
+}
+
+.guidwell-modal-close {
+	position: absolute;
+	top: 12px;
+	right: 14px;
+	z-index: 10;
+	width: 32px;
+	height: 32px;
+	border: none;
+	border-radius: 50%;
+	background: rgba(0, 0, 0, 0.08);
+	color: inherit;
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background 0.15s ease;
+}
+
+.guidwell-modal-close:hover {
+	background: rgba(0, 0, 0, 0.16);
+}
+
+@media (max-width: 768px) {
+	.guidwell-modal {
+		width: 95vw;
+		height: 92vh;
+		border-radius: 12px;
+	}
+
+	#guidwell .guidwell-panel__inner {
+		padding: 24px 24px 100px;
 	}
 }
 

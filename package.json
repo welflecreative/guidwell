@@ -15,7 +15,11 @@
     "env:clean": "wp-env destroy && wp-env start",
     "env:logs": "wp-env logs",
     "env:cli": "wp-env run cli wp",
-    "env:setup": "bash bin/setup.sh"
+    "env:setup": "bash bin/setup.sh",
+    "tier:free": "wp-env run cli wp option set guidwell_license_tier free",
+    "tier:starter": "wp-env run cli wp option set guidwell_license_tier starter",
+    "tier:pro": "wp-env run cli wp option set guidwell_license_tier pro",
+    "tier:agency": "wp-env run cli wp option set guidwell_license_tier agency"
   },
   "dependencies": {
     "@wordpress/i18n": "^4.57.0",

@@ -5,6 +5,7 @@ import PlanEditor from './PlanEditor';
 import SettingsTab from './SettingsTab';
 import NotificationsTab from './NotificationsTab';
 import FeaturesTab from './FeaturesTab';
+import LogicTab from './LogicTab';
 import Sortable from 'sortablejs';
 
 const {
@@ -47,10 +48,19 @@ export default function AdminApp() {
 	const [ savingStatus, setSavingStatus ] = useState( 'idle' );
 	const [ notification, setNotification ] = useState( null );
 	const [ isFirstRun,   setIsFirstRun   ] = useState( false );
+	const [ isDirty,      setIsDirty      ] = useState( false );
 
-	const questionsListRef = useRef( null );
-	const configRef        = useRef( config );
+	const questionsListRef  = useRef( null );
+	const configRef         = useRef( config );
+	const initialLoadDone   = useRef( false );
 	useEffect( () => { configRef.current = config; }, [ config ] );
+
+	// Mark dirty whenever config changes after the initial server load.
+	useEffect( () => {
+		if ( ! config ) return;
+		if ( ! initialLoadDone.current ) { initialLoadDone.current = true; return; }
+		setIsDirty( true );
+	}, [ config ] );
 
 	// ── Fetch config on mount ────────────────────────────────────────────────
 
@@ -230,6 +240,7 @@ export default function AdminApp() {
 
 			setSavingStatus( 'success' );
 			setIsFirstRun( false );
+			setIsDirty( false );
 			setTimeout( () => setSavingStatus( 'idle' ), 2000 );
 		} catch ( err ) {
 			setSavingStatus( 'error' );
@@ -245,9 +256,14 @@ export default function AdminApp() {
 	const saveLabel = savingStatus === 'saving' ? null
 		: savingStatus === 'success' ? __( 'Saved ✓', 'guidwell' )
 		: savingStatus === 'error'   ? __( 'Error — try again', 'guidwell' )
-		: __( 'Save All Changes', 'guidwell' );
+		: __( 'Save', 'guidwell' );
 
-	const saveBtnClass = `gw-btn-save${ savingStatus === 'success' ? ' gw-btn-save--success' : savingStatus === 'error' ? ' gw-btn-save--error' : '' }`;
+	const saveBtnClass = [
+		'gw-btn-save',
+		savingStatus === 'success' ? 'gw-btn-save--success' : '',
+		savingStatus === 'error'   ? 'gw-btn-save--error'   : '',
+		! isDirty && savingStatus === 'idle' ? 'gw-btn-save--disabled' : '',
+	].filter( Boolean ).join( ' ' );
 
 	// ── Render ───────────────────────────────────────────────────────────────
 
@@ -265,6 +281,12 @@ export default function AdminApp() {
 				<button className={ `gw-tab${ activeTab === 'builder'       ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'builder' ) }>
 					{ __( 'Wizard Builder', 'guidwell' ) }
 				</button>
+				<button className={ `gw-tab${ activeTab === 'logic'         ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'logic' ) }>
+					{ __( 'Logic', 'guidwell' ) }
+					{ config?.mode === 'tree' && (
+						<span className="gw-tab__badge">{ __( 'ON', 'guidwell' ) }</span>
+					) }
+				</button>
 				<button className={ `gw-tab${ activeTab === 'features'      ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'features' ) }>
 					{ __( 'Features', 'guidwell' ) }
 				</button>
@@ -273,6 +295,14 @@ export default function AdminApp() {
 				</button>
 				<button className={ `gw-tab${ activeTab === 'notifications' ? ' gw-tab--active' : '' }` } onClick={ () => setActiveTab( 'notifications' ) }>
 					{ __( 'Notifications', 'guidwell' ) }
+				</button>
+				<button
+					className={ saveBtnClass }
+					onClick={ handleSave }
+					disabled={ ( ! isDirty && savingStatus === 'idle' ) || savingStatus === 'saving' }
+				>
+					{ savingStatus === 'saving' && <span className="gw-btn-spinner" /> }
+					{ saveLabel }
 				</button>
 			</div>
 
@@ -283,7 +313,12 @@ export default function AdminApp() {
 				</div>
 			) }
 
-			{ activeTab === 'features' ? (
+			{ activeTab === 'logic' ? (
+				<LogicTab
+					config={ config }
+					onConfigChange={ setConfig }
+				/>
+			) : activeTab === 'features' ? (
 				<FeaturesTab
 					features={ features }
 					onFeaturesChange={ handleFeaturesChange }
@@ -296,6 +331,8 @@ export default function AdminApp() {
 					apiBase={ apiBase }
 					nonce={ nonce }
 					onNotify={ setNotification }
+					config={ config }
+					onConfigChange={ setConfig }
 				/>
 			) : activeTab === 'notifications' ? (
 				<NotificationsTab
@@ -397,16 +434,6 @@ export default function AdminApp() {
 								</button>
 							</div>
 
-							<div className="gw-sidebar-footer">
-								<button
-									className={ saveBtnClass }
-									onClick={ handleSave }
-									disabled={ savingStatus === 'saving' }
-								>
-									{ savingStatus === 'saving' && <span className="gw-btn-spinner" /> }
-									{ saveLabel }
-								</button>
-							</div>
 						</aside>
 
 						{ /* ── Right panel ── */ }

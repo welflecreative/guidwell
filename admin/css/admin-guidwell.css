@@ -28,6 +28,7 @@
 
 #guidwell-admin .gw-tabs {
 	display: flex;
+	align-items: center;
 	gap: 0;
 	border-bottom: 2px solid var(--gw-border);
 	margin-bottom: 0;
@@ -266,8 +267,9 @@
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	width: 100%;
-	padding: 10px 16px;
+	margin-left: auto;
+	margin-right: 20px;
+	padding: 7px 18px;
 	background: var(--gw-primary);
 	color: #fff;
 	border: none;
@@ -276,16 +278,19 @@
 	font-weight: 600;
 	font-family: inherit;
 	cursor: pointer;
-	transition: background 0.15s ease;
+	transition: background 0.15s ease, opacity 0.15s ease;
+	white-space: nowrap;
+	flex-shrink: 0;
 }
 
 #guidwell-admin .gw-btn-save:hover:not(:disabled) {
 	background: var(--gw-primary-dark);
 }
 
-#guidwell-admin .gw-btn-save:disabled {
-	cursor: not-allowed;
-	opacity: 0.8;
+#guidwell-admin .gw-btn-save:disabled,
+#guidwell-admin .gw-btn-save--disabled {
+	cursor: default;
+	opacity: 0.35;
 }
 
 #guidwell-admin .gw-btn-save--success {
@@ -1120,5 +1125,492 @@
 
 #guidwell-admin .gw-tier-gate__link:hover {
 	text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Settings tab — backup & transfer
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-settings-section--transfer {
+	border-top: 1px solid var(--gw-border);
+	margin-top: 24px;
+	padding-top: 24px;
+}
+
+#guidwell-admin .gw-transfer-row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 16px;
+	margin-top: 16px;
+}
+
+#guidwell-admin .gw-transfer-card {
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	padding: 16px;
+	background: var(--gw-surface);
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+#guidwell-admin .gw-transfer-card__label {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--gw-text);
+	margin: 0;
+}
+
+#guidwell-admin .gw-transfer-card__desc {
+	font-size: 12px;
+	color: var(--gw-muted);
+	line-height: 1.5;
+	margin: 0;
+	flex: 1;
+}
+
+#guidwell-admin .gw-btn-file {
+	cursor: pointer;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+#guidwell-admin .gw-file-input {
+	display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — tab badge
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-tab__badge {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 1px 5px;
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	border-radius: 3px;
+	background: var(--gw-primary);
+	color: #fff;
+	vertical-align: middle;
+	line-height: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — locked / enable states
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-logic-locked,
+#guidwell-admin .gw-logic-enable {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 60px 40px;
+	gap: 12px;
+}
+
+#guidwell-admin .gw-logic-locked__icon,
+#guidwell-admin .gw-logic-enable__icon {
+	font-size: 36px;
+	line-height: 1;
+}
+
+#guidwell-admin .gw-logic-locked__title,
+#guidwell-admin .gw-logic-enable__title {
+	font-size: 16px;
+	font-weight: 600;
+	color: var(--gw-text);
+	margin: 0;
+}
+
+#guidwell-admin .gw-logic-locked__msg,
+#guidwell-admin .gw-logic-enable__desc {
+	font-size: 13px;
+	color: var(--gw-muted);
+	max-width: 420px;
+	line-height: 1.6;
+	margin: 0;
+}
+
+#guidwell-admin .gw-logic-enable__limits {
+	font-size: 12px;
+	color: var(--gw-muted);
+	background: var(--gw-surface-alt);
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	padding: 6px 14px;
+	margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — header bar (shown when tree mode is active)
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-logic {
+	display: flex;
+	flex-direction: column;
+	height: calc( 100vh - 140px );
+	min-height: 0;
+}
+
+#guidwell-admin .gw-logic-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 12px 20px;
+	border-bottom: 1px solid var(--gw-border);
+	background: var(--gw-surface-alt);
+	gap: 16px;
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-logic-header__title {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--gw-text);
+	margin-right: 8px;
+}
+
+#guidwell-admin .gw-logic-header__hint {
+	font-size: 12px;
+	color: var(--gw-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — tree canvas
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-tree-wrap {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	overflow: hidden;
+}
+
+#guidwell-admin .gw-tree-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 8px 16px;
+	background: #f0fafb;
+	border-bottom: 1px solid var(--gw-border);
+	flex-shrink: 0;
+}
+
+#guidwell-admin .gw-tree-hint {
+	font-size: 12px;
+	color: var(--gw-muted);
+	font-style: italic;
+}
+
+#guidwell-admin .gw-tree-canvas {
+	position: relative;
+	overflow: auto;
+	flex: 1;
+	min-height: 0;
+	background: #fafafa;
+	background-image:
+		radial-gradient( circle, #d1d5db 1px, transparent 1px );
+	background-size: 24px 24px;
+	cursor: default;
+}
+
+#guidwell-admin .gw-tree-canvas--connecting {
+	cursor: crosshair;
+}
+
+#guidwell-admin .gw-tree-svg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — SVG wires
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-wire {
+	fill: none;
+	stroke: var(--gw-primary);
+	stroke-width: 2;
+	stroke-opacity: 0.7;
+	marker-end: url(#gw-arrow);
+}
+
+#guidwell-admin .gw-wire--pending {
+	stroke: #9ca3af;
+	stroke-dasharray: 6 4;
+	stroke-opacity: 1;
+	marker-end: url(#gw-arrow-pending);
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — question nodes
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-tree-node {
+	position: absolute;
+	box-sizing: border-box; /* width: 240px is the total including borders */
+	width: 240px;
+	background: var(--gw-surface);
+	border: 1.5px solid var(--gw-border);
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+	overflow: visible;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	user-select: none;
+}
+
+#guidwell-admin .gw-tree-node--entry {
+	border-color: var(--gw-primary);
+	box-shadow: 0 0 0 2px rgba(74, 144, 164, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+#guidwell-admin .gw-tree-node--target {
+	border-color: #27ae60;
+	box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.18), 0 2px 8px rgba(0, 0, 0, 0.06);
+	cursor: pointer;
+}
+
+#guidwell-admin .gw-tree-node--source {
+	border-color: var(--gw-primary);
+	opacity: 0.8;
+}
+
+#guidwell-admin .gw-tree-node__header {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	box-sizing: border-box; /* height: 44px is total including padding — matches NODE_HEADER_H */
+	padding: 10px 12px;
+	background: var(--gw-surface-alt);
+	border-bottom: 1px solid var(--gw-border);
+	border-radius: 8px 8px 0 0;
+	cursor: grab;
+	height: 44px;
+	overflow: hidden;
+}
+
+#guidwell-admin .gw-tree-node__header:active {
+	cursor: grabbing;
+}
+
+#guidwell-admin .gw-tree-node__badge {
+	flex-shrink: 0;
+	font-size: 9px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	background: var(--gw-primary);
+	color: #fff;
+	border-radius: 3px;
+	padding: 2px 5px;
+	margin-top: 1px;
+}
+
+#guidwell-admin .gw-tree-node__title {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--gw-text);
+	line-height: 1.4;
+	flex: 1;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — answer rows inside nodes
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-tree-node__answer {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	box-sizing: border-box; /* height: 36px is total including border — matches ANSWER_ROW_H */
+	padding: 0 10px 0 12px;
+	height: 36px;
+	border-bottom: 1px solid var(--gw-border);
+	font-size: 12px;
+	position: relative;
+	cursor: crosshair;
+}
+
+#guidwell-admin .gw-tree-node__answer::after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 3px;
+	height: 100%;
+	background: var(--gw-primary);
+	opacity: 0;
+	transition: opacity 0.15s ease;
+}
+
+#guidwell-admin .gw-tree-node__answer:hover::after {
+	opacity: 0.35;
+}
+
+#guidwell-admin .gw-tree-node__answer--pending::after {
+	opacity: 0.8;
+}
+
+#guidwell-admin .gw-tree-node__answer--pending {
+	background: rgba(74, 144, 164, 0.06);
+}
+
+#guidwell-admin .gw-tree-node__answer:last-of-type {
+	border-bottom: none;
+}
+
+#guidwell-admin .gw-tree-node__answer-label {
+	flex: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--gw-text);
+}
+
+#guidwell-admin .gw-tree-node__answer-target {
+	font-size: 11px;
+	color: var(--gw-muted);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 70px;
+}
+
+#guidwell-admin .gw-tree-node__answer-target-name {
+	color: var(--gw-primary);
+}
+
+#guidwell-admin .gw-tree-node__answer-end {
+	color: #27ae60;
+}
+
+/* port-group removed — answer rows are now the direct click targets */
+
+#guidwell-admin .gw-tree-node__remove-wire {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 14px;
+	line-height: 1;
+	color: var(--gw-muted);
+	padding: 0 2px;
+	opacity: 0;
+	transition: opacity 0.1s ease, color 0.1s ease;
+	font-family: inherit;
+}
+
+#guidwell-admin .gw-tree-node__answer:hover .gw-tree-node__remove-wire {
+	opacity: 1;
+}
+
+#guidwell-admin .gw-tree-node__remove-wire:hover {
+	color: var(--gw-error);
+}
+
+/* port circle styles removed — answer rows are now the wire-start targets */
+
+#guidwell-admin .gw-tree-node__terminal {
+	padding: 5px 12px;
+	font-size: 10px;
+	color: var(--gw-muted);
+	font-style: italic;
+	border-top: 1px solid var(--gw-border);
+	background: var(--gw-surface-alt);
+	border-radius: 0 0 8px 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — footer indicator (chain / terminal)
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-tree-node__footer {
+	padding: 5px 12px;
+	font-size: 10px;
+	color: var(--gw-muted);
+	font-style: italic;
+	border-top: 1px solid var(--gw-border);
+	background: var(--gw-surface-alt);
+	border-radius: 0 0 8px 8px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* --------------------------------------------------------------------------
+   Logic tab — horizontal chain stacking
+   -------------------------------------------------------------------------- */
+
+/* Chain parent: squared-off right edge where child attaches */
+#guidwell-admin .gw-tree-node--chain-parent {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+/* Chain child: squared-off left edge, sits flush against parent's right */
+#guidwell-admin .gw-tree-node--chain-child {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-left-color: var(--gw-primary);
+}
+
+#guidwell-admin .gw-tree-node--chain-child .gw-tree-node__header {
+	border-top-left-radius: 0;
+}
+
+/* Collapsed: 1/3-width strip showing just the question title, expands on focus/hover */
+#guidwell-admin .gw-tree-node--collapsed {
+	width: 80px;
+	overflow: hidden;
+	cursor: pointer;
+	transition: width 0.2s ease, box-shadow 0.15s ease;
+}
+
+#guidwell-admin .gw-tree-node--collapsed:hover,
+#guidwell-admin .gw-tree-node--collapsed:focus-within {
+	width: 240px;
+	overflow: visible;
+	z-index: 10;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+}
+
+/* Chain tail: last card in the chain — full-width header, answers still hidden */
+#guidwell-admin .gw-tree-node--chain-tail.gw-tree-node--collapsed {
+	width: 240px;
+}
+
+#guidwell-admin .gw-tree-node--chain-tail.gw-tree-node--collapsed:hover,
+#guidwell-admin .gw-tree-node--chain-tail.gw-tree-node--collapsed:focus-within {
+	width: 240px;
+}
+
+/* Snap target: highlight right edge when a card hovers near it */
+#guidwell-admin .gw-tree-node--snap-target {
+	border-right-color: #9b59b6;
+	border-right-width: 3px;
+	box-shadow: 4px 0 0 0 rgba(155, 89, 182, 0.2), 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+#guidwell-admin .gw-tree-node--snap-target::after {
+	content: '→ chain';
+	position: absolute;
+	top: 50%;
+	right: -48px;
+	transform: translateY( -50% );
+	font-size: 10px;
+	color: #9b59b6;
+	white-space: nowrap;
+	pointer-events: none;
 }
 
