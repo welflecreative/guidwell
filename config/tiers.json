@@ -10,6 +10,7 @@
 			"limits": {
 				"questions_per_wizard": 5,
 				"answers_per_question": 5,
+				"plans_per_wizard": 3,
 				"active_wizards": 1,
 				"sites": 1,
 				"logic_tree_depth": 0,
@@ -22,8 +23,9 @@
 			"price": 79,
 			"billing": "yearly",
 			"limits": {
-				"questions_per_wizard": null,
+				"questions_per_wizard": 15,
 				"answers_per_question": 10,
+				"plans_per_wizard": 5,
 				"active_wizards": 1,
 				"sites": 1,
 				"logic_tree_depth": 1,
@@ -36,8 +38,9 @@
 			"price": 149,
 			"billing": "yearly",
 			"limits": {
-				"questions_per_wizard": null,
+				"questions_per_wizard": 50,
 				"answers_per_question": 10,
+				"plans_per_wizard": 8,
 				"active_wizards": 1,
 				"sites": 5,
 				"logic_tree_depth": 3,
@@ -50,8 +53,9 @@
 			"price": 299,
 			"billing": "yearly",
 			"limits": {
-				"questions_per_wizard": null,
+				"questions_per_wizard": 100,
 				"answers_per_question": 20,
+				"plans_per_wizard": 15,
 				"active_wizards": 1,
 				"sites": 25,
 				"logic_tree_depth": null,
