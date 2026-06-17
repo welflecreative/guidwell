@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guidwell Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary:    #4a90a4;
+  --primary-dk: #3a7a8c;
+  --primary-lt: #e8f4f7;
+  --accent:     #27ae60;
+  --gold:       #f0a500;
+  --dark:       #0f1623;
+  --body:       #374151;
+  --muted:      #6b7280;
+  --border:     #e5e7eb;
+  --bg:         #f8f9fb;
+  --card:       #ffffff;
+  --nav-h:      60px;
+  --radius:     10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--nav-h);
+  background: var(--dark);
+  display: flex; align-items: center;
+  padding: 0 32px;
+  gap: 32px;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+}
+.topnav__logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; flex-shrink: 0;
+}
+.topnav__logo-mark {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--primary);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff;
+  letter-spacing: -0.04em;
+}
+.topnav__logo-text {
+  font-size: 15px; font-weight: 700; color: #fff;
+  letter-spacing: -0.01em;
+}
+.topnav__logo-badge {
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; padding: 2px 7px;
+  letter-spacing: 0.04em;
+}
+.topnav__links {
+  display: flex; align-items: center; gap: 4px;
+  flex: 1;
+}
+.topnav__links a {
+  font-size: 13px; font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none; padding: 6px 11px; border-radius: 6px;
+  transition: color 0.12s, background 0.12s;
+}
+.topnav__links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.topnav__links a.active { color: #fff; background: rgba(74,144,164,0.25); }
+.topnav__cta {
+  font-size: 12px; font-weight: 700; color: #fff !important;
+  background: var(--primary) !important; border-radius: 7px !important;
+  padding: 7px 14px !important;
+}
+.topnav__cta:hover { background: var(--primary-dk) !important; }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--dark) 0%, #1a2d3e 55%, #2a5268 100%);
+  padding: 80px 32px 100px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 60% at 50% 100%, rgba(74,144,164,0.18) 0%, transparent 70%);
+}
+.hero__eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 5px 16px; margin-bottom: 24px;
+  color: rgba(255,255,255,0.7);
+}
+.hero__eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--primary);
+}
+.hero h1 {
+  font-size: clamp(36px, 5vw, 62px); font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.08; color: #fff; margin-bottom: 20px; position: relative;
+}
+.hero h1 em { color: #7dd3e8; font-style: normal; }
+.hero__sub {
+  font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.65);
+  max-width: 540px; margin: 0 auto 36px; line-height: 1.7; position: relative;
+}
+.hero__actions {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  position: relative;
+}
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 700; text-decoration: none;
+  border-radius: 8px; padding: 11px 22px;
+  transition: all 0.15s;
+}
+.btn--primary { background: var(--primary); color: #fff; }
+.btn--primary:hover { background: var(--primary-dk); transform: translateY(-1px); }
+.btn--ghost { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.14); }
+.btn--ghost:hover { background: rgba(255,255,255,0.14); }
+
+/* ── SECTION ── */
+.section { padding: 72px 32px; }
+.section--alt { background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.wrap { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--primary); margin-bottom: 8px; text-align: center;
+}
+.section-title {
+  font-size: clamp(24px, 3vw, 36px); font-weight: 800; color: var(--dark);
+  text-align: center; letter-spacing: -0.02em; margin-bottom: 10px;
+}
+.section-sub {
+  font-size: 15px; color: var(--muted); text-align: center;
+  max-width: 520px; margin: 0 auto 52px; line-height: 1.7;
+}
+
+/* ── DOC CARDS ── */
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.doc-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 28px;
+  text-decoration: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.doc-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 6px 28px rgba(74,144,164,0.14);
+  transform: translateY(-2px);
+}
+.doc-card__icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: var(--primary-lt);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.doc-card__title {
+  font-size: 17px; font-weight: 700; color: var(--dark); letter-spacing: -0.01em;
+}
+.doc-card__desc {
+  font-size: 13.5px; color: var(--muted); line-height: 1.6; flex: 1;
+}
+.doc-card__arrow {
+  font-size: 13px; font-weight: 700; color: var(--primary);
+  margin-top: 4px; display: flex; align-items: center; gap: 4px;
+}
+
+/* ── QUICK START ── */
+.quickstart {
+  background: linear-gradient(135deg, var(--dark) 0%, #1e3548 100%);
+  border-radius: 16px; padding: 40px 48px;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 32px; align-items: center;
+}
+.quickstart h3 {
+  font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 10px; letter-spacing: -0.02em;
+}
+.quickstart p { font-size: 14px; color: rgba(255,255,255,0.65); line-height: 1.65; max-width: 520px; }
+.quickstart__steps {
+  display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; min-width: 240px;
+}
+.qs-step {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 10px 16px;
+}
+.qs-step__num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.qs-step__text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); }
+.qs-step code {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: #7dd3e8; background: none; border: none; padding: 0;
+}
+
+/* ── STATS ── */
+.stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
+}
+.stat {
+  background: var(--card); padding: 28px 24px; text-align: center;
+}
+.stat__num {
+  font-size: 32px; font-weight: 800; color: var(--dark); letter-spacing: -0.03em;
+}
+.stat__num em { color: var(--primary); font-style: normal; }
+.stat__label { font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 4px; }
+
+/* ── FOOTER ── */
+.site-footer {
+  background: var(--dark); color: rgba(255,255,255,0.5);
+  padding: 40px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.site-footer__brand { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.8); }
+.site-footer__links { display: flex; gap: 20px; }
+.site-footer__links a { font-size: 13px; color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.12s; }
+.site-footer__links a:hover { color: rgba(255,255,255,0.75); }
+.site-footer__copy { font-size: 12px; }
+
+@media (max-width: 900px) {
+  .doc-grid { grid-template-columns: 1fr 1fr; }
+  .quickstart { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .topnav__links { display: none; }
+}
+@media (max-width: 560px) {
+  .doc-grid { grid-template-columns: 1fr; }
+  .hero { padding: 56px 20px 72px; }
+  .site-footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP NAV ── -->
+<nav class="topnav">
+  <a href="./index.html" class="topnav__logo">
+    <div class="topnav__logo-mark">G</div>
+    <span class="topnav__logo-text">Guidwell</span>
+    <span class="topnav__logo-badge">Docs</span>
+  </a>
+  <div class="topnav__links">
+    <a href="./getting-started.html">Getting Started</a>
+    <a href="./user-guide.html">User Guide</a>
+    <a href="./api-reference.html">API Reference</a>
+    <a href="./pricing.html">Pricing</a>
+    <a href="./changelog.html">Changelog</a>
+  </div>
+  <a href="https://welflecreative.com/guidwell" class="btn btn--primary topnav__cta" target="_blank" rel="noopener">Get Guidwell →</a>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero__eyebrow"><span class="hero__eyebrow-dot"></span>Documentation · v1.0</div>
+  <h1>Everything you need to build<br/><em>guided recommendations</em></h1>
+  <p class="hero__sub">Complete reference for Guidwell — the WordPress plugin that turns visitor questions into personalized plan recommendations.</p>
+  <div class="hero__actions">
+    <a href="./getting-started.html" class="btn btn--primary">Start here →</a>
+    <a href="./user-guide.html" class="btn btn--ghost">Browse the guide</a>
+  </div>
+</section>
+
+<!-- ── DOC CARDS ── -->
+<section class="section">
+  <div class="wrap">
+    <p class="section-label">Documentation</p>
+    <h2 class="section-title">Everything in one place</h2>
+    <p class="section-sub">From first install to advanced branching logic — every feature documented with examples.</p>
+
+    <div class="doc-grid">
+
+      <a href="./getting-started.html" class="doc-card">
+        <div class="doc-card__icon">🚀</div>
+        <div class="doc-card__title">Getting Started</div>
+        <div class="doc-card__desc">Install the plugin, activate your license, set up your first wizard, and embed it on a page in under 10 minutes.</div>
+        <div class="doc-card__arrow">Read guide →</div>
+      </a>
+
+      <a href="./user-guide.html" class="doc-card">
+        <div class="doc-card__icon">📖</div>
+        <div class="doc-card__title">User Guide</div>
+        <div class="doc-card__desc">Deep-dive into every admin tab — Wizard Builder, Logic trees, Features, Settings, and Notifications — with annotated mockups.</div>
+        <div class="doc-card__arrow">Read guide →</div>
+      </a>
+
+      <a href="./user-guide.html#scoring" class="doc-card">
+        <div class="doc-card__icon">⚖️</div>
+        <div class="doc-card__title">Scoring & Weights</div>
+        <div class="doc-card__desc">Understand how the weighted scoring matrix works, how to set answer weights, and how tie-breaking is handled.</div>
+        <div class="doc-card__arrow">Read guide →</div>
+      </a>
+
+      <a href="./user-guide.html#logic" class="doc-card">
+        <div class="doc-card__icon">🌿</div>
+        <div class="doc-card__title">Logic Trees</div>
+        <div class="doc-card__desc">Build branching wizard paths where each answer leads to a different next question using the visual canvas builder.</div>
+        <div class="doc-card__arrow">Read guide →</div>
+      </a>
+
+      <a href="./api-reference.html" class="doc-card">
+        <div class="doc-card__icon">🔌</div>
+        <div class="doc-card__title">API Reference</div>
+        <div class="doc-card__desc">REST API endpoints, PHP constants, the internal configuration, and developer integration notes.</div>
+        <div class="doc-card__arrow">Read reference →</div>
+      </a>
+
+      <a href="./pricing.html" class="doc-card">
+        <div class="doc-card__icon">💳</div>
+        <div class="doc-card__title">Plans & Pricing</div>
+        <div class="doc-card__desc">Compare Free, Starter, Pro, and Agency tiers side by side. Feature matrix, limits, and competitor comparison included.</div>
+        <div class="doc-card__arrow">See pricing →</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── QUICK START ── -->
+<section class="section section--alt">
+  <div class="wrap">
+    <div class="quickstart">
+      <div>
+        <h3>Get up and running in minutes</h3>
+        <p>Download the plugin zip from GitHub Releases, upload it to WordPress, activate it, and your first wizard is pre-loaded with a starter template. Add the shortcode to any page and you're live.</p>
+        <a href="./getting-started.html" class="btn btn--primary" style="margin-top:20px;">Full setup guide →</a>
+      </div>
+      <div class="quickstart__steps">
+        <div class="qs-step">
+          <div class="qs-step__num">1</div>
+          <div class="qs-step__text">Download <code>guidwell-x.y.z.zip</code></div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-step__num">2</div>
+          <div class="qs-step__text">Upload via WP Admin → Plugins</div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-step__num">3</div>
+          <div class="qs-step__text">Open Guidwell, build your wizard</div>
+        </div>
+        <div class="qs-step">
+          <div class="qs-step__num">4</div>
+          <div class="qs-step__text">Embed with <code>[guidwell]</code></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="section">
+  <div class="wrap">
+    <div class="stats-row">
+      <div class="stat"><div class="stat__num">4</div><div class="stat__label">License tiers</div></div>
+      <div class="stat"><div class="stat__num"><em>∞</em></div><div class="stat__label">Plans per wizard (Starter+)</div></div>
+      <div class="stat"><div class="stat__num">0</div><div class="stat__label">Monthly SaaS fees</div></div>
+      <div class="stat"><div class="stat__num">100<em>%</em></div><div class="stat__label">WordPress-native</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="site-footer__brand">Guidwell by Welfle Creative</div>
+  <div class="site-footer__links">
+    <a href="./getting-started.html">Getting Started</a>
+    <a href="./user-guide.html">User Guide</a>
+    <a href="./api-reference.html">API Reference</a>
+    <a href="./changelog.html">Changelog</a>
+    <a href="https://welflecreative.com" target="_blank" rel="noopener">welflecreative.com</a>
+  </div>
+  <div class="site-footer__copy">© 2025 Welfle Creative</div>
+</footer>
+
+</body>
+</html>

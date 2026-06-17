@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>User Guide — Guidwell Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary: #4a90a4; --primary-dk: #3a7a8c; --primary-lt: #e8f4f7;
+  --accent: #27ae60; --gold: #f0a500; --dark: #0f1623;
+  --body: #374151; --muted: #6b7280; --border: #e5e7eb;
+  --bg: #f8f9fb; --card: #ffffff;
+  --nav-h: 60px; --sidebar-w: 252px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); color: var(--body); -webkit-font-smoothing: antialiased; }
+
+.topnav { position: sticky; top: 0; z-index: 100; height: var(--nav-h); background: var(--dark); display: flex; align-items: center; padding: 0 28px; gap: 28px; box-shadow: 0 1px 0 rgba(255,255,255,0.06); }
+.topnav__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.topnav__logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+.topnav__logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+.topnav__logo-badge { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 7px; }
+.topnav__links { display: flex; align-items: center; gap: 4px; flex: 1; }
+.topnav__links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); text-decoration: none; padding: 6px 11px; border-radius: 6px; transition: color 0.12s, background 0.12s; }
+.topnav__links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.topnav__links a.active { color: #fff; background: rgba(74,144,164,0.2); }
+.topnav__cta { font-size: 12px !important; font-weight: 700 !important; color: #fff !important; background: var(--primary) !important; border-radius: 7px !important; padding: 7px 14px !important; flex-shrink: 0; }
+
+.page-layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: calc(100vh - var(--nav-h)); max-width: 1200px; margin: 0 auto; }
+.sidebar { position: sticky; top: var(--nav-h); align-self: start; height: calc(100vh - var(--nav-h)); overflow-y: auto; padding: 28px 0 40px; border-right: 1px solid var(--border); background: var(--card); }
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar__section { margin-bottom: 24px; padding: 0 16px; }
+.sidebar__heading { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); padding: 0 6px 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.sidebar__link { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--body); text-decoration: none; padding: 6px 8px; border-radius: 6px; transition: background 0.1s, color 0.1s; margin-bottom: 2px; }
+.sidebar__link:hover { background: var(--primary-lt); color: var(--primary-dk); }
+.sidebar__link.active { background: var(--primary-lt); color: var(--primary-dk); font-weight: 700; border-left: 3px solid var(--primary); padding-left: 5px; }
+
+.content { padding: 44px 56px 80px; min-width: 0; }
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--primary); }
+.breadcrumb__sep { color: var(--border); }
+.page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
+.page-title { font-size: 36px; font-weight: 800; color: var(--dark); letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 12px; }
+.page-lead { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 640px; margin-bottom: 40px; }
+
+.doc-section { margin-bottom: 60px; scroll-margin-top: 80px; }
+.doc-section h2 { font-size: 24px; font-weight: 800; color: var(--dark); letter-spacing: -0.02em; margin-bottom: 12px; padding-top: 8px; border-top: 1px solid var(--border); padding-bottom: 12px; }
+.doc-section h3 { font-size: 17px; font-weight: 700; color: var(--dark); margin: 28px 0 10px; }
+.doc-section h4 { font-size: 14px; font-weight: 700; color: var(--dark); margin: 20px 0 8px; }
+.doc-section p { font-size: 14.5px; color: var(--body); line-height: 1.75; margin-bottom: 14px; max-width: 680px; }
+.doc-section ul, .doc-section ol { padding-left: 20px; margin-bottom: 14px; max-width: 680px; }
+.doc-section li { font-size: 14.5px; color: var(--body); line-height: 1.75; margin-bottom: 5px; }
+.doc-section li strong { color: var(--dark); }
+hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
+
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 13.5px; line-height: 1.65; max-width: 680px; display: flex; gap: 12px; align-items: flex-start; }
+.callout__icon { flex-shrink: 0; font-size: 16px; line-height: 1.5; }
+.callout__body { flex: 1; }
+.callout--info  { background: #eff8ff; border-left: 3px solid #3b82f6; }
+.callout--tip   { background: #f0fdf4; border-left: 3px solid var(--accent); }
+.callout--warn  { background: #fffbeb; border-left: 3px solid #f59e0b; }
+.callout--tier  { background: #fefce8; border-left: 3px solid var(--gold); }
+
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 18px 0; max-width: 680px; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 36px 1fr; gap: 14px; margin-bottom: 20px; align-items: start; }
+.steps li::before { content: counter(step); display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 13px; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+.steps li span { font-size: 14.5px; color: var(--body); line-height: 1.7; padding-top: 4px; }
+
+code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 6px; color: var(--primary-dk); }
+pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 20px 24px; font-size: 13px; font-family: 'Fira Code', monospace; overflow-x: auto; margin: 14px 0; max-width: 680px; line-height: 1.75; }
+pre code { background: none; border: none; padding: 0; color: inherit; }
+
+.tier-badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; vertical-align: middle; margin-left: 6px; }
+.tier-badge--starter { background: #e0f2fe; color: #0369a1; }
+.tier-badge--pro     { background: #dcfce7; color: #15803d; }
+.tier-badge--agency  { background: #fef3c7; color: #b45309; }
+
+/* ── MOCKUP PANELS ── */
+.mockup-panel { background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; overflow: hidden; margin: 20px 0; max-width: 680px; }
+.mockup-bar { display: flex; align-items: center; gap: 6px; padding: 9px 14px; background: #f3f4f6; border-bottom: 1px solid var(--border); }
+.mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+.mockup-bar__url { flex: 1; margin-left: 6px; background: #fff; border: 1px solid var(--border); border-radius: 4px; padding: 3px 10px; font-size: 11px; color: var(--muted); font-family: 'Fira Code', monospace; }
+.mockup-body { padding: 18px 20px; }
+
+/* Wizard card */
+.wiz-card { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); max-width: 340px; margin: 0 auto; }
+.wiz-step { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.wiz-q    { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 12px; line-height: 1.4; }
+.wiz-answers { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.wiz-ans { border: 1.5px solid var(--border); border-radius: 7px; padding: 9px 13px; font-size: 12px; color: var(--dark); background: #fff; }
+.wiz-ans--selected { border-color: var(--primary); background: #eaf5f8; font-weight: 600; color: var(--primary-dk); }
+.wiz-nav { display: flex; justify-content: flex-end; }
+.wiz-btn { background: var(--primary); color: #fff; border: none; border-radius: 6px; padding: 7px 18px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.wiz-progress { height: 3px; background: var(--border); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+.wiz-progress-fill { height: 100%; background: var(--primary); border-radius: 2px; width: 50%; }
+
+/* Admin shell */
+.adm-shell { font-size: 12px; }
+.adm-tabs { display: flex; align-items: center; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 14px; }
+.adm-tab { padding: 7px 13px; font-size: 11px; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.adm-tab--active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+.adm-save-btn { margin-left: auto; margin-right: 2px; margin-bottom: 2px; padding: 4px 12px; font-size: 11px; font-weight: 700; background: var(--primary); color: #fff; border: none; border-radius: 5px; white-space: nowrap; flex-shrink: 0; opacity: 0.35; }
+.adm-layout { display: grid; grid-template-columns: 130px 1fr; gap: 10px; min-height: 160px; }
+.adm-sidebar { background: #f9f9f9; border: 1px solid var(--border); border-radius: 6px; padding: 10px; }
+.adm-sidebar__label { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.adm-q-item { padding: 5px 7px; border-radius: 4px; font-size: 11px; color: var(--dark); margin-bottom: 2px; }
+.adm-q-item--active { background: #e8f6f8; color: var(--primary-dk); font-weight: 600; border-left: 2px solid var(--primary); }
+.adm-panel { border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+.adm-field-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 3px; }
+.adm-field-input { width: 100%; padding: 5px 9px; border: 1px solid var(--border); border-radius: 5px; font-size: 11px; color: var(--dark); background: #fff; margin-bottom: 9px; }
+.adm-answer-row { display: flex; align-items: center; gap: 5px; padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+.adm-answer-row:last-child { border-bottom: none; }
+.adm-weight { background: #eaf5f8; color: var(--primary-dk); border-radius: 3px; padding: 2px 5px; font-size: 10px; font-weight: 700; }
+
+/* Logic tree */
+.tree-node { position: relative; display: inline-block; background: #fff; border: 1.5px solid var(--border); border-radius: 8px; width: 120px; font-size: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.tree-node--entry { border-color: var(--primary); }
+.tree-node__h { background: #f3f4f6; border-bottom: 1px solid var(--border); padding: 5px 7px; font-weight: 700; font-size: 10px; color: var(--dark); border-radius: 6px 6px 0 0; display: flex; align-items: center; gap: 4px; }
+.tree-node__start { font-size: 7px; font-weight: 700; background: var(--primary); color: #fff; border-radius: 2px; padding: 1px 4px; letter-spacing: .04em; }
+.tree-node__row { display: flex; align-items: center; justify-content: space-between; padding: 4px 7px; border-bottom: 1px solid var(--border); color: var(--muted); }
+.tree-node__row:last-child { border-bottom: none; }
+.tree-node__row-arrow { font-size: 9px; color: #d1d5db; flex-shrink: 0; }
+.tree-node__row--wired .tree-node__row-arrow { color: var(--primary); }
+.tree-canvas-preview { position: relative; background: #fafafa; background-image: radial-gradient(circle, #d1d5db 1px, transparent 1px); background-size: 16px 16px; border-radius: 6px; height: 180px; overflow: hidden; padding: 10px; }
+.tree-svg-preview { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* Result modal */
+.result-modal-wrap { position: relative; border-radius: 0 0 14px 14px; overflow: hidden; }
+.result-modal-bg { padding: 14px 18px; opacity: 0.18; pointer-events: none; user-select: none; }
+.result-modal-scrim { position: absolute; inset: 0; background: rgba(0,0,0,0.52); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 12px; }
+.result-modal-box { background: #fff; border-radius: 12px; padding: 16px; width: 100%; position: relative; box-shadow: 0 20px 48px rgba(0,0,0,0.32); }
+.result-modal-close-btn { position: absolute; top: 6px; right: 10px; background: none; border: none; font-size: 18px; color: var(--muted); cursor: pointer; }
+.result-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.result-plan-name { font-size: 18px; font-weight: 800; color: var(--dark); margin-bottom: 3px; }
+.result-plan-price { font-size: 13px; color: var(--primary); font-weight: 600; margin-bottom: 7px; }
+.result-insight { font-size: 11px; color: var(--muted); background: #f0fafb; border-left: 3px solid var(--primary); padding: 7px 9px; border-radius: 0 5px 5px 0; margin-bottom: 10px; line-height: 1.5; }
+.result-btn { display: block; background: var(--primary); color: #fff; text-align: center; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 700; text-decoration: none; }
+
+/* Settings */
+.settings-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.color-field { display: flex; flex-direction: column; gap: 4px; }
+.color-field label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.color-row { display: flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 5px; padding: 4px 8px; background: #fff; }
+.color-swatch { width: 18px; height: 18px; border-radius: 3px; border: 1px solid var(--border); flex-shrink: 0; }
+.color-hex { font-size: 11px; color: var(--dark); font-family: 'Fira Code', monospace; flex: 1; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+.toggle-pill { width: 32px; height: 18px; border-radius: 9px; background: var(--primary); display: flex; align-items: center; padding: 2px; flex-shrink: 0; }
+.toggle-pill__dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; margin-left: auto; }
+
+.page-nav { display: flex; justify-content: space-between; margin-top: 64px; border-top: 1px solid var(--border); padding-top: 28px; }
+.page-nav a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 700; color: var(--primary); }
+.page-nav a:hover { color: var(--primary-dk); }
+
+.site-footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 32px 28px; display: flex; align-items: center; justify-content: space-between; }
+.site-footer__brand { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); }
+.site-footer__links { display: flex; gap: 20px; }
+.site-footer__links a { font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: none; }
+.site-footer__links a:hover { color: rgba(255,255,255,0.75); }
+
+@media (max-width: 860px) {
+  .page-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 28px 20px 60px; }
+  .topnav__links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="./index.html" class="topnav__logo">
+    <div class="topnav__logo-mark">G</div>
+    <span class="topnav__logo-text">Guidwell</span>
+    <span class="topnav__logo-badge">Docs</span>
+  </a>
+  <div class="topnav__links">
+    <a href="./getting-started.html">Getting Started</a>
+    <a href="./user-guide.html" class="active">User Guide</a>
+    <a href="./api-reference.html">API Reference</a>
+    <a href="./pricing.html">Pricing</a>
+    <a href="./changelog.html">Changelog</a>
+  </div>
+  <a href="https://welflecreative.com/guidwell" class="topnav__cta" target="_blank" rel="noopener">Get Guidwell →</a>
+</nav>
+
+<div class="page-layout">
+  <aside class="sidebar">
+    <div class="sidebar__section">
+      <div class="sidebar__heading">Overview</div>
+      <a href="#what-is-guidwell" class="sidebar__link">What is Guidwell?</a>
+      <a href="#embed" class="sidebar__link">Embedding</a>
+    </div>
+    <div class="sidebar__section">
+      <div class="sidebar__heading">Admin Tabs</div>
+      <a href="#builder" class="sidebar__link">Wizard Builder</a>
+      <a href="#logic" class="sidebar__link">Logic Trees</a>
+      <a href="#features" class="sidebar__link">Feature Library</a>
+      <a href="#settings" class="sidebar__link">Settings</a>
+      <a href="#notifications" class="sidebar__link">Notifications</a>
+    </div>
+    <div class="sidebar__section">
+      <div class="sidebar__heading">How It Works</div>
+      <a href="#scoring" class="sidebar__link">Scoring &amp; Weights</a>
+      <a href="#result-screen" class="sidebar__link">Result Screen</a>
+      <a href="#saving" class="sidebar__link">Saving</a>
+      <a href="#shortcode" class="sidebar__link">Shortcode Reference</a>
+    </div>
+    <div class="sidebar__section">
+      <div class="sidebar__heading">Other Docs</div>
+      <a href="./getting-started.html" class="sidebar__link">Getting Started</a>
+      <a href="./api-reference.html" class="sidebar__link">API Reference</a>
+      <a href="./pricing.html" class="sidebar__link">Plans &amp; Pricing</a>
+    </div>
+  </aside>
+
+  <main class="content">
+
+    <div class="breadcrumb">
+      <a href="./index.html">Docs</a>
+      <span class="breadcrumb__sep">/</span>
+      <span>User Guide</span>
+    </div>
+
+    <p class="page-eyebrow">User Guide</p>
+    <h1 class="page-title">Everything about using Guidwell</h1>
+    <p class="page-lead">From embedding the wizard on your site to building branching logic trees — every feature covered tab by tab, with annotated mockups.</p>
+
+    <!-- WHAT IS GUIDWELL -->
+    <section class="doc-section" id="what-is-guidwell">
+      <h2>What is Guidwell?</h2>
+      <p>Guidwell is a WordPress plugin that embeds a guided, step-by-step wizard on any page. Visitors answer a short series of questions and receive a personalized plan recommendation. Everything runs inside WordPress — your data stays in your database, not a third-party SaaS platform.</p>
+      <p>At its core, Guidwell works by assigning <strong>weights</strong> to each answer. When a visitor completes the wizard, those weights are tallied per plan and the highest-scoring plan is recommended. You control the questions, answers, plans, and scores — no code required.</p>
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">Guidwell supports two modes: <strong>Linear</strong> (every visitor answers the same questions in order) and <strong>Tree</strong> (each answer can branch to a different next question). Linear mode works on all plans; branching logic requires Starter or higher.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- EMBEDDING -->
+    <section class="doc-section" id="embed">
+      <h2>Embedding the Wizard</h2>
+      <p>Once the plugin is activated and your wizard is saved, place it on any page using a shortcode or the Gutenberg block.</p>
+      <h3>Shortcode</h3>
+      <pre><code>[guidwell]</code></pre>
+      <p>Uses the first published wizard automatically. To embed a specific wizard by its post ID:</p>
+      <pre><code>[guidwell id="42"]</code></pre>
+      <h3>Gutenberg Block</h3>
+      <p>In the block editor, search for <strong>Guidwell</strong> in the block inserter. The block renders a live preview in the editor and includes a sidebar control to select which wizard to embed.</p>
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body">The wizard loads asynchronously — the page loads fast, then the wizard initializes. Safe to place anywhere on a page, including inside page builders and sidebar widgets.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- BUILDER -->
+    <section class="doc-section" id="builder">
+      <h2>Wizard Builder</h2>
+      <p>The <strong>Wizard Builder</strong> tab is the main editor. The left sidebar has two sections: <em>Questions</em> at the top and <em>Plans</em> below. Click either to select and edit it in the right panel.</p>
+
+      <div class="mockup-panel">
+        <div class="mockup-bar">
+          <span class="mockup-dot" style="background:#ff5f57"></span>
+          <span class="mockup-dot" style="background:#febc2e"></span>
+          <span class="mockup-dot" style="background:#28c840"></span>
+          <span class="mockup-bar__url">WP Admin → Guidwell → Wizard Builder</span>
+        </div>
+        <div class="mockup-body adm-shell">
+          <div class="adm-tabs">
+            <div class="adm-tab adm-tab--active">Wizard Builder</div>
+            <div class="adm-tab">Logic</div>
+            <div class="adm-tab">Features</div>
+            <div class="adm-tab">Settings</div>
+            <div class="adm-tab">Notifications</div>
+            <button class="adm-save-btn">Save</button>
+          </div>
+          <div class="adm-layout">
+            <div class="adm-sidebar">
+              <div class="adm-sidebar__label">Questions</div>
+              <div class="adm-q-item">What describes you?</div>
+              <div class="adm-q-item adm-q-item--active">Primary goal?</div>
+              <div class="adm-q-item">Support level?</div>
+              <div class="adm-q-item">Monthly budget?</div>
+            </div>
+            <div class="adm-panel">
+              <div class="adm-field-label">Question text</div>
+              <input class="adm-field-input" value="What is your primary goal right now?" readonly/>
+              <div class="adm-field-label">Answers &amp; weights</div>
+              <div class="adm-answer-row"><span style="flex:1;">Build awareness…</span><span class="adm-weight">Starter 3</span><span class="adm-weight">Pro 2</span></div>
+              <div class="adm-answer-row"><span style="flex:1;">Grow my audience</span><span class="adm-weight">Starter 1</span><span class="adm-weight">Pro 3</span></div>
+              <div class="adm-answer-row"><span style="flex:1;">Generate leads…</span><span class="adm-weight">Starter 0</span><span class="adm-weight">Pro 2</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Questions</h3>
+      <p>Each question has a <strong>Question text</strong> field and a list of <strong>Answers</strong>. For each answer, you assign a weight (0–10) for every plan.</p>
+      <ul>
+        <li><strong>Reorder questions</strong> — drag the <code>≡</code> handle on the left of a question row</li>
+        <li><strong>Delete a question</strong> — click the <code>×</code> on the right of the sidebar item</li>
+        <li><strong>Add an answer</strong> — click <strong>+ Add Answer</strong> inside the question editor</li>
+        <li><strong>Reorder answers</strong> — drag them by their handles within the question editor</li>
+      </ul>
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Free plan:</strong> limited to 5 questions per wizard. Upgrade to Starter or higher to remove this limit.</div>
+      </div>
+
+      <h3>Plans</h3>
+      <p>Plans are the recommendations your wizard matches visitors to. Each plan has:</p>
+      <ul>
+        <li><strong>Name</strong> — shown on the result screen (e.g. "Pro Retainer")</li>
+        <li><strong>Price</strong> — displayed prominently (e.g. "$1,000/month")</li>
+        <li><strong>Description</strong> — one or two sentences about what's included</li>
+        <li><strong>CTA Label &amp; URL</strong> — the button text and link on the result card</li>
+        <li><strong>Tier</strong> — read-only, controls tie-breaking (lower = more accessible)</li>
+        <li><strong>Features</strong> — checkboxes from your Feature Library (see Features tab)</li>
+      </ul>
+      <p>You need at least 2 plans. Click <strong>+ Add Plan</strong> at the bottom of the Plans section to add more. The delete button is hidden when only 2 plans remain.</p>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- LOGIC -->
+    <section class="doc-section" id="logic">
+      <h2>Logic (Conditional Branching)</h2>
+      <p>The <strong>Logic</strong> tab is a visual canvas builder for branching wizard paths. Instead of every visitor following the same sequence, each answer can send the visitor to a different next question.</p>
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Starter+ required</strong> for branching logic. The Logic tab is visible on all plans but branching is only saved and enforced at Starter and above.</div>
+      </div>
+
+      <div class="mockup-panel">
+        <div class="mockup-bar">
+          <span class="mockup-dot" style="background:#ff5f57"></span>
+          <span class="mockup-dot" style="background:#febc2e"></span>
+          <span class="mockup-dot" style="background:#28c840"></span>
+          <span class="mockup-bar__url">Guidwell → Logic</span>
+        </div>
+        <div class="mockup-body">
+          <div class="tree-canvas-preview">
+            <svg class="tree-svg-preview" viewBox="0 0 540 180">
+              <defs>
+                <marker id="arr" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+                  <path d="M0,0 L0,6 L7,3 z" fill="#4a90a4"/>
+                </marker>
+              </defs>
+              <path d="M 132 54 C 165 54, 158 68, 192 68" stroke="#4a90a4" stroke-width="1.5" fill="none" opacity="0.8" marker-end="url(#arr)"/>
+              <path d="M 132 72 C 165 72, 158 140, 192 140" stroke="#4a90a4" stroke-width="1.5" fill="none" opacity="0.8" marker-end="url(#arr)"/>
+              <path d="M 312 76 L 330 76" stroke="#4a90a4" stroke-width="1.5" fill="none" opacity="0.5" stroke-dasharray="3 2" marker-end="url(#arr)"/>
+            </svg>
+            <div style="position:absolute;top:20px;left:10px;">
+              <div class="tree-node tree-node--entry">
+                <div class="tree-node__h"><span class="tree-node__start">Start</span>Situation?</div>
+                <div class="tree-node__row tree-node__row--wired">Just starting<span class="tree-node__row-arrow">→</span></div>
+                <div class="tree-node__row tree-node__row--wired">Ready to grow<span class="tree-node__row-arrow">→</span></div>
+                <div class="tree-node__row">Scaling now<span class="tree-node__row-arrow">→</span></div>
+              </div>
+            </div>
+            <div style="position:absolute;top:44px;left:192px;">
+              <div class="tree-node">
+                <div class="tree-node__h">Primary goal?</div>
+                <div class="tree-node__row">Build awareness<span class="tree-node__row-arrow">→</span></div>
+                <div class="tree-node__row">Grow audience<span class="tree-node__row-arrow">→</span></div>
+              </div>
+            </div>
+            <div style="position:absolute;top:44px;left:330px;">
+              <div class="tree-node" style="border-style:dashed;opacity:0.7;">
+                <div class="tree-node__h">Budget?</div>
+                <div class="tree-node__row">Under $500<span class="tree-node__row-arrow">→</span></div>
+              </div>
+            </div>
+            <div style="position:absolute;top:114px;left:192px;">
+              <div class="tree-node">
+                <div class="tree-node__h">Support level?</div>
+                <div class="tree-node__row">Self-guided<span class="tree-node__row-arrow">→</span></div>
+                <div class="tree-node__row">Collaborative<span class="tree-node__row-arrow">→</span></div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Drag cards · Click an answer row to draw a branch · Chain questions horizontally</p>
+        </div>
+      </div>
+
+      <h3>Drawing a branch</h3>
+      <ol class="steps">
+        <li><span>Click any <strong>answer row</strong> on a card. The row highlights and your cursor turns into a crosshair.</span></li>
+        <li><span>Move your cursor toward another card. When you hover over a card header, it highlights as a drop target.</span></li>
+        <li><span>Click the target card's header to complete the connection. A bezier wire is drawn from the answer to the destination.</span></li>
+      </ol>
+      <p>To <strong>remove</strong> a connection, click the answer row that already has a wire — the connection is cleared.</p>
+
+      <h3>Chaining questions</h3>
+      <p>Drag a card close to the right edge of another card. When their headers align vertically, the card snaps in as a <em>default next</em> chain. The dashed wire between chained cards means "go here when no explicit branch applies." To break a chain, drag the card away.</p>
+
+      <h3>Linear vs. Tree mode</h3>
+      <p>Drawing your first branch automatically switches the wizard to <strong>tree mode</strong>. To switch back to linear, click <strong>Switch back to linear</strong> in the top-right of the Logic tab. This clears all branch connections.</p>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- FEATURES -->
+    <section class="doc-section" id="features">
+      <h2>Feature Library</h2>
+      <p>The <strong>Features</strong> tab is a shared library of feature labels (e.g. "Monthly strategy call") that can be assigned to any plan. Assigned features appear as a checklist on the result screen.</p>
+      <h3>Adding features</h3>
+      <p>Type a label in the input and press <strong>Enter</strong> or click <strong>Add Feature</strong>. Feature names must be unique. Maximum 100 features.</p>
+      <h3>Editing &amp; deleting</h3>
+      <p>Each row has an <strong>Edit</strong> button (inline text edit, confirm with Enter or ✓) and a <strong>×</strong> delete button. Deleting removes the feature from all plans that had it assigned.</p>
+      <h3>Assigning to a plan</h3>
+      <p>Go to the <strong>Wizard Builder</strong> tab, click a plan, and scroll to the <strong>Features</strong> section. Check any features to include for that plan. Changes are saved when you click <strong>Save</strong>.</p>
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">The Features tab auto-saves immediately when you add, edit, or delete a feature — no need to click the main Save button for feature library changes.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- SETTINGS -->
+    <section class="doc-section" id="settings">
+      <h2>Settings</h2>
+      <p>The <strong>Settings</strong> tab has two sections: <em>Colors &amp; Branding</em> and <em>Import / Export</em>.</p>
+
+      <h3>Colors &amp; Branding <span class="tier-badge tier-badge--starter">Starter+</span></h3>
+      <p>Four color values control the wizard's appearance on the frontend:</p>
+      <ul>
+        <li><strong>Primary Color</strong> — buttons, selected answer states, progress bar</li>
+        <li><strong>Primary Dark</strong> — hover states</li>
+        <li><strong>Background</strong> — the panel behind the wizard card</li>
+        <li><strong>Card Background</strong> — the wizard card itself</li>
+      </ul>
+
+      <div class="mockup-panel">
+        <div class="mockup-bar">
+          <span class="mockup-dot" style="background:#ff5f57"></span>
+          <span class="mockup-dot" style="background:#febc2e"></span>
+          <span class="mockup-dot" style="background:#28c840"></span>
+          <span class="mockup-bar__url">Guidwell → Settings</span>
+        </div>
+        <div class="mockup-body">
+          <div class="toggle-row" style="margin-bottom:12px;">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--dark);">Use theme colors</div>
+              <div style="font-size:10px;color:var(--muted);">Auto-detect from active theme</div>
+            </div>
+            <div class="toggle-pill"><div class="toggle-pill__dot"></div></div>
+          </div>
+          <div class="settings-row">
+            <div class="color-field"><label>Primary Color</label><div class="color-row"><div class="color-swatch" style="background:#4a90a4"></div><span class="color-hex">#4a90a4</span></div></div>
+            <div class="color-field"><label>Primary Dark</label><div class="color-row"><div class="color-swatch" style="background:#3a7a8c"></div><span class="color-hex">#3a7a8c</span></div></div>
+            <div class="color-field"><label>Background</label><div class="color-row"><div class="color-swatch" style="background:#f8f9fb"></div><span class="color-hex">#f8f9fb</span></div></div>
+            <div class="color-field"><label>Card Background</label><div class="color-row"><div class="color-swatch" style="background:#ffffff"></div><span class="color-hex">#ffffff</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <p>Toggle <strong>Use theme colors</strong> to auto-detect your WordPress theme's primary and background colors. When enabled, the manual color pickers are dimmed.</p>
+
+      <h3>JSON Export / Import <span class="tier-badge tier-badge--starter">Export: Starter+</span> <span class="tier-badge tier-badge--pro">Import: Pro+</span></h3>
+      <p><strong>Export</strong> saves your entire wizard configuration as a <code>.json</code> file — useful for backups or copying a wizard to another site.</p>
+      <p><strong>Import</strong> loads a previously exported JSON file and replaces the current wizard configuration in the builder. Review the result and click <strong>Save</strong> to persist.</p>
+      <div class="callout callout--warn">
+        <div class="callout__icon">⚠️</div>
+        <div class="callout__body">Importing overwrites the current unsaved state in the builder. Save first if you have unsaved edits.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- NOTIFICATIONS -->
+    <section class="doc-section" id="notifications">
+      <h2>Notifications</h2>
+      <p>The <strong>Notifications</strong> tab controls two email types: <em>admin notifications</em> (you receive an email when someone completes the wizard) and <em>visitor email capture</em> (the wizard collects the visitor's email and optionally sends them their results).</p>
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Starter+ required</strong> for email capture and admin notifications.</div>
+      </div>
+
+      <h3>Admin Result Notifications</h3>
+      <p>When <strong>Send notification on result</strong> is enabled, you receive an email each time a visitor completes the wizard. Configure: recipient email &amp; name, sender name &amp; email, subject line, and optional header/footer text.</p>
+
+      <h3>Visitor Email Capture</h3>
+      <p>When <strong>Collect visitor email</strong> is enabled, a name and email field appears on the result screen before the visitor sees their recommendation. The collected contact info is included in your admin notification email.</p>
+
+      <h3>Custom SMTP</h3>
+      <p>By default, Guidwell uses WordPress's <code>wp_mail()</code>. For unreliable hosting mail, configure a dedicated SMTP server with host, port, username, password, and encryption (TLS / SSL / none). Click <strong>Send Test Email</strong> to verify the connection before saving.</p>
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body">The SMTP password is stored encrypted (AES-256-CBC) and never exposed in the admin UI after it's been set. The field shows a placeholder when a password is already saved.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- SCORING -->
+    <section class="doc-section" id="scoring">
+      <h2>Scoring &amp; Weights</h2>
+      <p>Guidwell uses a <strong>weighted scoring matrix</strong>. Every answer has a score (0–10) for every plan. When a visitor picks an answer, those scores are added to a running total per plan. After all questions are answered, the plan with the highest total is recommended.</p>
+
+      <h3>Setting weights</h3>
+      <p>In the Wizard Builder, click any question to open it. Each answer row shows a number input (0–10) for every plan. Guidelines:</p>
+      <ul>
+        <li><strong>0</strong> — this answer has no signal for this plan</li>
+        <li><strong>3–5</strong> — moderate signal</li>
+        <li><strong>10</strong> — strongest possible signal toward this plan</li>
+      </ul>
+      <p>Weights don't need to add up to anything specific — they're relative scores. Typically each answer should have its highest weight on one plan and lower or zero weights on the others.</p>
+
+      <h3>Tie-breaking</h3>
+      <p>If two plans tie on score, the plan with the <strong>lower tier number</strong> wins. Tier 1 is your most accessible option. Ties always favor the lower-cost option, which tends to feel more honest to visitors.</p>
+
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">The result screen shows the top 3 matching plans (not just the winner), each with a score bar. This helps visitors self-select into higher tiers when they see a near-tie.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- RESULT SCREEN -->
+    <section class="doc-section" id="result-screen">
+      <h2>Result Screen</h2>
+      <p>After a visitor clicks <strong>See Results</strong>, a full-screen modal slides up over the page. The wizard card remains visible but dimmed behind it.</p>
+
+      <div class="mockup-panel">
+        <div class="mockup-bar">
+          <span class="mockup-dot" style="background:#ff5f57"></span>
+          <span class="mockup-dot" style="background:#febc2e"></span>
+          <span class="mockup-dot" style="background:#28c840"></span>
+          <span class="mockup-bar__url">yoursite.com/get-started → Results</span>
+        </div>
+        <div class="result-modal-wrap">
+          <div class="result-modal-bg">
+            <div class="wiz-card" style="max-width:none;">
+              <div class="wiz-step">Step 4 of 4</div>
+              <div class="wiz-q">What is your approximate monthly budget?</div>
+              <div class="wiz-answers">
+                <div class="wiz-ans">Under $500/month</div>
+                <div class="wiz-ans wiz-ans--selected">$500 – $1,500/month</div>
+                <div class="wiz-ans">$1,500+/month</div>
+              </div>
+              <div class="wiz-nav"><button class="wiz-btn">See Results →</button></div>
+            </div>
+          </div>
+          <div class="result-modal-scrim">
+            <div class="result-modal-box">
+              <button class="result-modal-close-btn">&times;</button>
+              <div class="result-label">Your recommended plan</div>
+              <div class="result-plan-name">Pro Retainer</div>
+              <div class="result-plan-price">$1,000 / month</div>
+              <div class="result-insight">Based on your answers, you're ready to grow but need strategic support — a collaborative approach fits best.</div>
+              <a href="#" class="result-btn">Get Started with Pro →</a>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:11px;color:var(--muted);text-align:center;padding:10px 18px 14px;">Close with × button, Escape key, or clicking outside the modal</p>
+      </div>
+
+      <h3>What visitors see</h3>
+      <ul>
+        <li>The <strong>top recommended plan</strong> with name, price, description, and CTA button</li>
+        <li>An <strong>insight paragraph</strong> explaining why this plan fits their answers</li>
+        <li>A <strong>score comparison</strong> for the top 3 matching plans</li>
+        <li>A <strong>feature checklist</strong> for the recommended plan (if features are assigned)</li>
+        <li>A <strong>Restart</strong> button to go back through the wizard</li>
+      </ul>
+      <p>If visitor email capture is enabled, a name and email form appears at the top of the modal before the result is revealed.</p>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- SAVING -->
+    <section class="doc-section" id="saving">
+      <h2>Saving</h2>
+      <p>The <strong>Save</strong> button lives in the top-right of the tab bar and is disabled until you make a change.</p>
+      <ul>
+        <li>Saving is <strong>global</strong> — one click saves changes across questions, answers, plans, and logic connections.</li>
+        <li>The <strong>Features tab</strong> auto-saves immediately — feature changes don't wait for Save.</li>
+        <li>The <strong>Settings</strong> and <strong>Notifications</strong> tabs have their own individual Save buttons.</li>
+        <li>If a save fails, the button shows an error state and a notice banner appears below the tab bar.</li>
+      </ul>
+      <div class="callout callout--warn">
+        <div class="callout__icon">⚠️</div>
+        <div class="callout__body">Navigating away without saving discards unsaved changes. There is no auto-save for the main wizard config.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- SHORTCODE -->
+    <section class="doc-section" id="shortcode">
+      <h2>Shortcode Reference</h2>
+      <h3>Basic usage</h3>
+      <pre><code>[guidwell]</code></pre>
+      <p>Embeds the first published wizard. No parameters required for a single-wizard setup.</p>
+      <h3>Specific wizard by ID</h3>
+      <pre><code>[guidwell id="42"]</code></pre>
+      <p>Embeds a specific wizard by its WordPress post ID. Find the ID by hovering over the wizard title in the post list — the ID appears in the URL (e.g. <code>post=42</code>).</p>
+      <h3>Gutenberg block</h3>
+      <p>Search for <strong>Guidwell</strong> in the block inserter (<code>+</code> button). The block includes a wizard selector dropdown — no ID needed.</p>
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">The wizard loads asynchronously and is safe to embed inside any block or page builder. Each page load is a fresh visitor session — refreshing the page resets the wizard to the first question.</div>
+      </div>
+    </section>
+
+    <div class="page-nav">
+      <a href="./getting-started.html">← Getting Started</a>
+      <a href="./api-reference.html">API Reference →</a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="site-footer__brand">Guidwell by Welfle Creative</div>
+  <div class="site-footer__links">
+    <a href="./index.html">Docs Home</a>
+    <a href="./getting-started.html">Getting Started</a>
+    <a href="./api-reference.html">API Reference</a>
+    <a href="./changelog.html">Changelog</a>
+  </div>
+</footer>
+
+<script>
+const links = document.querySelectorAll('.sidebar__link[href^="#"]');
+const sections = document.querySelectorAll('.doc-section[id]');
+function updateActive() {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+}
+window.addEventListener('scroll', updateActive, { passive: true });
+updateActive();
+</script>
+</body>
+</html>
