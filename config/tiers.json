@@ -35,7 +35,7 @@
 			"billing": "yearly",
 			"limits": {
 				"questions_per_wizard": null,
-				"active_wizards": null,
+				"active_wizards": 1,
 				"sites": 3,
 				"logic_tree_depth": 3,
 				"logic_tree_nodes": 15
@@ -48,7 +48,7 @@
 			"billing": "yearly",
 			"limits": {
 				"questions_per_wizard": null,
-				"active_wizards": null,
+				"active_wizards": 1,
 				"sites": null,
 				"logic_tree_depth": null,
 				"logic_tree_nodes": null
@@ -106,11 +106,6 @@
 			"label": "Email integrations (Mailchimp, ConvertKit)",
 			"tiers": ["agency"],
 			"upgrade_message": "Connect results directly to your email marketing platform."
-		},
-		"unlimited_wizards": {
-			"label": "Unlimited active wizards",
-			"tiers": ["pro", "agency"],
-			"upgrade_message": "Create a separate wizard for each service or audience segment."
 		},
 		"multi_site": {
 			"label": "Multi-site licensing",

@@ -209,6 +209,10 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
     <section class="doc-section" id="plans">
       <h2>Plan Overview</h2>
       <p>Guidwell has three paid tiers. There is no free tier — every install requires a valid license key.</p>
+      <div class="callout callout--info">
+        <div class="callout__icon">🔜</div>
+        <div class="callout__body"><strong>Multiple wizards — coming soon.</strong> The current release supports one wizard per site. A wizard manager with per-site limits is in development and will roll out in an upcoming update at no extra charge to existing license holders.</div>
+      </div>
 
       <div class="pricing-grid">
 
@@ -218,12 +222,11 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
             <div class="plan-name">Starter</div>
             <div class="plan-price"><sup>$</sup>79<span>/yr</span></div>
             <div class="plan-billing">Billed annually · 1 site</div>
-            <div class="plan-tagline">One wizard, one site. Perfect for a focused landing page or lead capture.</div>
+            <div class="plan-tagline">One site. Perfect for a focused landing page or lead capture.</div>
           </div>
           <a href="https://welflecreative.com/guidwell" class="plan-cta plan-cta--outline">Get Starter</a>
           <hr class="plan-divider"/>
           <ul class="plan-features">
-            <li><div class="icon icon--check">✓</div>1 wizard</li>
             <li><div class="icon icon--check">✓</div>Unlimited questions</li>
             <li><div class="icon icon--check">✓</div>Branching logic (tree mode)</li>
             <li><div class="icon icon--check">✓</div>Email notifications</li>
@@ -234,7 +237,6 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
             <li><div class="icon icon--minus">–</div>Multiple sites</li>
           </ul>
           <div class="plan-limits">
-            <div class="limit-item"><span class="limit-key">Wizards</span><span class="limit-val">1</span></div>
             <div class="limit-item"><span class="limit-key">Sites</span><span class="limit-val">1</span></div>
             <div class="limit-item"><span class="limit-key">Questions</span><span class="limit-val limit-val--inf">∞</span></div>
             <div class="limit-item"><span class="limit-key">Plans</span><span class="limit-val limit-val--inf">∞</span></div>
@@ -248,12 +250,11 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
             <div class="plan-name">Pro</div>
             <div class="plan-price"><sup>$</sup>149<span>/yr</span></div>
             <div class="plan-billing">Billed annually · 3 sites</div>
-            <div class="plan-tagline">Multiple wizards across three sites. Includes full import &amp; export.</div>
+            <div class="plan-tagline">Three sites. Includes full import &amp; export.</div>
           </div>
           <a href="https://welflecreative.com/guidwell" class="plan-cta plan-cta--primary">Get Pro</a>
           <hr class="plan-divider"/>
           <ul class="plan-features">
-            <li><div class="icon icon--check">✓</div>Unlimited wizards</li>
             <li><div class="icon icon--check">✓</div>Unlimited questions</li>
             <li><div class="icon icon--check">✓</div>Branching logic (tree mode)</li>
             <li><div class="icon icon--check">✓</div>Email notifications</li>
@@ -264,7 +265,6 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
             <li><div class="icon icon--check">✓</div>3 sites</li>
           </ul>
           <div class="plan-limits">
-            <div class="limit-item"><span class="limit-key">Wizards</span><span class="limit-val limit-val--inf">∞</span></div>
             <div class="limit-item"><span class="limit-key">Sites</span><span class="limit-val">3</span></div>
             <div class="limit-item"><span class="limit-key">Questions</span><span class="limit-val limit-val--inf">∞</span></div>
             <div class="limit-item"><span class="limit-key">Plans</span><span class="limit-val limit-val--inf">∞</span></div>
@@ -282,7 +282,6 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
           <a href="https://welflecreative.com/guidwell" class="plan-cta plan-cta--outline">Get Agency</a>
           <hr class="plan-divider"/>
           <ul class="plan-features">
-            <li><div class="icon icon--check">✓</div>Unlimited wizards</li>
             <li><div class="icon icon--check">✓</div>Unlimited questions</li>
             <li><div class="icon icon--check">✓</div>Branching logic (tree mode)</li>
             <li><div class="icon icon--check">✓</div>Email notifications</li>
@@ -293,7 +292,6 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
             <li><div class="icon icon--star">★</div>Unlimited sites</li>
           </ul>
           <div class="plan-limits">
-            <div class="limit-item"><span class="limit-key">Wizards</span><span class="limit-val limit-val--inf">∞</span></div>
             <div class="limit-item"><span class="limit-key">Sites</span><span class="limit-val limit-val--inf">∞</span></div>
             <div class="limit-item"><span class="limit-key">Questions</span><span class="limit-val limit-val--inf">∞</span></div>
             <div class="limit-item"><span class="limit-key">Plans</span><span class="limit-val limit-val--inf">∞</span></div>
@@ -327,7 +325,7 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
             <tr><td>Plans (recommendations)</td><td><span class="partial">∞</span></td><td><span class="partial">∞</span></td><td><span class="partial">∞</span></td></tr>
             <tr><td>Feature library (checklist items)</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
             <tr><td>Weighted scoring matrix</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
-            <tr><td>Number of wizards</td><td><span class="partial">1</span></td><td><span class="partial">∞</span></td><td><span class="partial">∞</span></td></tr>
+            <tr><td>Multiple wizards per site</td><td><span class="partial" style="font-size:10px;color:var(--muted);">Coming soon</span></td><td><span class="partial" style="font-size:10px;color:var(--muted);">Coming soon</span></td><td><span class="partial" style="font-size:10px;color:var(--muted);">Coming soon</span></td></tr>
 
             <tr class="category-row"><td colspan="4">Logic &amp; Flow</td></tr>
             <tr><td>Linear mode (same path for all)</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
@@ -370,7 +368,7 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
     <!-- LIMITS -->
     <section class="doc-section" id="limits">
       <h2>Limits by Tier</h2>
-      <p>At a glance — what changes between tiers is the number of wizards, sites, and access to JSON import. Everything else is identical across all plans.</p>
+      <p>At a glance — what changes between tiers is the number of sites and access to JSON import. Everything else is identical across all plans.</p>
       <table class="compare-table">
         <thead>
           <tr>
@@ -381,12 +379,6 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Wizards</td>
-            <td>1</td>
-            <td>Unlimited</td>
-            <td>Unlimited</td>
-          </tr>
           <tr>
             <td>Sites (WP installs)</td>
             <td>1</td>
