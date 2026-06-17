@@ -842,15 +842,15 @@ pre code { background: none; border: none; padding: 0; color: inherit; }
     <!-- SCORING -->
     <section class="doc-section" id="scoring">
       <h2>Scoring &amp; Weights</h2>
-      <p>Every answer has a numeric weight (0 to the number of plans) for each plan. When a visitor picks an answer, those values are added to a running total per plan. After all questions, the plan with the highest total is recommended.</p>
+      <p>Every answer has a numeric weight for each plan. When a visitor picks an answer, those values are added to a running total per plan. After all questions, the plan with the highest total is recommended.</p>
       <h3>Setting weights</h3>
-      <p>In the Wizard Builder, select a question. Under each answer you'll see a row of small number inputs — one per plan, labeled with the plan name. Guidelines:</p>
+      <p>In the Wizard Builder, select a question. Under each answer you'll see a row of small number inputs — one per plan, labeled with the plan name. The <strong>maximum weight is equal to the number of plans</strong> you have configured — so with 3 plans the range is 0–3, with 4 plans it's 0–4, and so on. The input enforces this automatically. Guidelines:</p>
       <ul>
         <li><strong>0</strong> — no signal for this plan from this answer</li>
-        <li><strong>1–2</strong> — weak signal</li>
-        <li><strong>3 (max for 3 plans)</strong> — strongest signal toward this plan</li>
+        <li><strong>1</strong> — weak signal</li>
+        <li><strong>Max (= plan count)</strong> — strongest possible signal toward this plan</li>
       </ul>
-      <p>The max allowed weight equals the number of plans (so with 3 plans, max is 3). Weights are relative — a plan with total 9 beats one with 7.</p>
+      <p>Weights are relative — a plan with total 9 beats one with 7. Typically each answer should have its highest weight on one plan and lower weights on the others.</p>
       <h3>Tie-breaking</h3>
       <p>If two plans tie, the plan with the lower <strong>tier number</strong> wins. Tier 1 is your most accessible option — ties always favour the lower-cost plan, which feels honest to visitors.</p>
       <div class="callout callout--info">

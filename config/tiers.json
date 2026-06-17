@@ -9,6 +9,7 @@
 			"billing": null,
 			"limits": {
 				"questions_per_wizard": 5,
+				"answers_per_question": 5,
 				"active_wizards": 1,
 				"sites": 1,
 				"logic_tree_depth": 0,
@@ -22,6 +23,7 @@
 			"billing": "yearly",
 			"limits": {
 				"questions_per_wizard": null,
+				"answers_per_question": 10,
 				"active_wizards": 1,
 				"sites": 1,
 				"logic_tree_depth": 1,
@@ -35,6 +37,7 @@
 			"billing": "yearly",
 			"limits": {
 				"questions_per_wizard": null,
+				"answers_per_question": 10,
 				"active_wizards": 1,
 				"sites": 5,
 				"logic_tree_depth": 3,
@@ -48,6 +51,7 @@
 			"billing": "yearly",
 			"limits": {
 				"questions_per_wizard": null,
+				"answers_per_question": 20,
 				"active_wizards": 1,
 				"sites": 25,
 				"logic_tree_depth": null,
@@ -110,7 +114,7 @@
 		"multi_site": {
 			"label": "Multi-site licensing",
 			"tiers": ["pro", "agency"],
-			"upgrade_message": "Use Guidwell on up to 3 sites (Pro) or unlimited sites (Agency)."
+			"upgrade_message": "Use Guidwell on up to 5 sites (Pro) or 25 sites (Agency)."
 		}
 	}
 }
