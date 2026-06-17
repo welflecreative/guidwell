@@ -453,11 +453,6 @@ pre .nu { color: #fb923c; }
         <thead><tr><th>Constant</th><th>Type</th><th>Description</th></tr></thead>
         <tbody>
           <tr>
-            <td>GUIDWELL_INTERNAL_FLAG</td>
-            <td>boolean</td>
-            <td>Set to <code>true</code> to bypass all tier enforcement and grant Agency-level access. Intended for the plugin owner's install only. Takes precedence over the <code>guidwell_license_tier</code> database option.</td>
-          </tr>
-          <tr>
             <td>GUIDWELL_VERSION</td>
             <td>string</td>
             <td>Set automatically from the plugin header. Do not override.</td>
@@ -475,9 +470,6 @@ pre .nu { color: #fb923c; }
         </tbody>
       </table>
 
-      <h3>Internal configuration example</h3>
-      <pre><code><span class="cm">// wp-config.php — above "That's all, stop editing!"</span>
-<span class="fn">define</span>( <span class="st">'GUIDWELL_INTERNAL_FLAG'</span>, <span class="kw">true</span> );</code></pre>
     </section>
 
     <hr class="rule"/>
@@ -510,7 +502,7 @@ pre .nu { color: #fb923c; }
 <span class="ty">Guidwell_Tiers</span>::<span class="fn">current_summary</span>(): <span class="ty">array</span></code></pre>
 
       <h3>Setting the tier (database)</h3>
-      <p>When no <code>GUIDWELL_INTERNAL_FLAG</code> constant is present, the active tier is read from the WordPress options table:</p>
+      <p>The active tier is read from the WordPress options table:</p>
       <pre><code><span class="cm">// Via WP-CLI</span>
 wp option set guidwell_license_tier agency
 

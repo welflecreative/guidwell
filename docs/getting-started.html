@@ -267,10 +267,6 @@ pre .va { color: #e2e8f0; } /* variable */
         <div class="callout__body">The license tier controls which features and limits are active. You can check your current tier at any time in <strong>WP Admin → Guidwell</strong> — the tier name is shown in the top-right of the admin interface.</div>
       </div>
 
-      <h3>developer install</h3>
-      <p>If this is an install for the plugin owner (Welfle Creative's own site), add the following line to <code>wp-config.php</code> above <code>/* That's all, stop editing! */</code>:</p>
-      <pre><code><span class="fn">define</span>( <span class="st">'GUIDWELL_INTERNAL_FLAG'</span>, <span class="kw">true</span> );</code></pre>
-      <p>This bypasses all tier checks and grants Agency-level access permanently — no database option, no license key needed. The constant must be set at the server level and is not user-controllable.</p>
     </section>
 
     <hr class="rule"/>

@@ -184,7 +184,6 @@ code { font-family: 'Fira Code', monospace; font-size: 12px; background: #f1f5f9
       <div class="change-group">
         <div class="change-group__label">Added</div>
         <ul class="change-list">
-          <li><strong>Internal configuration:</strong> Define <code>GUIDWELL_INTERNAL_FLAG = true</code> in <code>wp-config.php</code> to permanently grant Agency-level access to the plugin owner's install — survives plugin updates, reinstalls, and database wipes.</li>
           <li><strong>GitHub release pipeline:</strong> <code>.github/workflows/release.yml</code> — pushing a <code>v*</code> tag builds the plugin zip and creates a GitHub Release automatically.</li>
           <li><strong>Version bumping workflow:</strong> <code>.github/workflows/bump-version.yml</code> — trigger from GitHub Actions UI to bump patch, minor, or major version, commit, and tag in one step.</li>
           <li><strong>Auto-update support:</strong> Installed copies now detect new GitHub Releases and surface the standard WordPress update prompt in WP Admin.</li>
