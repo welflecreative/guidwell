@@ -28,8 +28,16 @@ class Guidwell_SMTP {
 		$phpmailer->SMTPAuth   = true;
 		$phpmailer->Username   = $settings['smtpUsername'] ?? '';
 		$phpmailer->Password   = self::decrypt_password( $settings['smtpPassword'] ?? '' );
-		$phpmailer->SMTPSecure = ( ( $settings['smtpEncryption'] ?? 'tls' ) === 'ssl' ) ? 'ssl' : 'tls';
-		$phpmailer->Port       = (int) ( $settings['smtpPort'] ?? 587 );
+		$enc = $settings['smtpEncryption'] ?? 'tls';
+		if ( $enc === 'ssl' ) {
+			$phpmailer->SMTPSecure = 'ssl';
+		} elseif ( $enc === 'tls' ) {
+			$phpmailer->SMTPSecure = 'tls';
+		} else {
+			$phpmailer->SMTPSecure = '';
+			$phpmailer->SMTPAutoTLS = false;
+		}
+		$phpmailer->Port = (int) ( $settings['smtpPort'] ?? 587 );
 	}
 
 	public static function encrypt_password( string $password ): string {

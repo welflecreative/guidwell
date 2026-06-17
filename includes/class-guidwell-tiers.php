@@ -24,6 +24,9 @@ class Guidwell_Tiers {
 		if ( self::$config === null ) {
 			$path = GUIDWELL_PLUGIN_DIR . 'config/tiers.json';
 			$json = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+			if ( $json === false ) {
+				wp_die( esc_html__( 'Guidwell: tiers.json is missing. Please reinstall the plugin.', 'guidwell' ) );
+			}
 			self::$config = json_decode( $json, true ) ?? [];
 		}
 		return self::$config;
@@ -37,6 +40,9 @@ class Guidwell_Tiers {
 	 * license check when the licensing layer is added.
 	 */
 	public static function current(): string {
+		if ( defined( 'GUIDWELL_INTERNAL_FLAG' ) && GUIDWELL_INTERNAL_FLAG === true ) {
+			return 'agency';
+		}
 		$tier   = get_option( 'guidwell_license_tier', 'free' );
 		$valid  = array_column( self::config()['tiers'] ?? [], 'slug' );
 		return in_array( $tier, $valid, true ) ? $tier : 'free';

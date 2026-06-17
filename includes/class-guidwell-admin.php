@@ -14,7 +14,7 @@ class Guidwell_Admin {
 		add_menu_page(
 			__( 'Guidwell', 'guidwell' ),
 			__( 'Guidwell', 'guidwell' ),
-			'edit_posts',
+			'manage_options',
 			'guidwell',
 			[ $this, 'render_page' ],
 			'dashicons-clipboard',

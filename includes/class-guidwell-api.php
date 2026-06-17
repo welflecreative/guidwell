@@ -126,7 +126,7 @@ class Guidwell_API {
 	}
 
 	public function can_edit(): bool {
-		return current_user_can( 'edit_posts' );
+		return current_user_can( 'manage_options' );
 	}
 
 	public function can_manage_options(): bool {
@@ -285,6 +285,7 @@ class Guidwell_API {
 			return $validation;
 		}
 
+		$body    = $this->sanitize_config( $body );
 		$encoded = wp_json_encode( $body );
 		update_post_meta( $post->ID, self::META_KEY, $encoded );
 
@@ -541,6 +542,52 @@ class Guidwell_API {
 
 		update_option( 'guidwell_features_list', wp_json_encode( $clean ) );
 		return rest_ensure_response( $clean );
+	}
+
+	private function sanitize_config( array $config ): array {
+		if ( is_array( $config['questions'] ?? null ) ) {
+			foreach ( $config['questions'] as &$q ) {
+				if ( isset( $q['id'] ) )   $q['id']   = sanitize_key( $q['id'] );
+				if ( isset( $q['text'] ) ) $q['text']  = sanitize_text_field( $q['text'] );
+				if ( is_array( $q['answers'] ?? null ) ) {
+					foreach ( $q['answers'] as &$a ) {
+						if ( isset( $a['id'] ) )    $a['id']    = sanitize_key( $a['id'] );
+						if ( isset( $a['label'] ) ) $a['label'] = sanitize_text_field( $a['label'] );
+						if ( is_array( $a['weights'] ?? null ) ) {
+							$clean = [];
+							foreach ( $a['weights'] as $k => $v ) {
+								$clean[ sanitize_key( $k ) ] = (float) $v;
+							}
+							$a['weights'] = $clean;
+						}
+						if ( isset( $a['next'] ) && $a['next'] !== null ) {
+							$a['next'] = sanitize_key( $a['next'] );
+						}
+					}
+					unset( $a );
+				}
+			}
+			unset( $q );
+		}
+
+		if ( is_array( $config['plans'] ?? null ) ) {
+			foreach ( $config['plans'] as &$plan ) {
+				if ( isset( $plan['slug'] ) )        $plan['slug']        = sanitize_key( $plan['slug'] );
+				if ( isset( $plan['tier'] ) )         $plan['tier']        = sanitize_key( $plan['tier'] );
+				if ( isset( $plan['name'] ) )         $plan['name']        = sanitize_text_field( $plan['name'] );
+				if ( isset( $plan['price'] ) )        $plan['price']       = sanitize_text_field( $plan['price'] );
+				if ( isset( $plan['description'] ) )  $plan['description'] = sanitize_text_field( $plan['description'] );
+				if ( isset( $plan['ctaLabel'] ) )     $plan['ctaLabel']    = sanitize_text_field( $plan['ctaLabel'] );
+				if ( isset( $plan['ctaUrl'] ) )       $plan['ctaUrl']      = esc_url_raw( $plan['ctaUrl'] );
+			}
+			unset( $plan );
+		}
+
+		if ( isset( $config['mode'] ) ) {
+			$config['mode'] = in_array( $config['mode'], [ 'linear', 'tree' ], true ) ? $config['mode'] : 'linear';
+		}
+
+		return $config;
 	}
 
 	private function validate_config( array $config ): true|WP_Error {

@@ -63,7 +63,7 @@ class Guidwell_Mailer {
 	// ── Private helpers ───────────────────────────────────────────────────────
 
 	private static function build_headers( array $cs ): array {
-		$sender_name  = sanitize_text_field( $cs['senderName']  ?? __( 'Guidwell', 'guidwell' ) );
+		$sender_name  = str_replace( [ "\r", "\n" ], '', sanitize_text_field( $cs['senderName'] ?? __( 'Guidwell', 'guidwell' ) ) );
 		$sender_email = sanitize_email( $cs['senderEmail'] ?? '' ) ?: get_option( 'admin_email' );
 		return [
 			'Content-Type: text/html; charset=UTF-8',
@@ -72,6 +72,7 @@ class Guidwell_Mailer {
 	}
 
 	private static function format_address( string $email, string $name ): string {
+		$name = str_replace( [ "\r", "\n" ], '', $name );
 		return $name ? "{$name} <{$email}>" : $email;
 	}
 
