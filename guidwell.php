@@ -3,7 +3,7 @@
  * Plugin Name: Guidwell
  * Plugin URI: https://welflecreative.com
  * Description: A customizable guided wizard that recommends the right plan or offer for each visitor.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires at least: 6.0
  * Requires PHP: 8.1
  * Author: Chad Welfle
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GUIDWELL_VERSION', '1.2.1' );
+define( 'GUIDWELL_VERSION', '1.2.2' );
 define( 'GUIDWELL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GUIDWELL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
