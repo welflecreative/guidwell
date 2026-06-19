@@ -2,8 +2,8 @@
 node_modules/
 vendor/
 
-# Build output
-dist/
+# Build output — plugin dist files ARE committed; only ignore top-level dist
+/dist/
 
 # Environment
 .env
