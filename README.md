@@ -60,7 +60,7 @@ npm run env:start
 npm run env:setup
 ```
 
-Visit **http://localhost:8888**. Login at **http://localhost:8888/wp-admin** with `admin` / `password`.
+Visit **http://localhost:8888** and log in at `/wp-admin` using the default `wp-env` credentials.
 
 **While developing**, run webpack in watch mode in a second terminal:
 ```bash
