@@ -19,7 +19,8 @@ function cssVar( style, name ) {
 
 /**
  * Attempts to detect the active theme's color palette at runtime.
- * Returns a color object or null if detection yields nothing useful.
+ * Checks CSS custom properties from WordPress core, Blocksy, Elementor,
+ * Kadence, Astra, and GeneratePress before falling back to computed styles.
  *
  * @returns {{ primaryColor: string|null, backgroundColor: string|null, textColor: string|null, detectionMethod: string, detectedCount: number } | null}
  */
@@ -27,22 +28,47 @@ export default function detectThemeColors() {
 	const style = getComputedStyle( document.documentElement );
 
 	// ── Step 1: CSS custom properties ────────────────────────────────────────
+	// Listed from most-specific to most-generic. First non-empty value wins.
 
 	const primaryCandidates = [
+		// WordPress theme.json standard
 		'--wp--preset--color--primary',
 		'--wp--preset--color--vivid-cyan-blue',
 		'--wp--preset--color--luminous-vivid-amber',
+		// Elementor global colors
+		'--e-global-color-primary',
+		'--e-global-color-accent',
+		// Blocksy
+		'--theme-palette-color-1',
+		'--theme-palette-color-2',
+		// Kadence
+		'--global-palette1',
+		'--global-palette2',
+		// Astra
+		'--ast-global-color-0',
+		'--ast-global-color-1',
+		// GeneratePress / generic
+		'--accent',
 		'--color-primary',
 		'--clr-primary',
 		'--primary-color',
-		'--accent',
 		'--theme-color',
 		'--color-accent',
 	];
 
 	const backgroundCandidates = [
+		// WordPress theme.json standard
 		'--wp--preset--color--base',
 		'--wp--preset--color--white',
+		// Blocksy (palette slot 8 is the lightest/background color)
+		'--theme-palette-color-8',
+		// Kadence
+		'--global-palette9',
+		// Astra
+		'--ast-global-color-5',
+		// GeneratePress
+		'--base-2',
+		// Generic
 		'--color-base',
 		'--background-color',
 		'--bg-color',
@@ -50,8 +76,21 @@ export default function detectThemeColors() {
 	];
 
 	const textCandidates = [
+		// WordPress theme.json standard
 		'--wp--preset--color--contrast',
 		'--wp--preset--color--foreground',
+		// Elementor
+		'--e-global-color-text',
+		// Blocksy (slots 6–7 are the darker text colors)
+		'--theme-palette-color-7',
+		'--theme-palette-color-6',
+		// Kadence
+		'--global-palette8',
+		// Astra
+		'--ast-global-color-2',
+		// GeneratePress
+		'--contrast',
+		// Generic
 		'--color-text',
 		'--text-color',
 		'--heading-color',
@@ -83,16 +122,17 @@ export default function detectThemeColors() {
 	}
 
 	// ── Step 2: Computed style sampling ──────────────────────────────────────
+	// Fallback for themes that don't expose CSS variables.
 
 	if ( ! primaryColor ) {
 		const selectors = [
 			'.wp-block-button__link',
+			'.elementor-button',
+			'.wp-element-button',
 			'.button',
 			'.btn',
 			'a.button',
 			'input[type="submit"]',
-			'.elementor-button',
-			'.wp-element-button',
 		];
 		for ( const sel of selectors ) {
 			const el = document.querySelector( sel );

@@ -43,6 +43,17 @@ if ( is_admin() ) {
 	require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-admin.php';
 }
 
+// Register Guidwell as a native Elementor widget when Elementor is active.
+add_action( 'elementor/widgets/register', function ( $widgets_manager ) {
+	require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-elementor-widget.php';
+	$widgets_manager->register( new Guidwell_Elementor_Widget() );
+} );
+
+// Ensure wizard assets are always available in Elementor's preview iframe.
+add_action( 'elementor/preview/enqueue_scripts', function () {
+	guidwell_enqueue_wizard_assets( 0 );
+} );
+
 /**
  * Enqueue and localize the wizard frontend assets.
  * Called by both the shortcode path (via wp_enqueue_scripts) and the block render callback.
