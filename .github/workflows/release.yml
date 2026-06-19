@@ -69,7 +69,7 @@ jobs:
         run: npm run build
 
       - name: Install PHP dependencies (production only)
-        run: composer install --no-dev --optimize-autoloader
+        run: composer update --no-dev --optimize-autoloader
 
       - name: Build plugin zip
         run: |
