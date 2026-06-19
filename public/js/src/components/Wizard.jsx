@@ -1,13 +1,12 @@
-import { useState, useEffect, useRef, lazy, Suspense } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import QuestionStep from './QuestionStep';
 import ProgressBar from './ProgressBar';
+import ResultScreen from './ResultScreen';
 import scoreAnswers, { getTopPlans, getAllScores } from '../utils/scoreAnswers';
 import generateInsight from '../utils/generateInsight';
 import detectThemeColors from '../utils/detectThemeColors';
 import darkenHex from '../utils/darkenHex';
-
-const ResultScreen = lazy( () => import( './ResultScreen' ) );
 
 const HARDCODED_CONFIG = {
 	questions: [
@@ -330,42 +329,40 @@ export default function Wizard() {
 			</div>
 
 			{ showResult && (
-				<Suspense fallback={ null }>
+				<div
+					className="guidwell-modal-overlay"
+					onClick={ handleCloseResult }
+					role="dialog"
+					aria-modal="true"
+					aria-label={ __( 'Your results', 'guidwell' ) }
+				>
 					<div
-						className="guidwell-modal-overlay"
-						onClick={ handleCloseResult }
-						role="dialog"
-						aria-modal="true"
-						aria-label={ __( 'Your results', 'guidwell' ) }
+						className="guidwell-modal"
+						onClick={ ( e ) => e.stopPropagation() }
 					>
-						<div
-							className="guidwell-modal"
-							onClick={ ( e ) => e.stopPropagation() }
+						<button
+							type="button"
+							className="guidwell-modal-close"
+							onClick={ handleCloseResult }
+							aria-label={ __( 'Close results', 'guidwell' ) }
 						>
-							<button
-								type="button"
-								className="guidwell-modal-close"
-								onClick={ handleCloseResult }
-								aria-label={ __( 'Close results', 'guidwell' ) }
-							>
-								&times;
-							</button>
-							<ResultScreen
-								topPlans={ topPlans }
-								allScores={ allScores }
-								insight={ insight }
-								onRestart={ handleRestart }
-								config={ config }
-								answers={ answers }
-								featuresList={ featuresList }
-								contact={ contact }
-								apiBase={ apiBase }
-								wizardId={ wizardId }
-								nonce={ nonce }
-							/>
-						</div>
+							&times;
+						</button>
+						<ResultScreen
+							topPlans={ topPlans }
+							allScores={ allScores }
+							insight={ insight }
+							onRestart={ handleRestart }
+							config={ config }
+							answers={ answers }
+							featuresList={ featuresList }
+							contact={ contact }
+							apiBase={ apiBase }
+							wizardId={ wizardId }
+							nonce={ nonce }
+						/>
 					</div>
-				</Suspense>
+				</div>
 			) }
 		</>
 	);

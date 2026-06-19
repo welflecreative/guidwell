@@ -196,7 +196,9 @@ function HeroSection( { plan, insight, cardInsight, featuresList } ) {
 				<span className="guidwell-hero-badge">
 					✦ { __( 'Recommended for you', 'guidwell' ) }
 				</span>
-				{ plan.name  && <p className="guidwell-hero-name">{ plan.name }</p> }
+				<p className="guidwell-hero-name">
+					{ plan.name || __( 'Your Best Match', 'guidwell' ) }
+				</p>
 				{ plan.price && <p className="guidwell-hero-price">{ plan.price }</p> }
 				<hr className="guidwell-hero-divider" />
 				{ plan.description && (
@@ -526,16 +528,18 @@ export default function ResultScreen( {
 		} ).catch( () => {} );
 	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// 0-plan fallback
+	// 0-plan fallback — plans not yet configured in the admin
 	if ( ! topPlans.length ) {
 		return (
 			<div className="guidwell-result">
-				<p className="guidwell-result__zero-state">
-					{ __( "Based on your answers, let's talk.", 'guidwell' ) }
-				</p>
-				<a href="#contact" className="guidwell-hero-cta guidwell-result__zero-cta">
-					{ __( 'Get in Touch', 'guidwell' ) }
-				</a>
+				<div className="guidwell-result__zero-state">
+					<p className="guidwell-result__zero-heading">
+						{ __( 'Thanks for completing the quiz!', 'guidwell' ) }
+					</p>
+					<p className="guidwell-result__zero-body">
+						{ __( 'Recommendations are on their way — check back soon.', 'guidwell' ) }
+					</p>
+				</div>
 				<div className="guidwell-result-footer">
 					<button type="button" className="guidwell-result-restart" onClick={ onRestart }>
 						{ __( 'Start over', 'guidwell' ) }
