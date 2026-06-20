@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
 import detectThemeColors from '../../../../public/js/src/utils/detectThemeColors';
 
@@ -212,7 +212,7 @@ export default function SettingsTab( {
 		}
 	}, [ settings, useThemeColors, apiBase, nonce, onNotify, onSavingChange ] );
 
-	useEffect( () => {
+	useLayoutEffect( () => {
 		if ( saveRef ) saveRef.current = handleSave;
 	}, [ saveRef, handleSave ] );
 
@@ -304,7 +304,9 @@ export default function SettingsTab( {
 		setImportStep( 'applying' );
 
 		const { _raw, features: importedFeatures } = importPreview;
-		onConfigChange( { ...( _raw ), _imported: true } );
+		// Strip `features` (stored separately) and `_imported` (would gate future builder saves via PHP tier check).
+		const { features: _f, _imported: _i, ...configData } = _raw;
+		onConfigChange( configData );
 
 		if ( importedFeatures.length > 0 && onFeaturesImport ) {
 			await onFeaturesImport( importedFeatures );

@@ -66,6 +66,11 @@ export default function AdminApp() {
 		setIsDirty( true );
 	}, [ config ] );
 
+	// Reset save status when switching tabs so stale error/success styling doesn't bleed across tabs.
+	useEffect( () => {
+		setSavingStatus( 'idle' );
+	}, [ activeTab ] );
+
 	// ── Fetch config on mount ────────────────────────────────────────────────
 
 	useEffect( () => {

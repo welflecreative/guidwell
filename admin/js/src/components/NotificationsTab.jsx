@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
 
 function Toggle( { id, checked, onChange, label, sublabel } ) {
@@ -119,7 +119,7 @@ export default function NotificationsTab( { apiBase, nonce, onNotify, onSavingCh
 		}
 	}, [ form, apiBase, nonce, onNotify, onSavingChange ] );
 
-	useEffect( () => {
+	useLayoutEffect( () => {
 		if ( saveRef ) saveRef.current = handleSave;
 	}, [ saveRef, handleSave ] );
 
