@@ -167,7 +167,7 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 		detectionRan.current = true;
 		setDetectionResult( detectThemeColors() );
 		// Wait for fonts to be loaded before listing them.
-		( document.fonts.ready || Promise.resolve() ).then( () => {
+		( document.fonts ? document.fonts.ready : Promise.resolve() ).then( () => {
 			setAvailableFonts( detectSiteFonts() );
 		} );
 	}, [] );
@@ -178,11 +178,13 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 	}
 
 	function handleFontChange( key, value ) {
-		setSettings( ( s ) => ( { ...s, [ key ]: value } ) );
+		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
+		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
 	}
 
 	function handleSizeChange( key, value ) {
-		setSettings( ( s ) => ( { ...s, [ key ]: value } ) );
+		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
+		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
 	}
 
 	function handleUseThemeToggle( checked ) {
