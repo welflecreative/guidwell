@@ -105,30 +105,30 @@ export default function Wizard() {
 	const headingRef = useRef( null );
 
 	// Apply settings as CSS custom properties.
+	// Admin-set values are the base; theme detection overrides primary + bg if enabled and detected.
 	useEffect( () => {
 		const el = document.getElementById( 'guidwell' );
 		if ( ! el ) return;
 
+		let primary    = settings?.primaryColor   || null;
+		let dark       = settings?.primaryDark    || null;
+		let bg         = settings?.backgroundColor || null;
+		const cardBg   = settings?.cardBackground  || null;
+
 		if ( settings?.useThemeColors ) {
 			const detected = detectThemeColors();
 			if ( detected ) {
-				if ( detected.primaryColor ) {
-					el.style.setProperty( '--guidwell-primary',      detected.primaryColor );
-					el.style.setProperty( '--guidwell-primary-dark', darkenHex( detected.primaryColor, 15 ) );
-				}
-				if ( detected.backgroundColor ) {
-					el.style.setProperty( '--guidwell-bg', detected.backgroundColor );
-				}
-				return;
+				if ( detected.primaryColor )    { primary = detected.primaryColor; dark = null; }
+				if ( detected.backgroundColor ) { bg = detected.backgroundColor; }
 			}
 		}
 
-		if ( settings?.primaryColor ) {
-			el.style.setProperty( '--guidwell-primary',      settings.primaryColor );
-			el.style.setProperty( '--guidwell-primary-dark', settings.primaryDark || darkenHex( settings.primaryColor, 15 ) );
+		if ( primary ) {
+			el.style.setProperty( '--guidwell-primary',      primary );
+			el.style.setProperty( '--guidwell-primary-dark', dark || darkenHex( primary, 15 ) );
 		}
-		if ( settings?.backgroundColor ) el.style.setProperty( '--guidwell-bg',      settings.backgroundColor );
-		if ( settings?.cardBackground )   el.style.setProperty( '--guidwell-card-bg', settings.cardBackground );
+		if ( bg )     el.style.setProperty( '--guidwell-bg',      bg );
+		if ( cardBg ) el.style.setProperty( '--guidwell-card-bg', cardBg );
 	}, [ settings ] );
 
 	// Fetch config from REST API, or fall back to hardcoded config.
