@@ -174,7 +174,6 @@ export default function SettingsTab( {
 	const [ availableFonts,  setAvailableFonts  ] = useState( [] );
 	const [ importStep,      setImportStep      ] = useState( null ); // null|'reading'|'ready'|'applying'|'done'
 	const [ importPreview,   setImportPreview   ] = useState( null ); // { questions, plans, features }
-	const importFileRef = useRef( null );
 	const detectionRan  = useRef( false );
 
 	useEffect( () => {
@@ -216,17 +215,7 @@ export default function SettingsTab( {
 		if ( saveRef ) saveRef.current = handleSave;
 	}, [ saveRef, handleSave ] );
 
-	function handleColorChange( key, value ) {
-		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
-		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
-	}
-
-	function handleFontChange( key, value ) {
-		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
-		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
-	}
-
-	function handleSizeChange( key, value ) {
+	function handleSettingChange( key, value ) {
 		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
 		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
 	}
@@ -396,7 +385,7 @@ export default function SettingsTab( {
 						key={ field.key }
 						field={ field }
 						value={ settings[ field.key ] || '' }
-						onChange={ ( val ) => handleColorChange( field.key, val ) }
+						onChange={ ( val ) => handleSettingChange( field.key, val ) }
 						dimmed={ useThemeColors }
 					/>
 				) ) }
@@ -414,8 +403,8 @@ export default function SettingsTab( {
 					fontKey="headingFont"
 					sizeKey="headingFontSize"
 					settings={ settings }
-					onFontChange={ handleFontChange }
-					onSizeChange={ handleSizeChange }
+					onFontChange={ handleSettingChange }
+					onSizeChange={ handleSettingChange }
 					availableFonts={ availableFonts }
 				/>
 				<FontRow
@@ -424,8 +413,8 @@ export default function SettingsTab( {
 					fontKey="bodyFont"
 					sizeKey="bodyFontSize"
 					settings={ settings }
-					onFontChange={ handleFontChange }
-					onSizeChange={ handleSizeChange }
+					onFontChange={ handleSettingChange }
+					onSizeChange={ handleSettingChange }
 					availableFonts={ availableFonts }
 				/>
 			</div>
@@ -470,7 +459,6 @@ export default function SettingsTab( {
 							<label className={ `gw-btn-secondary gw-btn-file${ importStep ? ' gw-btn-file--disabled' : '' }` }>
 								{ __( '↑ Choose JSON file…', 'guidwell' ) }
 								<input
-									ref={ importFileRef }
 									type="file"
 									accept=".json,application/json"
 									className="gw-file-input"
