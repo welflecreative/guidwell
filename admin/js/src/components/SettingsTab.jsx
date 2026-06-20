@@ -253,10 +253,18 @@ export default function SettingsTab( {
 
 			if ( ! configRes.ok ) throw new Error( `Config fetch failed (${ configRes.status })` );
 			const exportConfig   = await configRes.json();
-			const exportFeatures = featuresRes.ok ? await featuresRes.json() : features;
+			const rawFeatures    = featuresRes.ok ? await featuresRes.json() : features;
+			const exportFeatures = Array.isArray( rawFeatures ) ? rawFeatures : [];
+
+			// Strip stale plan→feature references so the file is self-consistent.
+			const validIds = new Set( exportFeatures.map( ( f ) => f.id ) );
+			const cleanPlans = ( exportConfig.plans || [] ).map( ( p ) => ( {
+				...p,
+				features: ( p.features || [] ).filter( ( id ) => validIds.has( id ) ),
+			} ) );
 
 			const filename   = `guidwell-wizard-${ new Date().toISOString().slice( 0, 10 ) }.json`;
-			const exportData = { ...exportConfig, features: Array.isArray( exportFeatures ) ? exportFeatures : [] };
+			const exportData = { ...exportConfig, plans: cleanPlans, features: exportFeatures };
 			const blob       = new Blob( [ JSON.stringify( exportData, null, 2 ) ], { type: 'application/json' } );
 			const url        = URL.createObjectURL( blob );
 			const a          = document.createElement( 'a' );
