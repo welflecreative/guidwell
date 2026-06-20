@@ -132,6 +132,20 @@ export default function Wizard() {
 		}
 		if ( bg )     el.style.setProperty( '--guidwell-bg',      bg );
 		if ( cardBg ) el.style.setProperty( '--guidwell-card-bg', cardBg );
+
+		const headingFont     = settings?.headingFont     || '';
+		const bodyFont        = settings?.bodyFont        || '';
+		const headingFontSize = settings?.headingFontSize || '';
+		const bodyFontSize    = settings?.bodyFontSize    || '';
+
+		if ( headingFont )     el.style.setProperty(   '--guidwell-heading-font', headingFont );
+		else                   el.style.removeProperty( '--guidwell-heading-font' );
+		if ( bodyFont )        el.style.setProperty(   '--guidwell-body-font',    bodyFont );
+		else                   el.style.removeProperty( '--guidwell-body-font' );
+		if ( headingFontSize ) el.style.setProperty(   '--guidwell-heading-size', `${ headingFontSize }px` );
+		else                   el.style.removeProperty( '--guidwell-heading-size' );
+		if ( bodyFontSize )    el.style.setProperty(   '--guidwell-body-size',    `${ bodyFontSize }px` );
+		else                   el.style.removeProperty( '--guidwell-body-size' );
 	}, [ settings ] );
 
 	// Copy CSS vars from #guidwell to the portaled modal container before the browser paints,
@@ -147,6 +161,8 @@ export default function Wizard() {
 			'--guidwell-border', '--guidwell-text', '--guidwell-muted',
 			'--guidwell-selected-bg', '--guidwell-radius-card',
 			'--guidwell-radius-btn', '--guidwell-shadow', '--guidwell-ease',
+			'--guidwell-body-font', '--guidwell-heading-font',
+			'--guidwell-body-size', '--guidwell-heading-size',
 		].forEach( ( v ) => {
 			const val = computed.getPropertyValue( v ).trim();
 			if ( val ) portalRef.current.style.setProperty( v, val );

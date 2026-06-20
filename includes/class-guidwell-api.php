@@ -211,6 +211,19 @@ class Guidwell_API {
 			}
 		}
 
+		foreach ( [ 'headingFont', 'bodyFont' ] as $key ) {
+			$clean[ $key ] = isset( $body[ $key ] ) ? sanitize_text_field( $body[ $key ] ) : '';
+		}
+
+		foreach ( [ 'headingFontSize', 'bodyFontSize' ] as $key ) {
+			if ( isset( $body[ $key ] ) && $body[ $key ] !== '' ) {
+				$val = (int) $body[ $key ];
+				$clean[ $key ] = ( $val >= 10 && $val <= 72 ) ? $val : '';
+			} else {
+				$clean[ $key ] = '';
+			}
+		}
+
 		$clean['useThemeColors'] = ! empty( $body['useThemeColors'] );
 
 		update_option( 'guidwell_settings', $clean );

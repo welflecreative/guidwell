@@ -2,6 +2,60 @@ import { useState, useEffect, useRef } from 'react';
 import { __ } from '@wordpress/i18n';
 import detectThemeColors from '../../../../public/js/src/utils/detectThemeColors';
 
+function detectSiteFonts() {
+	const found = new Set();
+	if ( document.fonts ) {
+		document.fonts.forEach( ( f ) => {
+			const name = f.family.replace( /^["']|["']$/g, '' ).trim();
+			if ( name ) found.add( name );
+		} );
+	}
+	const webSafe = [ 'Arial', 'Georgia', 'Times New Roman', 'Verdana', 'Courier New', 'Trebuchet MS' ];
+	const sorted = [ ...found ].sort();
+	webSafe.forEach( ( f ) => { if ( ! found.has( f ) ) sorted.push( f ); } );
+	return sorted;
+}
+
+function FontRow( { label, helpText, fontKey, sizeKey, settings, onFontChange, onSizeChange, availableFonts } ) {
+	return (
+		<div className="gw-field">
+			<label className="gw-label">{ label }</label>
+			{ helpText && <p className="gw-field-note">{ helpText }</p> }
+			<div className="gw-font-row">
+				<select
+					className="gw-select"
+					value={ settings[ fontKey ] || '' }
+					onChange={ ( e ) => onFontChange( fontKey, e.target.value ) }
+					aria-label={ label }
+				>
+					<option value="">{ __( '— Use Theme Default —', 'guidwell' ) }</option>
+					{ availableFonts.map( ( f ) => (
+						<option key={ f } value={ f }>{ f }</option>
+					) ) }
+				</select>
+				<div className="gw-font-size-wrap">
+					<input
+						type="number"
+						className="gw-input gw-font-size-input"
+						value={ settings[ sizeKey ] || '' }
+						onChange={ ( e ) => {
+							const v = e.target.value;
+							if ( v === '' ) { onSizeChange( sizeKey, '' ); return; }
+							const n = parseInt( v, 10 );
+							if ( ! isNaN( n ) ) onSizeChange( sizeKey, Math.min( 72, Math.max( 10, n ) ) );
+						} }
+						placeholder="–"
+						min="10"
+						max="72"
+						aria-label={ `${ label } size` }
+					/>
+					<span className="gw-font-size-unit">px</span>
+				</div>
+			</div>
+		</div>
+	);
+}
+
 const {
 	tier: TIER_DATA = {},
 } = window.guidwellAdminData || {};
@@ -105,15 +159,30 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 	const [ detectionResult,  setDetectionResult  ] = useState( undefined );
 	const [ saving,           setSaving           ] = useState( false );
 	const [ saveStatus,       setSaveStatus       ] = useState( 'idle' );
+	const [ availableFonts,   setAvailableFonts   ] = useState( [] );
 	const detectionRan = useRef( false );
 
 	useEffect( () => {
 		if ( detectionRan.current ) return;
 		detectionRan.current = true;
 		setDetectionResult( detectThemeColors() );
+		// Wait for fonts to be loaded before listing them.
+		( document.fonts ? document.fonts.ready : Promise.resolve() ).then( () => {
+			setAvailableFonts( detectSiteFonts() );
+		} );
 	}, [] );
 
 	function handleColorChange( key, value ) {
+		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
+		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
+	}
+
+	function handleFontChange( key, value ) {
+		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
+		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
+	}
+
+	function handleSizeChange( key, value ) {
 		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
 		setManualSettings( ( s ) => ( { ...s, [ key ]: value } ) );
 	}
@@ -275,7 +344,35 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 				) ) }
 			</div>
 
-			{ /* ── Section 3: Save ── */ }
+			{ /* ── Section 3: Typography ── */ }
+			<div className="gw-settings-section">
+				<h3 className="gw-settings-heading">{ __( 'Typography', 'guidwell' ) }</h3>
+				<p className="gw-settings-subheading">
+					{ __( 'Override the fonts and sizes used in the wizard. Leave blank to inherit your theme\'s font.', 'guidwell' ) }
+				</p>
+				<FontRow
+					label={ __( 'Heading Font', 'guidwell' ) }
+					helpText={ __( 'Applied to question text. Size default: 26px.', 'guidwell' ) }
+					fontKey="headingFont"
+					sizeKey="headingFontSize"
+					settings={ settings }
+					onFontChange={ handleFontChange }
+					onSizeChange={ handleSizeChange }
+					availableFonts={ availableFonts }
+				/>
+				<FontRow
+					label={ __( 'Body Font', 'guidwell' ) }
+					helpText={ __( 'Applied to answer cards and body text. Size default: 16px.', 'guidwell' ) }
+					fontKey="bodyFont"
+					sizeKey="bodyFontSize"
+					settings={ settings }
+					onFontChange={ handleFontChange }
+					onSizeChange={ handleSizeChange }
+					availableFonts={ availableFonts }
+				/>
+			</div>
+
+			{ /* ── Section 4: Save ── */ }
 			<button
 				className={ saveBtnClass }
 				onClick={ handleSave }
@@ -285,7 +382,7 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 				{ saveLabel }
 			</button>
 
-			{ /* ── Section 4: Backup & Transfer ── */ }
+			{ /* ── Section 5: Backup & Transfer ── */ }
 			<div className="gw-settings-section gw-settings-section--transfer">
 				<h3 className="gw-settings-heading">{ __( 'Backup & Transfer', 'guidwell' ) }</h3>
 				<p className="gw-settings-subheading">
