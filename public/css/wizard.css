@@ -21,12 +21,12 @@
 	color: var(--guidwell-text);
 	background-color: var(--guidwell-bg);
 
-	/* Break out of the theme's content-width constraint */
+	/* Break out of the theme's content-width constraint.
+	   Use margin (not transform) so position:fixed descendants stay viewport-relative. */
 	width: 100vw !important;
 	max-width: none !important;
 	position: relative;
-	left: 50%;
-	transform: translateX(-50%);
+	margin-left: calc(50% - 50vw);
 }
 
 /* Focus styles */
