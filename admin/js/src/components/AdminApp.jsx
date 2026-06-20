@@ -378,6 +378,7 @@ export default function AdminApp() {
 					onConfigChange={ setConfig }
 					features={ features }
 					onFeaturesImport={ handleFeaturesImport }
+					wizardId={ wizardId }
 				/>
 			) : activeTab === 'notifications' ? (
 				<NotificationsTab
