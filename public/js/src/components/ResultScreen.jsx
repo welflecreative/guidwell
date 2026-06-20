@@ -504,18 +504,21 @@ export default function ResultScreen( {
 	apiBase      = '',
 	wizardId     = 0,
 	nonce        = '',
+	autoSentRef  = null,
 } ) {
-	const hasFiredRef  = useRef( false );
 	const containerRef = useRef( null );
 
 	const cardInsights = topPlans.map( ( plan, i ) =>
 		generatePlanInsight( plan, i + 1, answers, config )
 	);
 
-	// Auto-send result notification on mount (fire-and-forget)
+	// Auto-send result notification on mount (fire-and-forget).
+	// Uses autoSentRef from Wizard so the guard survives the modal being closed and reopened
+	// (the portal unmounts/remounts ResultScreen, which would reset a local useRef).
 	useEffect( () => {
-		if ( ! contact.sendOnResult || hasFiredRef.current || ! topPlans[ 0 ] ) return;
-		hasFiredRef.current = true;
+		if ( ! contact.sendOnResult || ! topPlans[ 0 ] ) return;
+		if ( autoSentRef && autoSentRef.current ) return;
+		if ( autoSentRef ) autoSentRef.current = true;
 		fetch( `${ apiBase }send-result`, {
 			method:  'POST',
 			headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },

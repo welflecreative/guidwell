@@ -105,6 +105,7 @@ export default function Wizard() {
 
 	const headingRef  = useRef( null );
 	const portalRef   = useRef( null );
+	const autoSentRef = useRef( false ); // persists across modal open/close; passed to ResultScreen
 
 	// Apply settings as CSS custom properties.
 	// Admin-set values are the base; theme detection overrides primary + bg if enabled and detected.
@@ -178,9 +179,9 @@ export default function Wizard() {
 			} );
 	}, [ wizardId, apiBase ] );
 
-	// Move focus to heading after each step change.
+	// Move focus to heading after each step change — but not when the result modal is open.
 	useEffect( () => {
-		if ( flipPhase !== 'idle' || loading ) return;
+		if ( flipPhase !== 'idle' || loading || showResult ) return;
 		if ( headingRef.current ) headingRef.current.focus();
 	}, [ stepHistory, showResult, flipPhase, loading ] );
 
@@ -354,13 +355,13 @@ export default function Wizard() {
 					<div
 						className="guidwell-modal-overlay"
 						onClick={ handleCloseResult }
-						role="dialog"
-						aria-modal="true"
-						aria-label={ __( 'Your results', 'guidwell' ) }
 					>
 						<div
 							className="guidwell-modal"
 							onClick={ ( e ) => e.stopPropagation() }
+							role="dialog"
+							aria-modal="true"
+							aria-label={ __( 'Your results', 'guidwell' ) }
 						>
 							<button
 								type="button"
@@ -382,6 +383,7 @@ export default function Wizard() {
 								apiBase={ apiBase }
 								wizardId={ wizardId }
 								nonce={ nonce }
+								autoSentRef={ autoSentRef }
 							/>
 						</div>
 					</div>

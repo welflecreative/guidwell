@@ -23,6 +23,11 @@
 	color: var(--guidwell-text);
 }
 
+/* Portal container appended to document.body — must be invisible to body layout */
+.guidwell-portal {
+	display: contents;
+}
+
 /* Inline wizard mount point — full-bleed layout, background */
 #guidwell {
 	background-color: var(--guidwell-bg);
