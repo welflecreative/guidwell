@@ -1,6 +1,13 @@
 name: Release
 
 on:
+  # Auto-release on every PR merge to main.
+  # Label the PR "minor" or "major" to control the bump; unlabeled = patch.
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+  # Manual override — useful for hotfixes or forcing a specific bump type.
   workflow_dispatch:
     inputs:
       bump:
@@ -15,6 +22,9 @@ on:
 
 jobs:
   release:
+    # PR trigger: only run when the PR was actually merged (not just closed).
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -24,6 +34,23 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
+
+      - name: Determine bump type
+        id: bump
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ inputs.bump }}" >> $GITHUB_OUTPUT
+          else
+            LABELS='${{ toJson(github.event.pull_request.labels.*.name) }}'
+            if echo "$LABELS" | grep -qi '"major"'; then
+              echo "type=major" >> $GITHUB_OUTPUT
+            elif echo "$LABELS" | grep -qi '"minor"'; then
+              echo "type=minor" >> $GITHUB_OUTPUT
+            else
+              echo "type=patch" >> $GITHUB_OUTPUT
+            fi
+          fi
 
       - name: Bump version
         id: version
@@ -35,20 +62,20 @@ jobs:
           MINOR=$(echo "$CURRENT" | cut -d. -f2)
           PATCH=$(echo "$CURRENT" | cut -d. -f3)
 
-          case "${{ inputs.bump }}" in
+          case "${{ steps.bump.outputs.type }}" in
             major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
             minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
             patch) PATCH=$((PATCH + 1)) ;;
           esac
 
           NEW="${MAJOR}.${MINOR}.${PATCH}"
-          echo "Bumping $CURRENT → $NEW"
+          echo "Bumping $CURRENT → $NEW (${{ steps.bump.outputs.type }})"
 
           sed -i "s/ \* Version: ${CURRENT}/ \* Version: ${NEW}/" guidwell.php
           sed -i "s/define( 'GUIDWELL_VERSION', '${CURRENT}' )/define( 'GUIDWELL_VERSION', '${NEW}' )/" guidwell.php
 
           echo "version=${NEW}" >> $GITHUB_OUTPUT
-          echo "tag=v${NEW}" >> $GITHUB_OUTPUT
+          echo "tag=v${NEW}"    >> $GITHUB_OUTPUT
 
       - name: Setup Node
         uses: actions/setup-node@v4
