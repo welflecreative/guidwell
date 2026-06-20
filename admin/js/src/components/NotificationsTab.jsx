@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
 
 function Toggle( { id, checked, onChange, label, sublabel } ) {
@@ -44,7 +44,7 @@ function InfoBanner( { children, variant = 'info' } ) {
 	);
 }
 
-export default function NotificationsTab( { apiBase, nonce, onNotify } ) {
+export default function NotificationsTab( { apiBase, nonce, onNotify, onSavingChange, saveRef } ) {
 	const [ form,       setForm       ] = useState( {
 		recipientEmail:      '',
 		recipientName:       '',
@@ -63,10 +63,8 @@ export default function NotificationsTab( { apiBase, nonce, onNotify } ) {
 		smtpEncryption:      'tls',
 	} );
 	const [ passwordSet,  setPasswordSet  ] = useState( false );
-	const [ loading,      setLoading      ] = useState( true );
-	const [ saving,       setSaving       ] = useState( false );
-	const [ saveStatus,   setSaveStatus   ] = useState( 'idle' );
-	const [ testStatus,   setTestStatus   ] = useState( 'idle' );
+	const [ loading,    setLoading    ] = useState( true );
+	const [ testStatus, setTestStatus ] = useState( 'idle' );
 	const smtpPanelRef = useRef( null );
 
 	useEffect( () => {
@@ -98,9 +96,8 @@ export default function NotificationsTab( { apiBase, nonce, onNotify } ) {
 		setForm( ( f ) => ( { ...f, [ key ]: value } ) );
 	}
 
-	async function handleSave() {
-		setSaving( true );
-		setSaveStatus( 'saving' );
+	const handleSave = useCallback( async () => {
+		onSavingChange( 'saving' );
 		onNotify( null );
 		try {
 			const res = await fetch( `${ apiBase }contact-settings`, {
@@ -114,15 +111,17 @@ export default function NotificationsTab( { apiBase, nonce, onNotify } ) {
 			}
 			const data = await res.json();
 			setPasswordSet( !! data.smtpPasswordSet );
-			setSaveStatus( 'success' );
-			setTimeout( () => setSaveStatus( 'idle' ), 2000 );
+			onSavingChange( 'success' );
+			setTimeout( () => onSavingChange( 'idle' ), 2000 );
 		} catch ( err ) {
-			setSaveStatus( 'error' );
+			onSavingChange( 'error' );
 			onNotify( { type: 'error', message: err.message || __( 'Failed to save.', 'guidwell' ) } );
-		} finally {
-			setSaving( false );
 		}
-	}
+	}, [ form, apiBase, nonce, onNotify, onSavingChange ] );
+
+	useLayoutEffect( () => {
+		if ( saveRef ) saveRef.current = handleSave;
+	}, [ saveRef, handleSave ] );
 
 	async function handleTestEmail() {
 		if ( ! form.recipientEmail ) return;
@@ -142,16 +141,6 @@ export default function NotificationsTab( { apiBase, nonce, onNotify } ) {
 			setTimeout( () => setTestStatus( 'idle' ), 3000 );
 		}
 	}
-
-	const saveLabel = saveStatus === 'saving' ? null
-		: saveStatus === 'success' ? __( 'Saved ✓', 'guidwell' )
-		: saveStatus === 'error'   ? __( 'Error — try again', 'guidwell' )
-		: __( 'Save Settings', 'guidwell' );
-
-	const saveBtnClass = `gw-btn-save${
-		saveStatus === 'success' ? ' gw-btn-save--success' :
-		saveStatus === 'error'   ? ' gw-btn-save--error'   : ''
-	}`;
 
 	const testLabel = testStatus === 'sending' ? null
 		: testStatus.startsWith( 'sent:' ) ? `${ __( 'Test sent to', 'guidwell' ) } ${ testStatus.slice( 5 ) } ✓`
@@ -330,12 +319,6 @@ export default function NotificationsTab( { apiBase, nonce, onNotify } ) {
 					</button>
 				</div>
 			</div>
-
-			{ /* ── Save ── */ }
-			<button className={ saveBtnClass } onClick={ handleSave } disabled={ saving }>
-				{ saving && <span className="gw-btn-spinner" /> }
-				{ saveLabel }
-			</button>
 
 		</div>
 	);
