@@ -165,7 +165,7 @@ add_action( 'init', 'guidwell_register_block' );
 function guidwell_render_wizard_block( array $attributes ): string {
 	$wizard_id = isset( $attributes['wizardId'] ) ? absint( $attributes['wizardId'] ) : 0;
 	guidwell_enqueue_wizard_assets( $wizard_id );
-	return '<div id="guidwell"></div>';
+	return '<div id="guidwell" class="guidwell-scoped"></div>';
 }
 
 /**
