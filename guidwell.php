@@ -207,6 +207,10 @@ function guidwell_get_settings(): array {
 		'backgroundColor'   => '#f8f8f6',
 		'cardBackground'    => '#ffffff',
 		'useThemeColors'    => false,
+		'headingFont'       => '',
+		'bodyFont'          => '',
+		'headingFontSize'   => '',
+		'bodyFontSize'      => '',
 	];
 
 	$saved = get_option( 'guidwell_settings', [] );

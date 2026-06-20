@@ -391,6 +391,56 @@
 	min-height: 72px;
 }
 
+#guidwell-admin .gw-select {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	font-size: 13px;
+	font-family: inherit;
+	color: var(--gw-text);
+	background: var(--gw-surface);
+	box-sizing: border-box;
+	cursor: pointer;
+	transition: border-color 0.15s ease;
+	appearance: auto;
+}
+
+#guidwell-admin .gw-select:focus {
+	outline: none;
+	border-color: var(--gw-primary);
+	box-shadow: 0 0 0 2px rgba(74, 144, 164, 0.15);
+}
+
+#guidwell-admin .gw-font-row {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+#guidwell-admin .gw-font-row .gw-select {
+	flex: 1 1 auto;
+}
+
+#guidwell-admin .gw-font-size-wrap {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	flex: 0 0 auto;
+}
+
+#guidwell-admin .gw-font-size-input {
+	width: 60px;
+	text-align: center;
+	padding: 8px 6px;
+}
+
+#guidwell-admin .gw-font-size-unit {
+	font-size: 12px;
+	color: var(--gw-muted);
+	white-space: nowrap;
+}
+
 #guidwell-admin .gw-field-note {
 	font-size: 11px;
 	color: var(--gw-muted);
