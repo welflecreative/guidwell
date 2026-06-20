@@ -50,6 +50,10 @@ export default function AdminApp() {
 	const [ isFirstRun,   setIsFirstRun   ] = useState( false );
 	const [ isDirty,      setIsDirty      ] = useState( false );
 
+	// Single ref shared by settings + notifications tabs — whichever is mounted
+	// registers its save function here; AdminApp calls it from the global button.
+	const tabSaveRef = useRef( null );
+
 	const questionsListRef  = useRef( null );
 	const configRef         = useRef( config );
 	const initialLoadDone   = useRef( false );
@@ -126,6 +130,19 @@ export default function AdminApp() {
 				} ) ),
 			} ) );
 		}
+	}
+
+	// Called by SettingsTab after a JSON import that includes a features array.
+	async function handleFeaturesImport( newFeatures ) {
+		if ( ! Array.isArray( newFeatures ) || newFeatures.length === 0 ) return;
+		setFeatures( newFeatures );
+		try {
+			await fetch( `${ apiBase }features`, {
+				method:  'POST',
+				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
+				body:    JSON.stringify( newFeatures ),
+			} );
+		} catch { /* non-fatal — user can still save manually */ }
 	}
 
 	const updateQuestion = useCallback( ( updated ) => {
@@ -209,6 +226,16 @@ export default function AdminApp() {
 	// ── Save ─────────────────────────────────────────────────────────────────
 
 	async function handleSave() {
+		// Features tab autosaves — nothing to do.
+		if ( activeTab === 'features' ) return;
+
+		// Settings and Notifications tabs register their own save function via tabSaveRef.
+		if ( activeTab === 'settings' || activeTab === 'notifications' ) {
+			if ( tabSaveRef.current ) await tabSaveRef.current();
+			return;
+		}
+
+		// Builder / Logic tabs: save wizard config.
 		setSavingStatus( 'saving' );
 		setNotification( null );
 
@@ -253,16 +280,25 @@ export default function AdminApp() {
 	const selectedQuestion = config?.questions.find( ( q ) => selectedId === `question_${ q.id }` ) ?? null;
 	const selectedPlan     = config?.plans.find( ( p ) => selectedId === `plan_${ p.slug }` ) ?? null;
 
-	const saveLabel = savingStatus === 'saving' ? null
+	const isConfigTab   = activeTab === 'builder' || activeTab === 'logic';
+	const isAutoSaveTab = activeTab === 'features';
+
+	const saveLabel = isAutoSaveTab        ? __( 'Auto-saves', 'guidwell' )
+		: savingStatus === 'saving'  ? null
 		: savingStatus === 'success' ? __( 'Saved ✓', 'guidwell' )
 		: savingStatus === 'error'   ? __( 'Error — try again', 'guidwell' )
 		: __( 'Save', 'guidwell' );
 
+	const btnDisabled = isAutoSaveTab
+		|| savingStatus === 'saving'
+		|| ( isConfigTab && ! isDirty && savingStatus === 'idle' );
+
 	const saveBtnClass = [
 		'gw-btn-save',
-		savingStatus === 'success' ? 'gw-btn-save--success' : '',
-		savingStatus === 'error'   ? 'gw-btn-save--error'   : '',
-		! isDirty && savingStatus === 'idle' ? 'gw-btn-save--disabled' : '',
+		isAutoSaveTab                                                    ? 'gw-btn-save--disabled' : '',
+		savingStatus === 'success'                                       ? 'gw-btn-save--success'  : '',
+		savingStatus === 'error'                                         ? 'gw-btn-save--error'    : '',
+		isConfigTab && ! isDirty && savingStatus === 'idle'              ? 'gw-btn-save--disabled' : '',
 	].filter( Boolean ).join( ' ' );
 
 	// ── Render ───────────────────────────────────────────────────────────────
@@ -299,7 +335,7 @@ export default function AdminApp() {
 				<button
 					className={ saveBtnClass }
 					onClick={ handleSave }
-					disabled={ ( ! isDirty && savingStatus === 'idle' ) || savingStatus === 'saving' }
+					disabled={ btnDisabled }
 				>
 					{ savingStatus === 'saving' && <span className="gw-btn-spinner" /> }
 					{ saveLabel }
@@ -331,14 +367,20 @@ export default function AdminApp() {
 					apiBase={ apiBase }
 					nonce={ nonce }
 					onNotify={ setNotification }
+					onSavingChange={ setSavingStatus }
+					saveRef={ tabSaveRef }
 					config={ config }
 					onConfigChange={ setConfig }
+					features={ features }
+					onFeaturesImport={ handleFeaturesImport }
 				/>
 			) : activeTab === 'notifications' ? (
 				<NotificationsTab
 					apiBase={ apiBase }
 					nonce={ nonce }
 					onNotify={ setNotification }
+					onSavingChange={ setSavingStatus }
+					saveRef={ tabSaveRef }
 				/>
 			) : (
 				<>

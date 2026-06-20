@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { __ } from '@wordpress/i18n';
 import detectThemeColors from '../../../../public/js/src/utils/detectThemeColors';
 
@@ -84,6 +84,9 @@ const COLOR_FIELDS = [
 	},
 ];
 
+// Maps importStep → progress bar fill percentage.
+const STEP_PCT = { reading: 33, ready: 66, applying: 90, done: 100 };
+
 function isValidHex( val ) {
 	return /^#[0-9a-fA-F]{6}$/.test( val );
 }
@@ -152,25 +155,66 @@ function ColorRow( { field, value, onChange, dimmed } ) {
 	);
 }
 
-export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify, config, onConfigChange } ) {
-	const [ settings,         setSettings         ] = useState( initialSettings || {} );
-	const [ manualSettings,   setManualSettings   ] = useState( initialSettings || {} );
-	const [ useThemeColors,   setUseThemeColors   ] = useState( !! initialSettings?.useThemeColors );
-	const [ detectionResult,  setDetectionResult  ] = useState( undefined );
-	const [ saving,           setSaving           ] = useState( false );
-	const [ saveStatus,       setSaveStatus       ] = useState( 'idle' );
-	const [ availableFonts,   setAvailableFonts   ] = useState( [] );
-	const detectionRan = useRef( false );
+export default function SettingsTab( {
+	initialSettings,
+	apiBase,
+	nonce,
+	onNotify,
+	onSavingChange,
+	saveRef,
+	config,
+	onConfigChange,
+	features = [],
+	onFeaturesImport,
+} ) {
+	const [ settings,        setSettings        ] = useState( initialSettings || {} );
+	const [ manualSettings,  setManualSettings  ] = useState( initialSettings || {} );
+	const [ useThemeColors,  setUseThemeColors  ] = useState( !! initialSettings?.useThemeColors );
+	const [ detectionResult, setDetectionResult ] = useState( undefined );
+	const [ availableFonts,  setAvailableFonts  ] = useState( [] );
+	const [ importStep,      setImportStep      ] = useState( null ); // null|'reading'|'ready'|'applying'|'done'
+	const [ importPreview,   setImportPreview   ] = useState( null ); // { questions, plans, features }
+	const importFileRef = useRef( null );
+	const detectionRan  = useRef( false );
 
 	useEffect( () => {
 		if ( detectionRan.current ) return;
 		detectionRan.current = true;
 		setDetectionResult( detectThemeColors() );
-		// Wait for fonts to be loaded before listing them.
 		( document.fonts ? document.fonts.ready : Promise.resolve() ).then( () => {
 			setAvailableFonts( detectSiteFonts() );
 		} );
 	}, [] );
+
+	// Register this tab's save function with the global save button.
+	const handleSave = useCallback( async () => {
+		onSavingChange( 'saving' );
+		onNotify( null );
+
+		try {
+			const payload = { ...settings, useThemeColors };
+			const res = await fetch( `${ apiBase }settings`, {
+				method:  'POST',
+				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
+				body:    JSON.stringify( payload ),
+			} );
+
+			if ( ! res.ok ) {
+				const err = await res.json().catch( () => ( {} ) );
+				throw new Error( err.message || `HTTP ${ res.status }` );
+			}
+
+			onSavingChange( 'success' );
+			setTimeout( () => onSavingChange( 'idle' ), 2000 );
+		} catch ( err ) {
+			onSavingChange( 'error' );
+			onNotify( { type: 'error', message: err.message || __( 'Failed to save settings.', 'guidwell' ) } );
+		}
+	}, [ settings, useThemeColors, apiBase, nonce, onNotify, onSavingChange ] );
+
+	useEffect( () => {
+		if ( saveRef ) saveRef.current = handleSave;
+	}, [ saveRef, handleSave ] );
 
 	function handleColorChange( key, value ) {
 		setSettings(       ( s ) => ( { ...s, [ key ]: value } ) );
@@ -200,37 +244,12 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 		}
 	}
 
-	async function handleSave() {
-		setSaving( true );
-		setSaveStatus( 'saving' );
-		onNotify( null );
-
-		try {
-			const payload = { ...settings, useThemeColors };
-			const res = await fetch( `${ apiBase }settings`, {
-				method:  'POST',
-				headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': nonce },
-				body:    JSON.stringify( payload ),
-			} );
-
-			if ( ! res.ok ) {
-				const err = await res.json().catch( () => ( {} ) );
-				throw new Error( err.message || `HTTP ${ res.status }` );
-			}
-
-			setSaveStatus( 'success' );
-			setTimeout( () => setSaveStatus( 'idle' ), 2000 );
-		} catch ( err ) {
-			setSaveStatus( 'error' );
-			onNotify( { type: 'error', message: err.message || __( 'Failed to save settings.', 'guidwell' ) } );
-		} finally {
-			setSaving( false );
-		}
-	}
+	// ── Export ───────────────────────────────────────────────────────────────
 
 	function handleExport() {
 		const filename = `guidwell-wizard-${ new Date().toISOString().slice( 0, 10 ) }.json`;
-		const blob = new Blob( [ JSON.stringify( config, null, 2 ) ], { type: 'application/json' } );
+		const exportData = { ...config, features };
+		const blob = new Blob( [ JSON.stringify( exportData, null, 2 ) ], { type: 'application/json' } );
 		const url  = URL.createObjectURL( blob );
 		const a    = document.createElement( 'a' );
 		a.href     = url;
@@ -241,9 +260,15 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 		URL.revokeObjectURL( url );
 	}
 
+	// ── Import ───────────────────────────────────────────────────────────────
+
 	function handleImportFile( e ) {
 		const file = e.target.files[ 0 ];
 		if ( ! file ) return;
+
+		setImportStep( 'reading' );
+		setImportPreview( null );
+
 		const reader = new FileReader();
 		reader.onload = ( evt ) => {
 			try {
@@ -251,31 +276,62 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 				if ( ! Array.isArray( data.questions ) || ! Array.isArray( data.plans ) ) {
 					throw new Error( __( 'Invalid file — missing questions or plans.', 'guidwell' ) );
 				}
-				onConfigChange( { ...data, _imported: true } );
-				onNotify( {
-					type:    'info',
-					message: __( 'Wizard imported — review the builder above and click Save All Changes when ready.', 'guidwell' ),
+				setImportPreview( {
+					questions: data.questions,
+					plans:     data.plans,
+					features:  Array.isArray( data.features ) ? data.features : [],
+					_raw:      data,
 				} );
+				setImportStep( 'ready' );
 			} catch ( err ) {
+				setImportStep( null );
 				onNotify( { type: 'error', message: err.message || __( 'Could not read the JSON file.', 'guidwell' ) } );
 			}
-			e.target.value = '';
 		};
 		reader.readAsText( file );
+
+		// Reset input so the same file can be re-selected.
+		e.target.value = '';
 	}
+
+	function handleCancelImport() {
+		setImportStep( null );
+		setImportPreview( null );
+	}
+
+	async function handleConfirmImport() {
+		if ( ! importPreview ) return;
+		setImportStep( 'applying' );
+
+		const { _raw, features: importedFeatures } = importPreview;
+		onConfigChange( { ...( _raw ), _imported: true } );
+
+		if ( importedFeatures.length > 0 && onFeaturesImport ) {
+			await onFeaturesImport( importedFeatures );
+		}
+
+		setImportStep( 'done' );
+		onNotify( {
+			type:    'success',
+			message: __( 'Wizard imported — review the builder above and click Save when ready.', 'guidwell' ),
+		} );
+
+		setTimeout( () => {
+			setImportStep( null );
+			setImportPreview( null );
+		}, 1200 );
+	}
+
+	// ── Render helpers ───────────────────────────────────────────────────────
 
 	const detectionPending = detectionResult === undefined;
 	const detected         = detectionResult !== null && detectionResult !== undefined;
+	const progressPct      = importStep ? ( STEP_PCT[ importStep ] ?? 0 ) : 0;
 
-	const saveLabel = saveStatus === 'saving' ? null
-		: saveStatus === 'success' ? __( 'Saved ✓', 'guidwell' )
-		: saveStatus === 'error'   ? __( 'Error — try again', 'guidwell' )
-		: __( 'Save Settings', 'guidwell' );
-
-	const saveBtnClass = `gw-btn-save${
-		saveStatus === 'success' ? ' gw-btn-save--success' :
-		saveStatus === 'error'   ? ' gw-btn-save--error'   : ''
-	}`;
+	// Build feature label lookup for the preview.
+	function featLabel( id, featureLib ) {
+		return featureLib.find( ( f ) => f.id === id )?.label || id;
+	}
 
 	return (
 		<div className="gw-settings">
@@ -348,7 +404,7 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 			<div className="gw-settings-section">
 				<h3 className="gw-settings-heading">{ __( 'Typography', 'guidwell' ) }</h3>
 				<p className="gw-settings-subheading">
-					{ __( 'Override the fonts and sizes used in the wizard. Leave blank to inherit your theme\'s font.', 'guidwell' ) }
+					{ __( "Override the fonts and sizes used in the wizard. Leave blank to inherit your theme's font.", 'guidwell' ) }
 				</p>
 				<FontRow
 					label={ __( 'Heading Font', 'guidwell' ) }
@@ -372,21 +428,11 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 				/>
 			</div>
 
-			{ /* ── Section 4: Save ── */ }
-			<button
-				className={ saveBtnClass }
-				onClick={ handleSave }
-				disabled={ saving }
-			>
-				{ saving && <span className="gw-btn-spinner" /> }
-				{ saveLabel }
-			</button>
-
-			{ /* ── Section 5: Backup & Transfer ── */ }
+			{ /* ── Section 4: Backup & Transfer ── */ }
 			<div className="gw-settings-section gw-settings-section--transfer">
 				<h3 className="gw-settings-heading">{ __( 'Backup & Transfer', 'guidwell' ) }</h3>
 				<p className="gw-settings-subheading">
-					{ __( 'Export your wizard as a JSON file to back it up or copy it to another site. Import a previously exported file to restore or duplicate a wizard.', 'guidwell' ) }
+					{ __( 'Export your wizard (including questions, plans, and features) as a JSON file. Import a previously exported file to restore or duplicate a wizard.', 'guidwell' ) }
 				</p>
 
 				<div className="gw-transfer-row">
@@ -395,7 +441,7 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 					<div className="gw-transfer-card">
 						<p className="gw-transfer-card__label">{ __( 'Export', 'guidwell' ) }</p>
 						<p className="gw-transfer-card__desc">
-							{ __( 'Downloads a .json file of your current wizard to your computer.', 'guidwell' ) }
+							{ __( 'Downloads a .json file of your wizard — includes questions, plans, and your features library.', 'guidwell' ) }
 						</p>
 						{ CAN_EXPORT ? (
 							<button className="gw-btn-secondary" onClick={ handleExport } disabled={ ! config }>
@@ -416,16 +462,18 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 					<div className="gw-transfer-card">
 						<p className="gw-transfer-card__label">{ __( 'Import', 'guidwell' ) }</p>
 						<p className="gw-transfer-card__desc">
-							{ __( 'Loads a wizard from a .json file. You can review all changes before saving.', 'guidwell' ) }
+							{ __( 'Loads a wizard from a .json file. Review the preview before confirming.', 'guidwell' ) }
 						</p>
 						{ CAN_IMPORT ? (
-							<label className="gw-btn-secondary gw-btn-file">
+							<label className={ `gw-btn-secondary gw-btn-file${ importStep ? ' gw-btn-file--disabled' : '' }` }>
 								{ __( '↑ Choose JSON file…', 'guidwell' ) }
 								<input
+									ref={ importFileRef }
 									type="file"
 									accept=".json,application/json"
 									className="gw-file-input"
 									onChange={ handleImportFile }
+									disabled={ !! importStep }
 								/>
 							</label>
 						) : (
@@ -440,6 +488,125 @@ export default function SettingsTab( { initialSettings, apiBase, nonce, onNotify
 					</div>
 
 				</div>
+
+				{ /* ── Import progress bar ── */ }
+				{ importStep && (
+					<div className="gw-import-progress">
+						<div className="gw-import-progress__steps">
+							<span className={ `gw-import-step${ importStep === 'reading'  ? ' gw-import-step--active' : progressPct > 33  ? ' gw-import-step--done' : '' }` }>
+								{ __( 'Reading', 'guidwell' ) }
+							</span>
+							<span className="gw-import-step__divider" />
+							<span className={ `gw-import-step${ importStep === 'ready'    ? ' gw-import-step--active' : progressPct > 66  ? ' gw-import-step--done' : '' }` }>
+								{ __( 'Preview', 'guidwell' ) }
+							</span>
+							<span className="gw-import-step__divider" />
+							<span className={ `gw-import-step${ importStep === 'applying' ? ' gw-import-step--active' : importStep === 'done' ? ' gw-import-step--done' : '' }` }>
+								{ importStep === 'done' ? __( 'Applied ✓', 'guidwell' ) : __( 'Apply', 'guidwell' ) }
+							</span>
+						</div>
+						<div className="gw-import-progress__bar">
+							<div
+								className="gw-import-progress__fill"
+								style={ { width: `${ progressPct }%` } }
+							/>
+						</div>
+					</div>
+				) }
+
+				{ /* ── Import preview ── */ }
+				{ importStep === 'ready' && importPreview && (
+					<div className="gw-import-preview">
+						<h4 className="gw-import-preview__heading">{ __( 'Import Preview', 'guidwell' ) }</h4>
+
+						<div className="gw-import-preview__grid">
+
+							<div className="gw-import-preview__col">
+								<p className="gw-import-preview__label">
+									{ __( 'Questions', 'guidwell' ) }
+									<span className="gw-import-preview__count">{ importPreview.questions.length }</span>
+								</p>
+								<ul className="gw-import-preview__list">
+									{ importPreview.questions.slice( 0, 4 ).map( ( q, i ) => (
+										<li key={ i }>
+											{ q.text
+												? q.text.slice( 0, 50 ) + ( q.text.length > 50 ? '…' : '' )
+												: <em>{ __( '(untitled)', 'guidwell' ) }</em>
+											}
+										</li>
+									) ) }
+									{ importPreview.questions.length > 4 && (
+										<li className="gw-import-preview__more">
+											+{ importPreview.questions.length - 4 } { __( 'more', 'guidwell' ) }
+										</li>
+									) }
+								</ul>
+							</div>
+
+							<div className="gw-import-preview__col">
+								<p className="gw-import-preview__label">
+									{ __( 'Plans', 'guidwell' ) }
+									<span className="gw-import-preview__count">{ importPreview.plans.length }</span>
+								</p>
+								<ul className="gw-import-preview__list">
+									{ importPreview.plans.map( ( p, i ) => {
+										const planFeats = ( p.features || [] );
+										const lib       = importPreview.features;
+										return (
+											<li key={ i }>
+												<strong>{ p.name || __( '(untitled)', 'guidwell' ) }</strong>
+												{ planFeats.length > 0 && (
+													<span className="gw-import-preview__feat-list">
+														{ planFeats.slice( 0, 3 ).map( ( id ) => featLabel( id, lib ) ).join( ', ' ) }
+														{ planFeats.length > 3 && ` +${ planFeats.length - 3 }` }
+													</span>
+												) }
+											</li>
+										);
+									} ) }
+								</ul>
+							</div>
+
+							{ importPreview.features.length > 0 && (
+								<div className="gw-import-preview__col">
+									<p className="gw-import-preview__label">
+										{ __( 'Features', 'guidwell' ) }
+										<span className="gw-import-preview__count">{ importPreview.features.length }</span>
+									</p>
+									<ul className="gw-import-preview__list">
+										{ importPreview.features.slice( 0, 5 ).map( ( f, i ) => (
+											<li key={ i }>{ f.label }</li>
+										) ) }
+										{ importPreview.features.length > 5 && (
+											<li className="gw-import-preview__more">
+												+{ importPreview.features.length - 5 } { __( 'more', 'guidwell' ) }
+											</li>
+										) }
+									</ul>
+								</div>
+							) }
+
+						</div>
+
+						<div className="gw-import-preview__actions">
+							<button
+								type="button"
+								className="gw-btn-secondary"
+								onClick={ handleCancelImport }
+							>
+								{ __( 'Cancel', 'guidwell' ) }
+							</button>
+							<button
+								type="button"
+								className="gw-btn-save"
+								onClick={ handleConfirmImport }
+							>
+								{ __( 'Confirm Import →', 'guidwell' ) }
+							</button>
+						</div>
+					</div>
+				) }
+
 			</div>
 
 		</div>

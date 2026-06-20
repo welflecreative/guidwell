@@ -66,7 +66,7 @@
 	display: flex;
 	align-items: flex-start;
 	gap: 10px;
-	padding: 12px 16px;
+	padding: 14px 18px;
 	border-radius: var(--gw-radius);
 	font-size: 13px;
 	line-height: 1.5;
@@ -1228,6 +1228,160 @@
 
 #guidwell-admin .gw-file-input {
 	display: none;
+}
+
+#guidwell-admin .gw-btn-file--disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Import — progress bar
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-import-progress {
+	margin-top: 20px;
+}
+
+#guidwell-admin .gw-import-progress__steps {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 10px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+#guidwell-admin .gw-import-step {
+	color: var(--gw-muted);
+	transition: color 0.2s ease;
+}
+
+#guidwell-admin .gw-import-step--active {
+	color: var(--gw-primary);
+	font-weight: 600;
+}
+
+#guidwell-admin .gw-import-step--done {
+	color: #1a6b38;
+}
+
+#guidwell-admin .gw-import-step__divider {
+	flex: 1;
+	height: 1px;
+	background: var(--gw-border);
+	min-width: 20px;
+}
+
+#guidwell-admin .gw-import-progress__bar {
+	height: 5px;
+	background: var(--gw-border);
+	border-radius: 100px;
+	overflow: hidden;
+}
+
+#guidwell-admin .gw-import-progress__fill {
+	height: 100%;
+	background: var(--gw-primary);
+	border-radius: 100px;
+	transition: width 0.35s ease;
+}
+
+/* --------------------------------------------------------------------------
+   Import — preview panel
+   -------------------------------------------------------------------------- */
+
+#guidwell-admin .gw-import-preview {
+	margin-top: 16px;
+	border: 1px solid var(--gw-border);
+	border-radius: var(--gw-radius);
+	padding: 20px;
+	background: var(--gw-surface);
+}
+
+#guidwell-admin .gw-import-preview__heading {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--gw-text);
+	margin: 0 0 14px 0;
+}
+
+#guidwell-admin .gw-import-preview__grid {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+#guidwell-admin .gw-import-preview__col {
+	flex: 1 1 160px;
+	min-width: 140px;
+}
+
+#guidwell-admin .gw-import-preview__label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	color: var(--gw-muted);
+	margin: 0 0 8px 0;
+}
+
+#guidwell-admin .gw-import-preview__count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	background: var(--gw-primary);
+	color: #fff;
+	border-radius: 100px;
+	font-size: 10px;
+	font-weight: 700;
+	font-style: normal;
+}
+
+#guidwell-admin .gw-import-preview__list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 12px;
+	color: var(--gw-text);
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+#guidwell-admin .gw-import-preview__list li {
+	line-height: 1.4;
+	padding-left: 10px;
+	border-left: 2px solid var(--gw-border);
+}
+
+#guidwell-admin .gw-import-preview__feat-list {
+	display: block;
+	font-size: 11px;
+	color: var(--gw-muted);
+	margin-top: 2px;
+}
+
+#guidwell-admin .gw-import-preview__more {
+	font-size: 11px;
+	color: var(--gw-muted);
+	border-left-color: transparent !important;
+	padding-left: 0 !important;
+}
+
+#guidwell-admin .gw-import-preview__actions {
+	display: flex;
+	gap: 10px;
+	justify-content: flex-end;
+	margin-top: 18px;
+	padding-top: 14px;
+	border-top: 1px solid var(--gw-border);
 }
 
 /* --------------------------------------------------------------------------
