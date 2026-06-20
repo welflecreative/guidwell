@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { __ } from '@wordpress/i18n';
 import QuestionStep from './QuestionStep';
 import ProgressBar from './ProgressBar';
@@ -102,7 +103,8 @@ export default function Wizard() {
 	const [ showResult,  setShowResult  ] = useState( false );
 	const [ flipPhase,   setFlipPhase   ] = useState( 'idle' );
 
-	const headingRef = useRef( null );
+	const headingRef  = useRef( null );
+	const portalRef   = useRef( null );
 
 	// Apply settings as CSS custom properties.
 	// Admin-set values are the base; theme detection overrides primary + bg if enabled and detected.
@@ -130,6 +132,25 @@ export default function Wizard() {
 		if ( bg )     el.style.setProperty( '--guidwell-bg',      bg );
 		if ( cardBg ) el.style.setProperty( '--guidwell-card-bg', cardBg );
 	}, [ settings ] );
+
+	// Copy CSS vars from #guidwell to the portaled modal container before the browser paints,
+	// so the modal inherits the correct brand colors even though it lives on document.body.
+	useLayoutEffect( () => {
+		if ( ! showResult || ! portalRef.current ) return;
+		const src = document.getElementById( 'guidwell' );
+		if ( ! src ) return;
+		const computed = getComputedStyle( src );
+		[
+			'--guidwell-primary', '--guidwell-primary-dark',
+			'--guidwell-bg', '--guidwell-card-bg',
+			'--guidwell-border', '--guidwell-text', '--guidwell-muted',
+			'--guidwell-selected-bg', '--guidwell-radius-card',
+			'--guidwell-radius-btn', '--guidwell-shadow', '--guidwell-ease',
+		].forEach( ( v ) => {
+			const val = computed.getPropertyValue( v ).trim();
+			if ( val ) portalRef.current.style.setProperty( v, val );
+		} );
+	}, [ showResult ] );
 
 	// Fetch config from REST API, or fall back to hardcoded config.
 	useEffect( () => {
@@ -328,41 +349,44 @@ export default function Wizard() {
 				</div>
 			</div>
 
-			{ showResult && (
-				<div
-					className="guidwell-modal-overlay"
-					onClick={ handleCloseResult }
-					role="dialog"
-					aria-modal="true"
-					aria-label={ __( 'Your results', 'guidwell' ) }
-				>
+			{ showResult && createPortal(
+				<div className="guidwell-portal guidwell-scoped" ref={ portalRef }>
 					<div
-						className="guidwell-modal"
-						onClick={ ( e ) => e.stopPropagation() }
+						className="guidwell-modal-overlay"
+						onClick={ handleCloseResult }
+						role="dialog"
+						aria-modal="true"
+						aria-label={ __( 'Your results', 'guidwell' ) }
 					>
-						<button
-							type="button"
-							className="guidwell-modal-close"
-							onClick={ handleCloseResult }
-							aria-label={ __( 'Close results', 'guidwell' ) }
+						<div
+							className="guidwell-modal"
+							onClick={ ( e ) => e.stopPropagation() }
 						>
-							&times;
-						</button>
-						<ResultScreen
-							topPlans={ topPlans }
-							allScores={ allScores }
-							insight={ insight }
-							onRestart={ handleRestart }
-							config={ config }
-							answers={ answers }
-							featuresList={ featuresList }
-							contact={ contact }
-							apiBase={ apiBase }
-							wizardId={ wizardId }
-							nonce={ nonce }
-						/>
+							<button
+								type="button"
+								className="guidwell-modal-close"
+								onClick={ handleCloseResult }
+								aria-label={ __( 'Close results', 'guidwell' ) }
+							>
+								&times;
+							</button>
+							<ResultScreen
+								topPlans={ topPlans }
+								allScores={ allScores }
+								insight={ insight }
+								onRestart={ handleRestart }
+								config={ config }
+								answers={ answers }
+								featuresList={ featuresList }
+								contact={ contact }
+								apiBase={ apiBase }
+								wizardId={ wizardId }
+								nonce={ nonce }
+							/>
+						</div>
 					</div>
-				</div>
+				</div>,
+				document.body
 			) }
 		</>
 	);

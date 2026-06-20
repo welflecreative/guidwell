@@ -3,7 +3,9 @@
    All color values reference CSS custom properties only.
    ========================================================================== */
 
-#guidwell {
+/* CSS variable defaults — shared by the inline wizard and any portaled containers */
+#guidwell,
+.guidwell-portal {
 	--guidwell-primary:      #4a90a4;
 	--guidwell-primary-dark: #3a7a8c;
 	--guidwell-bg:           #f8f8f6;
@@ -19,6 +21,10 @@
 
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 	color: var(--guidwell-text);
+}
+
+/* Inline wizard mount point — full-bleed layout, background */
+#guidwell {
 	background-color: var(--guidwell-bg);
 
 	/* Break out of the theme's content-width constraint.
@@ -30,12 +36,12 @@
 }
 
 /* Focus styles */
-#guidwell *:focus-visible {
+.guidwell-scoped *:focus-visible {
 	outline: 2px solid var(--guidwell-primary);
 	outline-offset: 2px;
 }
 
-#guidwell *:focus:not(:focus-visible) {
+.guidwell-scoped *:focus:not(:focus-visible) {
 	outline: none;
 }
 
@@ -43,7 +49,7 @@
    Layout
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-wrapper {
+.guidwell-scoped .guidwell-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
@@ -52,7 +58,7 @@
 	background-color: var(--guidwell-bg);
 }
 
-#guidwell .guidwell-card {
+.guidwell-scoped .guidwell-card {
 	width: 100%;
 	max-width: clamp(600px, 65vw, 1080px);
 	background-color: var(--guidwell-card-bg);
@@ -64,14 +70,14 @@
 	transform-style: preserve-3d;
 }
 
-#guidwell .guidwell-card--result {
+.guidwell-scoped .guidwell-card--result {
 	background: transparent;
 	box-shadow: none;
 }
 
 /* Frame that holds the card + the progress bar below it. Matches the card's
    max-width so the bar always aligns flush to the card edges. */
-#guidwell .guidwell-wizard-frame {
+.guidwell-scoped .guidwell-wizard-frame {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -79,7 +85,7 @@
 }
 
 /* Override the internal margin-bottom the bar used when it lived inside the card. */
-#guidwell .guidwell-wizard-frame > .guidwell-progress {
+.guidwell-scoped .guidwell-wizard-frame > .guidwell-progress {
 	margin-top: 24px;
 	margin-bottom: 0;
 }
@@ -88,25 +94,25 @@
    Progress Bar
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-progress {
+.guidwell-scoped .guidwell-progress {
 	margin-bottom: 36px;
 }
 
-#guidwell .guidwell-progress-track {
+.guidwell-scoped .guidwell-progress-track {
 	height: 4px;
 	background-color: var(--guidwell-border);
 	border-radius: 100px;
 	overflow: hidden;
 }
 
-#guidwell .guidwell-progress-fill {
+.guidwell-scoped .guidwell-progress-fill {
 	height: 100%;
 	background-color: var(--guidwell-primary);
 	border-radius: 100px;
 	transition: width 0.4s ease;
 }
 
-#guidwell .guidwell-step-counter {
+.guidwell-scoped .guidwell-step-counter {
 	font-size: 12px;
 	color: var(--guidwell-muted);
 	margin: 8px 0 0 0;
@@ -119,7 +125,7 @@
    Question & Heading
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-question-text {
+.guidwell-scoped .guidwell-question-text {
 	font-size: 26px;
 	font-weight: 600;
 	line-height: 1.3;
@@ -131,13 +137,13 @@
    Answer Cards
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-answers {
+.guidwell-scoped .guidwell-answers {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 }
 
-#guidwell .guidwell-answer-card {
+.guidwell-scoped .guidwell-answer-card {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -160,12 +166,12 @@
 	position: relative;
 }
 
-#guidwell .guidwell-answer-card:hover {
+.guidwell-scoped .guidwell-answer-card:hover {
 	border-color: var(--guidwell-primary);
 	background-color: var(--guidwell-selected-bg);
 }
 
-#guidwell .guidwell-answer-card--selected {
+.guidwell-scoped .guidwell-answer-card--selected {
 	border-color: var(--guidwell-primary);
 	border-left: 4px solid var(--guidwell-primary);
 	background-color: var(--guidwell-selected-bg);
@@ -173,11 +179,11 @@
 	padding-left: 17px; /* compensate for extra border width */
 }
 
-#guidwell .guidwell-answer-label {
+.guidwell-scoped .guidwell-answer-label {
 	flex: 1;
 }
 
-#guidwell .guidwell-answer-check {
+.guidwell-scoped .guidwell-answer-check {
 	flex-shrink: 0;
 	margin-left: 12px;
 	display: flex;
@@ -189,7 +195,7 @@
    Navigation Buttons
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-nav {
+.guidwell-scoped .guidwell-nav {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -197,7 +203,7 @@
 	gap: 12px;
 }
 
-#guidwell .guidwell-btn {
+.guidwell-scoped .guidwell-btn {
 	padding: 14px 32px;
 	border-radius: var(--guidwell-radius-btn);
 	font-size: 16px;
@@ -212,29 +218,29 @@
 	line-height: 1;
 }
 
-#guidwell .guidwell-btn--next {
+.guidwell-scoped .guidwell-btn--next {
 	background-color: var(--guidwell-primary);
 	color: #ffffff;
 	border: none;
 	margin-left: auto;
 }
 
-#guidwell .guidwell-btn--next:hover:not(:disabled) {
+.guidwell-scoped .guidwell-btn--next:hover:not(:disabled) {
 	background-color: var(--guidwell-primary-dark);
 }
 
-#guidwell .guidwell-btn--next:disabled {
+.guidwell-scoped .guidwell-btn--next:disabled {
 	opacity: 0.45;
 	cursor: not-allowed;
 }
 
-#guidwell .guidwell-btn--back {
+.guidwell-scoped .guidwell-btn--back {
 	background-color: transparent;
 	color: var(--guidwell-text);
 	border: 1.5px solid var(--guidwell-border);
 }
 
-#guidwell .guidwell-btn--back:hover {
+.guidwell-scoped .guidwell-btn--back:hover {
 	border-color: var(--guidwell-primary);
 	color: var(--guidwell-primary);
 }
@@ -243,23 +249,23 @@
    Card flip transition
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-wrapper {
+.guidwell-scoped .guidwell-wrapper {
 	perspective: 1200px;
 }
 
-#guidwell .guidwell-card--flip-exit {
+.guidwell-scoped .guidwell-card--flip-exit {
 	animation: guidwell-flip-exit-fwd 0.28s ease-in both;
 }
 
-#guidwell .guidwell-card--flip-exit-back {
+.guidwell-scoped .guidwell-card--flip-exit-back {
 	animation: guidwell-flip-exit-back 0.28s ease-in both;
 }
 
-#guidwell .guidwell-card--flip-enter {
+.guidwell-scoped .guidwell-card--flip-enter {
 	animation: guidwell-flip-enter-fwd 0.3s ease-out both;
 }
 
-#guidwell .guidwell-card--flip-enter-back {
+.guidwell-scoped .guidwell-card--flip-enter-back {
 	animation: guidwell-flip-enter-back 0.3s ease-out both;
 }
 
@@ -287,7 +293,7 @@
    Result Screen
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-result {
+.guidwell-scoped .guidwell-result {
 	display: flex;
 	flex-direction: column;
 	gap: 32px;
@@ -296,7 +302,7 @@
 
 /* Insight banner */
 
-#guidwell .guidwell-insight {
+.guidwell-scoped .guidwell-insight {
 	display: flex;
 	align-items: flex-start;
 	gap: 14px;
@@ -312,14 +318,14 @@
 	to   { opacity: 1; }
 }
 
-#guidwell .guidwell-insight__icon {
+.guidwell-scoped .guidwell-insight__icon {
 	color: var(--guidwell-primary);
 	flex-shrink: 0;
 	line-height: 1;
 	margin-top: 1px;
 }
 
-#guidwell .guidwell-insight__text {
+.guidwell-scoped .guidwell-insight__text {
 	font-size: 15px;
 	font-style: italic;
 	color: var(--guidwell-text);
@@ -329,32 +335,32 @@
 
 /* Plan comparison layout */
 
-#guidwell .guidwell-comparison {
+.guidwell-scoped .guidwell-comparison {
 	display: flex;
 	align-items: stretch;
 	gap: 16px;
 }
 
-#guidwell .guidwell-comparison__col {
+.guidwell-scoped .guidwell-comparison__col {
 	display: flex;
 	flex-direction: column;
 }
 
-#guidwell .guidwell-comparison__col--recommended {
+.guidwell-scoped .guidwell-comparison__col--recommended {
 	flex: 1.4;
 }
 
-#guidwell .guidwell-comparison__col--runner-up {
+.guidwell-scoped .guidwell-comparison__col--runner-up {
 	flex: 1;
 }
 
-#guidwell .guidwell-comparison--single .guidwell-comparison__col--recommended {
+.guidwell-scoped .guidwell-comparison--single .guidwell-comparison__col--recommended {
 	flex: 1;
 }
 
 /* Plan badges */
 
-#guidwell .guidwell-plan-badge {
+.guidwell-scoped .guidwell-plan-badge {
 	display: inline-block;
 	font-size: 11px;
 	font-weight: 600;
@@ -367,19 +373,19 @@
 	align-self: flex-start;
 }
 
-#guidwell .guidwell-plan-badge--recommended {
+.guidwell-scoped .guidwell-plan-badge--recommended {
 	background-color: var(--guidwell-primary);
 	color: #ffffff;
 }
 
-#guidwell .guidwell-plan-badge--runner-up {
+.guidwell-scoped .guidwell-plan-badge--runner-up {
 	background-color: var(--guidwell-muted);
 	color: #ffffff;
 }
 
 /* Plan cards */
 
-#guidwell .guidwell-plan-card {
+.guidwell-scoped .guidwell-plan-card {
 	display: flex;
 	flex-direction: column;
 	border-radius: var(--guidwell-radius-card);
@@ -387,7 +393,7 @@
 	flex: 1;
 }
 
-#guidwell .guidwell-plan-card--recommended {
+.guidwell-scoped .guidwell-plan-card--recommended {
 	background: var(--guidwell-card-bg);
 	border: 2.5px solid var(--guidwell-primary);
 	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
@@ -395,7 +401,7 @@
 	animation: guidwell-card-up 0.38s ease-out 0.1s both;
 }
 
-#guidwell .guidwell-plan-card--runner-up {
+.guidwell-scoped .guidwell-plan-card--runner-up {
 	background: var(--guidwell-card-bg);
 	border: 1.5px solid var(--guidwell-border);
 	box-shadow: var(--guidwell-shadow);
@@ -413,7 +419,7 @@
 	to   { opacity: 0.92; transform: translateY(0); }
 }
 
-#guidwell .guidwell-plan-card__name--recommended {
+.guidwell-scoped .guidwell-plan-card__name--recommended {
 	font-size: 26px;
 	font-weight: 700;
 	color: var(--guidwell-primary);
@@ -421,7 +427,7 @@
 	line-height: 1.2;
 }
 
-#guidwell .guidwell-plan-card__name--runner-up {
+.guidwell-scoped .guidwell-plan-card__name--runner-up {
 	font-size: 20px;
 	font-weight: 600;
 	color: var(--guidwell-text);
@@ -429,7 +435,7 @@
 	line-height: 1.2;
 }
 
-#guidwell .guidwell-plan-card__price--recommended {
+.guidwell-scoped .guidwell-plan-card__price--recommended {
 	font-size: 52px;
 	font-weight: 800;
 	color: var(--guidwell-text);
@@ -438,7 +444,7 @@
 	letter-spacing: -0.02em;
 }
 
-#guidwell .guidwell-plan-card__price--runner-up {
+.guidwell-scoped .guidwell-plan-card__price--runner-up {
 	font-size: 36px;
 	font-weight: 700;
 	color: var(--guidwell-text);
@@ -446,13 +452,13 @@
 	margin: 0 0 16px 0;
 }
 
-#guidwell .guidwell-plan-card__divider {
+.guidwell-scoped .guidwell-plan-card__divider {
 	border: none;
 	border-top: 1px solid var(--guidwell-border);
 	margin: 0 0 16px 0;
 }
 
-#guidwell .guidwell-plan-card__description--recommended {
+.guidwell-scoped .guidwell-plan-card__description--recommended {
 	font-size: 15px;
 	line-height: 1.7;
 	color: var(--guidwell-muted);
@@ -460,7 +466,7 @@
 	flex-grow: 1;
 }
 
-#guidwell .guidwell-plan-card__description--runner-up {
+.guidwell-scoped .guidwell-plan-card__description--runner-up {
 	font-size: 14px;
 	line-height: 1.6;
 	color: var(--guidwell-muted);
@@ -468,7 +474,7 @@
 	flex-grow: 1;
 }
 
-#guidwell .guidwell-plan-card__cta {
+.guidwell-scoped .guidwell-plan-card__cta {
 	display: block;
 	width: 100%;
 	border-radius: var(--guidwell-radius-btn);
@@ -481,7 +487,7 @@
 	transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-#guidwell .guidwell-plan-card__cta--filled {
+.guidwell-scoped .guidwell-plan-card__cta--filled {
 	background-color: var(--guidwell-primary);
 	color: #ffffff;
 	border: none;
@@ -490,11 +496,11 @@
 	font-weight: 700;
 }
 
-#guidwell .guidwell-plan-card__cta--filled:hover {
+.guidwell-scoped .guidwell-plan-card__cta--filled:hover {
 	background-color: var(--guidwell-primary-dark);
 }
 
-#guidwell .guidwell-plan-card__cta--ghost {
+.guidwell-scoped .guidwell-plan-card__cta--ghost {
 	background: transparent;
 	border: 1.5px solid var(--guidwell-primary);
 	color: var(--guidwell-primary);
@@ -503,13 +509,13 @@
 	font-weight: 600;
 }
 
-#guidwell .guidwell-plan-card__cta--ghost:hover {
+.guidwell-scoped .guidwell-plan-card__cta--ghost:hover {
 	background-color: var(--guidwell-selected-bg);
 }
 
 /* Scoring report */
 
-#guidwell .guidwell-report__heading {
+.guidwell-scoped .guidwell-report__heading {
 	font-size: 20px;
 	font-weight: 700;
 	color: var(--guidwell-text);
@@ -517,11 +523,11 @@
 	line-height: 1.3;
 }
 
-#guidwell .guidwell-report__panel-inner {
+.guidwell-scoped .guidwell-report__panel-inner {
 	padding: 0;
 }
 
-#guidwell .guidwell-report__answers-toggle {
+.guidwell-scoped .guidwell-report__answers-toggle {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -542,21 +548,21 @@
 	transition: color 0.15s ease;
 }
 
-#guidwell .guidwell-report__answers-toggle:hover {
+.guidwell-scoped .guidwell-report__answers-toggle:hover {
 	color: var(--guidwell-text);
 }
 
-#guidwell .guidwell-report__answers-toggle-icon {
+.guidwell-scoped .guidwell-report__answers-toggle-icon {
 	font-size: 11px;
 	flex-shrink: 0;
 	margin-left: 8px;
 }
 
-#guidwell .guidwell-report__answers {
+.guidwell-scoped .guidwell-report__answers {
 	padding-top: 16px;
 }
 
-#guidwell .guidwell-report__section-label {
+.guidwell-scoped .guidwell-report__section-label {
 	font-size: 13px;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -565,38 +571,38 @@
 	margin: 0 0 16px 0;
 }
 
-#guidwell .guidwell-report__answer-row {
+.guidwell-scoped .guidwell-report__answer-row {
 	margin-bottom: 14px;
 }
 
-#guidwell .guidwell-report__answer-question {
+.guidwell-scoped .guidwell-report__answer-question {
 	font-size: 14px;
 	font-weight: 500;
 	color: var(--guidwell-text);
 	margin: 0 0 4px 0;
 }
 
-#guidwell .guidwell-report__answer-selected {
+.guidwell-scoped .guidwell-report__answer-selected {
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--guidwell-primary);
 	margin: 0;
 }
 
-#guidwell .guidwell-report__divider {
+.guidwell-scoped .guidwell-report__divider {
 	border: none;
 	border-top: 1px solid var(--guidwell-border);
 	margin: 20px 0;
 }
 
-#guidwell .guidwell-report__score-row {
+.guidwell-scoped .guidwell-report__score-row {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 	margin-bottom: 12px;
 }
 
-#guidwell .guidwell-report__score-name {
+.guidwell-scoped .guidwell-report__score-name {
 	font-size: 14px;
 	font-weight: 500;
 	color: var(--guidwell-text);
@@ -604,18 +610,18 @@
 	flex-shrink: 0;
 }
 
-#guidwell .guidwell-report__score-star {
+.guidwell-scoped .guidwell-report__score-star {
 	color: var(--guidwell-primary);
 }
 
-#guidwell .guidwell-report__score-bar-wrap {
+.guidwell-scoped .guidwell-report__score-bar-wrap {
 	flex: 1;
 	display: flex;
 	align-items: center;
 	gap: 10px;
 }
 
-#guidwell .guidwell-report__score-bar-track {
+.guidwell-scoped .guidwell-report__score-bar-track {
 	flex: 1;
 	height: 8px;
 	background: var(--guidwell-border);
@@ -623,14 +629,14 @@
 	overflow: hidden;
 }
 
-#guidwell .guidwell-report__score-bar-fill {
+.guidwell-scoped .guidwell-report__score-bar-fill {
 	height: 100%;
 	border-radius: 4px;
 	width: 0;
 	transition: width 0.6s ease-out;
 }
 
-#guidwell .guidwell-report__score-number {
+.guidwell-scoped .guidwell-report__score-number {
 	font-size: 13px;
 	color: var(--guidwell-muted);
 	min-width: 24px;
@@ -640,13 +646,13 @@
 
 /* Result footer — used in zero-state fallback */
 
-#guidwell .guidwell-result-footer {
+.guidwell-scoped .guidwell-result-footer {
 	text-align: center;
 }
 
 /* Restart button — appears in panel-footer on the last panel, and in
    guidwell-result-footer for the zero-state fallback. */
-#guidwell .guidwell-result-restart {
+.guidwell-scoped .guidwell-result-restart {
 	background: transparent;
 	border: 1.5px solid var(--guidwell-border);
 	border-radius: var(--guidwell-radius-btn);
@@ -662,7 +668,7 @@
 	pointer-events: auto;
 }
 
-#guidwell .guidwell-result-restart:hover {
+.guidwell-scoped .guidwell-result-restart:hover {
 	border-color: var(--guidwell-primary);
 	color: var(--guidwell-primary);
 }
@@ -671,14 +677,14 @@
    Loading Spinner
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-card--loading {
+.guidwell-scoped .guidwell-card--loading {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-height: 300px;
 }
 
-#guidwell .guidwell-spinner {
+.guidwell-scoped .guidwell-spinner {
 	width: 40px;
 	height: 40px;
 	border: 3px solid var(--guidwell-border);
@@ -695,7 +701,7 @@
    Load Error
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-load-error {
+.guidwell-scoped .guidwell-load-error {
 	font-size: 15px;
 	color: var(--guidwell-muted);
 	text-align: center;
@@ -709,37 +715,37 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 600px) {
-	#guidwell .guidwell-wrapper {
+	.guidwell-scoped .guidwell-wrapper {
 		padding: 0;
 		align-items: stretch;
 	}
 
-	#guidwell .guidwell-card {
+	.guidwell-scoped .guidwell-card {
 		border-radius: 0;
 		box-shadow: none;
 		padding: 24px;
 		min-height: 100vh;
 	}
 
-	#guidwell .guidwell-question-text {
+	.guidwell-scoped .guidwell-question-text {
 		font-size: 22px;
 	}
 
-	#guidwell .guidwell-answer-card {
+	.guidwell-scoped .guidwell-answer-card {
 		font-size: 15px;
 	}
 
-	#guidwell .guidwell-nav {
+	.guidwell-scoped .guidwell-nav {
 		flex-direction: column-reverse;
 		gap: 0;
 	}
 
-	#guidwell .guidwell-btn--next {
+	.guidwell-scoped .guidwell-btn--next {
 		width: 100%;
 		margin-left: 0;
 	}
 
-	#guidwell .guidwell-btn--back {
+	.guidwell-scoped .guidwell-btn--back {
 		background: none;
 		border: none;
 		color: var(--guidwell-muted);
@@ -756,30 +762,30 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 640px) {
-	#guidwell .guidwell-comparison {
+	.guidwell-scoped .guidwell-comparison {
 		flex-direction: column;
 		gap: 16px;
 	}
 
-	#guidwell .guidwell-comparison__col--recommended,
-	#guidwell .guidwell-comparison__col--runner-up {
+	.guidwell-scoped .guidwell-comparison__col--recommended,
+	.guidwell-scoped .guidwell-comparison__col--runner-up {
 		flex: none;
 	}
 
-	#guidwell .guidwell-plan-card--recommended,
-	#guidwell .guidwell-plan-card--runner-up {
+	.guidwell-scoped .guidwell-plan-card--recommended,
+	.guidwell-scoped .guidwell-plan-card--runner-up {
 		padding: 28px;
 	}
 
-	#guidwell .guidwell-plan-card__price--recommended {
+	.guidwell-scoped .guidwell-plan-card__price--recommended {
 		font-size: 40px;
 	}
 
-	#guidwell .guidwell-email-capture__row {
+	.guidwell-scoped .guidwell-email-capture__row {
 		flex-direction: column;
 	}
 
-	#guidwell .guidwell-email-capture__btn {
+	.guidwell-scoped .guidwell-email-capture__btn {
 		width: 100%;
 		justify-content: center;
 	}
@@ -789,7 +795,7 @@
    Email capture (result screen)
    -------------------------------------------------------------------------- */
 
-#guidwell .guidwell-email-capture {
+.guidwell-scoped .guidwell-email-capture {
 	margin: 24px 0;
 	padding: 20px 24px;
 	background: var(--guidwell-card-bg);
@@ -797,20 +803,20 @@
 	border-radius: var(--guidwell-radius-card);
 }
 
-#guidwell .guidwell-email-capture__label {
+.guidwell-scoped .guidwell-email-capture__label {
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--guidwell-text);
 	margin: 0 0 12px 0;
 }
 
-#guidwell .guidwell-email-capture__row {
+.guidwell-scoped .guidwell-email-capture__row {
 	display: flex;
 	gap: 10px;
 	align-items: stretch;
 }
 
-#guidwell .guidwell-email-capture__input {
+.guidwell-scoped .guidwell-email-capture__input {
 	flex: 1;
 	padding: 10px 14px;
 	font-size: 14px;
@@ -823,15 +829,15 @@
 	transition: border-color 0.15s ease;
 }
 
-#guidwell .guidwell-email-capture__input:focus {
+.guidwell-scoped .guidwell-email-capture__input:focus {
 	border-color: var(--guidwell-primary);
 }
 
-#guidwell .guidwell-email-capture__input:disabled {
+.guidwell-scoped .guidwell-email-capture__input:disabled {
 	opacity: 0.6;
 }
 
-#guidwell .guidwell-email-capture__btn {
+.guidwell-scoped .guidwell-email-capture__btn {
 	padding: 10px 20px;
 	background: var(--guidwell-primary);
 	color: #fff;
@@ -848,32 +854,32 @@
 	transition: background 0.15s ease;
 }
 
-#guidwell .guidwell-email-capture__btn:hover:not(:disabled) {
+.guidwell-scoped .guidwell-email-capture__btn:hover:not(:disabled) {
 	background: var(--guidwell-primary-dark);
 }
 
-#guidwell .guidwell-email-capture__btn:disabled {
+.guidwell-scoped .guidwell-email-capture__btn:disabled {
 	opacity: 0.6;
 	cursor: not-allowed;
 }
 
-#guidwell .guidwell-email-capture__btn--error {
+.guidwell-scoped .guidwell-email-capture__btn--error {
 	background: #dc2626;
 }
 
-#guidwell .guidwell-email-capture--sent {
+.guidwell-scoped .guidwell-email-capture--sent {
 	text-align: center;
 	padding: 16px 24px;
 }
 
-#guidwell .guidwell-email-capture__success {
+.guidwell-scoped .guidwell-email-capture__success {
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--guidwell-primary);
 	margin: 0;
 }
 
-#guidwell .guidwell-spinner--sm {
+.guidwell-scoped .guidwell-spinner--sm {
 	width: 14px;
 	height: 14px;
 	border-width: 2px;
@@ -902,14 +908,14 @@
 
 /* ── Hero ── */
 
-#guidwell .guidwell-hero {
+.guidwell-scoped .guidwell-hero {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 40px;
 	align-items: center;
 }
 
-#guidwell .guidwell-hero-card {
+.guidwell-scoped .guidwell-hero-card {
 	background: var(--guidwell-card-bg);
 	border: 2px solid var(--guidwell-primary);
 	border-radius: var(--guidwell-radius-card);
@@ -921,7 +927,7 @@
 	box-sizing: border-box;
 }
 
-#guidwell .guidwell-hero-badge {
+.guidwell-scoped .guidwell-hero-badge {
 	display: inline-block;
 	background: var(--guidwell-primary);
 	color: #fff;
@@ -935,7 +941,7 @@
 	align-self: flex-start;
 }
 
-#guidwell .guidwell-hero-name {
+.guidwell-scoped .guidwell-hero-name {
 	font-size: 26px;
 	font-weight: 700;
 	color: var(--guidwell-primary);
@@ -943,7 +949,7 @@
 	line-height: 1.2;
 }
 
-#guidwell .guidwell-hero-price {
+.guidwell-scoped .guidwell-hero-price {
 	font-size: 52px;
 	font-weight: 800;
 	color: var(--guidwell-text);
@@ -952,13 +958,13 @@
 	letter-spacing: -0.02em;
 }
 
-#guidwell .guidwell-hero-divider {
+.guidwell-scoped .guidwell-hero-divider {
 	border: none;
 	border-top: 1px solid var(--guidwell-border);
 	margin: 0 0 20px 0;
 }
 
-#guidwell .guidwell-hero-description {
+.guidwell-scoped .guidwell-hero-description {
 	font-size: 15px;
 	line-height: 1.7;
 	color: var(--guidwell-muted);
@@ -966,14 +972,14 @@
 	flex-grow: 1;
 }
 
-#guidwell .guidwell-hero-content {
+.guidwell-scoped .guidwell-hero-content {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	gap: 20px;
 }
 
-#guidwell .guidwell-hero-insight {
+.guidwell-scoped .guidwell-hero-insight {
 	font-size: 17px;
 	font-style: italic;
 	color: var(--guidwell-text);
@@ -983,14 +989,14 @@
 	margin: 0;
 }
 
-#guidwell .guidwell-hero-fit-reason {
+.guidwell-scoped .guidwell-hero-fit-reason {
 	font-size: 15px;
 	color: var(--guidwell-muted);
 	line-height: 1.6;
 	margin: 0;
 }
 
-#guidwell .guidwell-hero-section-label {
+.guidwell-scoped .guidwell-hero-section-label {
 	display: block;
 	font-size: 11px;
 	font-weight: 600;
@@ -1000,16 +1006,16 @@
 	margin-bottom: 6px;
 }
 
-#guidwell .guidwell-hero-section-label--features {
+.guidwell-scoped .guidwell-hero-section-label--features {
 	margin-bottom: 10px;
 }
 
-#guidwell .guidwell-hero-why {
+.guidwell-scoped .guidwell-hero-why {
 	display: flex;
 	flex-direction: column;
 }
 
-#guidwell .guidwell-hero-why__text {
+.guidwell-scoped .guidwell-hero-why__text {
 	font-size: 15px;
 	font-weight: 500;
 	color: var(--guidwell-text);
@@ -1017,12 +1023,12 @@
 	margin: 0;
 }
 
-#guidwell .guidwell-hero-features {
+.guidwell-scoped .guidwell-hero-features {
 	display: flex;
 	flex-direction: column;
 }
 
-#guidwell .guidwell-hero-cta {
+.guidwell-scoped .guidwell-hero-cta {
 	display: block;
 	width: 100%;
 	background-color: var(--guidwell-primary);
@@ -1042,30 +1048,30 @@
 	margin-top: auto;
 }
 
-#guidwell .guidwell-hero-cta:hover {
+.guidwell-scoped .guidwell-hero-cta:hover {
 	background-color: var(--guidwell-primary-dark);
 }
 
 /* ── Feature checklist (shared by hero and alt cards) ── */
 
-#guidwell .guidwell-features-list {
+.guidwell-scoped .guidwell-features-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-#guidwell .guidwell-features-list__item {
+.guidwell-scoped .guidwell-features-list__item {
 	display: flex;
 	align-items: flex-start;
 	gap: 10px;
 	margin-bottom: 8px;
 }
 
-#guidwell .guidwell-features-list__item:last-child {
+.guidwell-scoped .guidwell-features-list__item:last-child {
 	margin-bottom: 0;
 }
 
-#guidwell .guidwell-features-list__icon {
+.guidwell-scoped .guidwell-features-list__icon {
 	color: var(--guidwell-primary);
 	font-size: 14px;
 	font-weight: 700;
@@ -1074,33 +1080,33 @@
 	line-height: 1.4;
 }
 
-#guidwell .guidwell-features-list--missing .guidwell-features-list__icon {
+.guidwell-scoped .guidwell-features-list--missing .guidwell-features-list__icon {
 	color: #e05252;
 }
 
-#guidwell .guidwell-features-list--missing .guidwell-features-list__label {
+.guidwell-scoped .guidwell-features-list--missing .guidwell-features-list__label {
 	color: var(--guidwell-muted);
 	text-decoration: line-through;
 	text-decoration-color: rgba(224, 82, 82, 0.45);
 }
 
-#guidwell .guidwell-features-list__label {
+.guidwell-scoped .guidwell-features-list__label {
 	font-size: 14px;
 	color: var(--guidwell-text);
 	line-height: 1.4;
 }
 
-#guidwell .guidwell-alt-upsell--downgrade .guidwell-alt-upsell__label {
+.guidwell-scoped .guidwell-alt-upsell--downgrade .guidwell-alt-upsell__label {
 	color: #e05252;
 }
 
 /* ── Alternatives section ── */
 
-#guidwell .guidwell-alternatives {
+.guidwell-scoped .guidwell-alternatives {
 	margin-bottom: 0;
 }
 
-#guidwell .guidwell-alternatives__label {
+.guidwell-scoped .guidwell-alternatives__label {
 	font-size: 13px;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -1109,17 +1115,17 @@
 	margin: 0 0 20px 0;
 }
 
-#guidwell .guidwell-alternatives-grid {
+.guidwell-scoped .guidwell-alternatives-grid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 24px;
 }
 
-#guidwell .guidwell-alternatives-grid--single {
+.guidwell-scoped .guidwell-alternatives-grid--single {
 	grid-template-columns: 1fr;
 }
 
-#guidwell .guidwell-alt-card {
+.guidwell-scoped .guidwell-alt-card {
 	background: var(--guidwell-card-bg);
 	border: 1.5px solid var(--guidwell-border);
 	border-radius: var(--guidwell-radius-card);
@@ -1129,33 +1135,33 @@
 	box-sizing: border-box;
 }
 
-#guidwell .guidwell-alt-card--priority {
+.guidwell-scoped .guidwell-alt-card--priority {
 	padding: 28px;
 	box-shadow: var(--guidwell-shadow);
 }
 
-#guidwell .guidwell-alt-card--secondary {
+.guidwell-scoped .guidwell-alt-card--secondary {
 	padding: 24px;
 	opacity: 0.88;
 	box-shadow: none;
 }
 
-#guidwell .guidwell-alt-name {
+.guidwell-scoped .guidwell-alt-name {
 	font-weight: 700;
 	color: var(--guidwell-text);
 	margin: 0;
 	line-height: 1.2;
 }
 
-#guidwell .guidwell-alt-card--priority .guidwell-alt-name {
+.guidwell-scoped .guidwell-alt-card--priority .guidwell-alt-name {
 	font-size: 20px;
 }
 
-#guidwell .guidwell-alt-card--secondary .guidwell-alt-name {
+.guidwell-scoped .guidwell-alt-card--secondary .guidwell-alt-name {
 	font-size: 18px;
 }
 
-#guidwell .guidwell-alt-price {
+.guidwell-scoped .guidwell-alt-price {
 	font-weight: 800;
 	color: var(--guidwell-text);
 	line-height: 1;
@@ -1163,21 +1169,21 @@
 	letter-spacing: -0.02em;
 }
 
-#guidwell .guidwell-alt-card--priority .guidwell-alt-price {
+.guidwell-scoped .guidwell-alt-card--priority .guidwell-alt-price {
 	font-size: 36px;
 }
 
-#guidwell .guidwell-alt-card--secondary .guidwell-alt-price {
+.guidwell-scoped .guidwell-alt-card--secondary .guidwell-alt-price {
 	font-size: 30px;
 }
 
-#guidwell .guidwell-alt-divider {
+.guidwell-scoped .guidwell-alt-divider {
 	border: none;
 	border-top: 1px solid var(--guidwell-border);
 	margin: 0;
 }
 
-#guidwell .guidwell-alt-fit-reason {
+.guidwell-scoped .guidwell-alt-fit-reason {
 	font-size: 13px;
 	font-style: italic;
 	color: var(--guidwell-muted);
@@ -1185,14 +1191,14 @@
 	margin: 0;
 }
 
-#guidwell .guidwell-alt-upsell {
+.guidwell-scoped .guidwell-alt-upsell {
 	background: var(--guidwell-selected-bg);
 	border-left: 3px solid var(--guidwell-primary);
 	border-radius: 6px;
 	padding: 12px 16px;
 }
 
-#guidwell .guidwell-alt-upsell__label {
+.guidwell-scoped .guidwell-alt-upsell__label {
 	display: block;
 	font-size: 11px;
 	font-weight: 600;
@@ -1202,19 +1208,19 @@
 	margin-bottom: 6px;
 }
 
-#guidwell .guidwell-alt-upsell__text {
+.guidwell-scoped .guidwell-alt-upsell__text {
 	font-size: 13px;
 	color: var(--guidwell-text);
 	line-height: 1.5;
 	margin: 0;
 }
 
-#guidwell .guidwell-alt-features {
+.guidwell-scoped .guidwell-alt-features {
 	display: flex;
 	flex-direction: column;
 }
 
-#guidwell .guidwell-alt-features__label {
+.guidwell-scoped .guidwell-alt-features__label {
 	display: block;
 	font-size: 11px;
 	font-weight: 600;
@@ -1224,14 +1230,14 @@
 	margin-bottom: 8px;
 }
 
-#guidwell .guidwell-alt-description {
+.guidwell-scoped .guidwell-alt-description {
 	font-size: 14px;
 	color: var(--guidwell-muted);
 	line-height: 1.6;
 	margin: 0;
 }
 
-#guidwell .guidwell-alt-cta {
+.guidwell-scoped .guidwell-alt-cta {
 	display: block;
 	width: 100%;
 	background: transparent;
@@ -1251,7 +1257,7 @@
 	margin-top: auto;
 }
 
-#guidwell .guidwell-alt-cta:hover {
+.guidwell-scoped .guidwell-alt-cta:hover {
 	background-color: var(--guidwell-selected-bg);
 }
 
@@ -1259,7 +1265,7 @@
 
 /* ── Panel container ── */
 
-#guidwell .guidwell-result--panels {
+.guidwell-scoped .guidwell-result--panels {
 	position: relative;
 	/* Fills the card content area minus a small margin so the card shadow/border
 	   stays visible. svh = "small viewport height" (excludes mobile browser chrome). */
@@ -1275,7 +1281,7 @@
 
 /* ── Individual panels — each fills the container and scrolls internally ── */
 
-#guidwell .guidwell-panel {
+.guidwell-scoped .guidwell-panel {
 	position: absolute;
 	inset: 0;
 	overflow-y: auto;
@@ -1285,9 +1291,9 @@
 	scrollbar-width: none;
 }
 
-#guidwell .guidwell-panel::-webkit-scrollbar { display: none; }
+.guidwell-scoped .guidwell-panel::-webkit-scrollbar { display: none; }
 
-#guidwell .guidwell-panel--active {
+.guidwell-scoped .guidwell-panel--active {
 	opacity: 1;
 	pointer-events: auto;
 }
@@ -1296,22 +1302,22 @@
 /* Entry is slower (760ms) than exit (580ms) so they overlap — the new panel is
    still rising into view as the old one fades out, creating a layered crossfade. */
 
-#guidwell .guidwell-panel--entering-fwd {
+.guidwell-scoped .guidwell-panel--entering-fwd {
 	animation: guidwell-panel-enter-fwd 760ms var(--guidwell-ease) both;
 	pointer-events: auto;
 	z-index: 2;
 }
-#guidwell .guidwell-panel--entering-back {
+.guidwell-scoped .guidwell-panel--entering-back {
 	animation: guidwell-panel-enter-back 760ms var(--guidwell-ease) both;
 	pointer-events: auto;
 	z-index: 2;
 }
-#guidwell .guidwell-panel--exiting-fwd {
+.guidwell-scoped .guidwell-panel--exiting-fwd {
 	animation: guidwell-panel-exit-fwd 580ms ease-in both;
 	pointer-events: none;
 	z-index: 1;
 }
-#guidwell .guidwell-panel--exiting-back {
+.guidwell-scoped .guidwell-panel--exiting-back {
 	animation: guidwell-panel-exit-back 580ms ease-in both;
 	pointer-events: none;
 	z-index: 1;
@@ -1336,13 +1342,13 @@
 
 /* ── Panel inner — padding so content never hides behind the footer chrome ── */
 
-#guidwell .guidwell-panel__inner {
+.guidwell-scoped .guidwell-panel__inner {
 	padding: 48px 48px 100px;
 }
 
 /* ── Bottom chrome: dots + scroll hint ── */
 
-#guidwell .guidwell-panel-footer {
+.guidwell-scoped .guidwell-panel-footer {
 	position: absolute;
 	bottom: 0;
 	left: 0;
@@ -1363,7 +1369,7 @@
 	);
 }
 
-#guidwell .guidwell-scroll-hint {
+.guidwell-scoped .guidwell-scroll-hint {
 	font-size: 18px;
 	color: var(--guidwell-muted);
 	opacity: 0.55;
@@ -1376,14 +1382,14 @@
 	50%       { transform: translateY(5px); opacity: 0.9; }
 }
 
-#guidwell .guidwell-panel-dots {
+.guidwell-scoped .guidwell-panel-dots {
 	display: flex;
 	align-items: center;
 	gap: 7px;
 	pointer-events: auto;
 }
 
-#guidwell .guidwell-panel-dot {
+.guidwell-scoped .guidwell-panel-dot {
 	width: 7px;
 	height: 7px;
 	border-radius: 50%;
@@ -1397,7 +1403,7 @@
 		background-color 0.25s var(--guidwell-ease);
 }
 
-#guidwell .guidwell-panel-dot--active {
+.guidwell-scoped .guidwell-panel-dot--active {
 	width: 22px;
 	border-radius: 4px;
 	background: var(--guidwell-primary);
@@ -1406,29 +1412,29 @@
 /* ── Reduced motion: skip all panel animations ── */
 
 @media (prefers-reduced-motion: reduce) {
-	#guidwell .guidwell-panel--entering-fwd,
-	#guidwell .guidwell-panel--entering-back,
-	#guidwell .guidwell-panel--exiting-fwd,
-	#guidwell .guidwell-panel--exiting-back {
+	.guidwell-scoped .guidwell-panel--entering-fwd,
+	.guidwell-scoped .guidwell-panel--entering-back,
+	.guidwell-scoped .guidwell-panel--exiting-fwd,
+	.guidwell-scoped .guidwell-panel--exiting-back {
 		animation: none;
 		opacity:   1;
 		transform: none;
 	}
-	#guidwell .guidwell-scroll-hint {
+	.guidwell-scoped .guidwell-scroll-hint {
 		animation: none;
 	}
 }
 
 /* ── Zero-state fallback ── */
 
-#guidwell .guidwell-result__zero-state {
+.guidwell-scoped .guidwell-result__zero-state {
 	text-align: center;
 	font-size: 18px;
 	color: var(--guidwell-text);
 	margin: 0 0 24px 0;
 }
 
-#guidwell .guidwell-result__zero-cta {
+.guidwell-scoped .guidwell-result__zero-cta {
 	display: block;
 	max-width: 280px;
 	margin: 0 auto 24px;
@@ -1439,25 +1445,25 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 767px) {
-	#guidwell .guidwell-hero {
+	.guidwell-scoped .guidwell-hero {
 		grid-template-columns: 1fr;
 		gap: 24px;
 	}
 
-	#guidwell .guidwell-hero-card {
+	.guidwell-scoped .guidwell-hero-card {
 		height: auto;
 		padding: 28px;
 	}
 
-	#guidwell .guidwell-hero-price {
+	.guidwell-scoped .guidwell-hero-price {
 		font-size: 40px;
 	}
 
-	#guidwell .guidwell-hero-content {
+	.guidwell-scoped .guidwell-hero-content {
 		gap: 16px;
 	}
 
-	#guidwell .guidwell-alternatives-grid {
+	.guidwell-scoped .guidwell-alternatives-grid {
 		grid-template-columns: 1fr;
 	}
 }
@@ -1465,7 +1471,7 @@
 /* On small screens the wrapper padding drops to 0 and the card goes full-height,
    so the panel container can use nearly the full viewport height. */
 @media (max-width: 600px) {
-	#guidwell .guidwell-result--panels {
+	.guidwell-scoped .guidwell-result--panels {
 		height: calc(100vh - 52px);
 		height: calc(100svh - 52px);
 		min-height: 360px;
@@ -1557,7 +1563,7 @@
 		border-radius: 12px;
 	}
 
-	#guidwell .guidwell-panel__inner {
+	.guidwell-scoped .guidwell-panel__inner {
 		padding: 24px 24px 100px;
 	}
 }

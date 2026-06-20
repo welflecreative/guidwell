@@ -31,11 +31,7 @@ export default function detectThemeColors() {
 	// Listed from most-specific to most-generic. First non-empty value wins.
 
 	const primaryCandidates = [
-		// WordPress theme.json standard
-		'--wp--preset--color--primary',
-		'--wp--preset--color--vivid-cyan-blue',
-		'--wp--preset--color--luminous-vivid-amber',
-		// Elementor global colors
+		// Elementor global colors — checked first; these are deliberately set by the user
 		'--e-global-color-primary',
 		'--e-global-color-accent',
 		// Blocksy
@@ -54,6 +50,10 @@ export default function detectThemeColors() {
 		'--primary-color',
 		'--theme-color',
 		'--color-accent',
+		// WordPress theme.json — last resort; vivid-cyan-blue / luminous-vivid-amber are
+		// WordPress default palette entries always present regardless of theme, so checking
+		// them early incorrectly picks up the WP blue (#0693e3) on Elementor sites.
+		'--wp--preset--color--primary',
 	];
 
 	const backgroundCandidates = [
