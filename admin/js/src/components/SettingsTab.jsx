@@ -166,6 +166,7 @@ export default function SettingsTab( {
 	onConfigChange,
 	features = [],
 	onFeaturesImport,
+	wizardId = 0,
 } ) {
 	const [ settings,        setSettings        ] = useState( initialSettings || {} );
 	const [ manualSettings,  setManualSettings  ] = useState( initialSettings || {} );
@@ -235,18 +236,41 @@ export default function SettingsTab( {
 
 	// ── Export ───────────────────────────────────────────────────────────────
 
-	function handleExport() {
-		const filename = `guidwell-wizard-${ new Date().toISOString().slice( 0, 10 ) }.json`;
-		const exportData = { ...config, features };
-		const blob = new Blob( [ JSON.stringify( exportData, null, 2 ) ], { type: 'application/json' } );
-		const url  = URL.createObjectURL( blob );
-		const a    = document.createElement( 'a' );
-		a.href     = url;
-		a.download = filename;
-		document.body.appendChild( a );
-		a.click();
-		document.body.removeChild( a );
-		URL.revokeObjectURL( url );
+	const [ exporting, setExporting ] = useState( false );
+
+	async function handleExport() {
+		if ( ! wizardId ) {
+			onNotify( { type: 'error', message: __( 'Save your wizard at least once before exporting.', 'guidwell' ) } );
+			return;
+		}
+
+		setExporting( true );
+		try {
+			const [ configRes, featuresRes ] = await Promise.all( [
+				fetch( `${ apiBase }config/${ wizardId }`, { headers: { 'X-WP-Nonce': nonce } } ),
+				fetch( `${ apiBase }features`,             { headers: { 'X-WP-Nonce': nonce } } ),
+			] );
+
+			if ( ! configRes.ok ) throw new Error( `Config fetch failed (${ configRes.status })` );
+			const exportConfig   = await configRes.json();
+			const exportFeatures = featuresRes.ok ? await featuresRes.json() : features;
+
+			const filename   = `guidwell-wizard-${ new Date().toISOString().slice( 0, 10 ) }.json`;
+			const exportData = { ...exportConfig, features: Array.isArray( exportFeatures ) ? exportFeatures : [] };
+			const blob       = new Blob( [ JSON.stringify( exportData, null, 2 ) ], { type: 'application/json' } );
+			const url        = URL.createObjectURL( blob );
+			const a          = document.createElement( 'a' );
+			a.href           = url;
+			a.download       = filename;
+			document.body.appendChild( a );
+			a.click();
+			document.body.removeChild( a );
+			URL.revokeObjectURL( url );
+		} catch ( err ) {
+			onNotify( { type: 'error', message: err.message || __( 'Export failed. Please try again.', 'guidwell' ) } );
+		} finally {
+			setExporting( false );
+		}
 	}
 
 	// ── Import ───────────────────────────────────────────────────────────────
@@ -435,8 +459,8 @@ export default function SettingsTab( {
 							{ __( 'Downloads a .json file of your wizard — includes questions, plans, and your features library.', 'guidwell' ) }
 						</p>
 						{ CAN_EXPORT ? (
-							<button className="gw-btn-secondary" onClick={ handleExport } disabled={ ! config }>
-								{ __( '↓ Download wizard.json', 'guidwell' ) }
+							<button className="gw-btn-secondary" onClick={ handleExport } disabled={ exporting || ! wizardId }>
+								{ exporting ? __( 'Exporting…', 'guidwell' ) : __( '↓ Download wizard.json', 'guidwell' ) }
 							</button>
 						) : (
 							<div className="gw-tier-gate">
