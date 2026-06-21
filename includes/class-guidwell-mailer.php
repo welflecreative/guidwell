@@ -81,12 +81,13 @@ class Guidwell_Mailer {
 		array $contact_settings,
 		bool $is_visitor = false
 	): string {
-		$primary     = $contact_settings['primaryColor'] ?? '#4a90a4';
-		$header_text = $contact_settings['headerText']   ?? '';
-		$footer_text = $contact_settings['footerText']   ?? '';
-		$recommended = $data['recommendedPlan']          ?? null;
-		$runner_up   = $data['runnerUpPlan']             ?? null;
-		$insight     = $data['insight']                  ?? '';
+		$primary      = $contact_settings['primaryColor'] ?? '#4a90a4';
+		$header_text  = $contact_settings['headerText']   ?? '';
+		$footer_text  = $contact_settings['footerText']   ?? '';
+		$recommended  = $data['recommendedPlan']          ?? null;
+		$runner_up    = $data['runnerUpPlan']             ?? null;
+		$insight      = $data['insight']                  ?? '';
+		$text_answers = $data['textAnswers']              ?? [];
 
 		if ( ! $recommended ) return '';
 
@@ -151,6 +152,33 @@ class Guidwell_Mailer {
 			);
 		}
 
+		// Text responses block — admin only
+		$text_answers_html = '';
+		if ( ! $is_visitor && ! empty( $text_answers ) ) {
+			$rows = '';
+			foreach ( $text_answers as $item ) {
+				$rows .= sprintf(
+					'<div style="margin-bottom:16px;">'
+					. '<p style="font-size:13px;font-weight:600;color:#374151;margin:0 0 4px 0;">%s</p>'
+					. '<p style="font-size:14px;color:#6b7280;line-height:1.6;margin:0;'
+					.   'background:#f9f9f9;padding:10px 12px;border-radius:4px;'
+					.   'border-left:3px solid #e5e7eb;">%s</p>'
+					. '</div>',
+					esc_html( $item['question'] ),
+					nl2br( esc_html( $item['answer'] ) )
+				);
+			}
+			$text_answers_html = sprintf(
+				'<div style="border-top:1px solid #e0e0e0;margin:24px 0;padding-top:24px;">'
+				. '<p style="font-size:13px;font-weight:700;text-transform:uppercase;'
+				.   'letter-spacing:0.06em;color:#9ca3af;margin:0 0 16px 0;">%s</p>'
+				. '%s'
+				. '</div>',
+				esc_html__( 'Visitor responses', 'guidwell' ),
+				$rows
+			);
+		}
+
 		// Footer
 		$footer_html = '';
 		if ( $footer_text ) {
@@ -194,6 +222,7 @@ class Guidwell_Mailer {
 			. '</div>'
 
 			. $runner_up_html
+			. $text_answers_html
 			. '</div>'
 
 			// Footer

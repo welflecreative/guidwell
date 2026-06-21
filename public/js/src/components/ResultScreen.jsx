@@ -36,7 +36,7 @@ function FeaturesList( { features, missing = false } ) {
 
 // ── Email capture ─────────────────────────────────────────────────────────────
 
-function EmailCapture( { apiBase, wizardId, nonce, topPlans, insight } ) {
+function EmailCapture( { apiBase, wizardId, nonce, topPlans, insight, textAnswers = [] } ) {
 	const [ email,  setEmail  ] = useState( '' );
 	const [ status, setStatus ] = useState( 'idle' );
 
@@ -53,6 +53,7 @@ function EmailCapture( { apiBase, wizardId, nonce, topPlans, insight } ) {
 					runnerUpPlan:    topPlans[ 1 ] ?? null,
 					insight,
 					visitorEmail:    email,
+					textAnswers,
 				} ),
 			} );
 			if ( ! res.ok ) throw new Error();
@@ -519,6 +520,7 @@ export default function ResultScreen( {
 	wizardId     = 0,
 	nonce        = '',
 	autoSentRef  = null,
+	textAnswers  = [],
 } ) {
 	const containerRef = useRef( null );
 
@@ -541,6 +543,7 @@ export default function ResultScreen( {
 				recommendedPlan: topPlans[ 0 ] ?? null,
 				runnerUpPlan:    topPlans[ 1 ] ?? null,
 				insight,
+				textAnswers,
 			} ),
 		} ).catch( () => {} );
 	}, [] ); // eslint-disable-line react-hooks/exhaustive-deps
@@ -603,6 +606,7 @@ export default function ResultScreen( {
 								nonce={ nonce }
 								topPlans={ topPlans }
 								insight={ insight }
+								textAnswers={ textAnswers }
 							/>
 						) }
 						<ScoringReport

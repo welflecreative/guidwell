@@ -249,10 +249,10 @@ export default function Wizard() {
 	const totalSteps     = questions.length;
 
 	// In tree mode: "last step" means neither the selected answer nor the question's default chain has a next target.
-	const selectedAnswerObj = question?.answers.find( ( a ) => a.id === selectedAnswer ) ?? null;
+	const selectedAnswerObj = question?.answers?.find( ( a ) => a.id === selectedAnswer ) ?? null;
 	const effectiveNext = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
 	const isLastStep = isTreeMode
-		? selectedAnswer !== null && effectiveNext === null
+		? ( question?.type === 'text' || selectedAnswer !== null ) && effectiveNext === null
 		: stepHistory.length === totalSteps;
 
 	function transition( direction, callback ) {
@@ -284,7 +284,7 @@ export default function Wizard() {
 	}
 
 	function handleNext() {
-		if ( ! selectedAnswer || flipPhase !== 'idle' ) return;
+		if ( ( ! selectedAnswer && question?.type !== 'text' ) || flipPhase !== 'idle' ) return;
 
 		if ( isTreeMode ) {
 			const nextId = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
@@ -336,9 +336,15 @@ export default function Wizard() {
 		: '';
 
 	// Compute result data only when modal is open.
-	const topPlans  = showResult ? getTopPlans( answers, config, 3 ) : [];
-	const allScores = showResult ? getAllScores( answers, config ) : [];
-	const insight   = showResult ? generateInsight( answers, config ) : '';
+	const topPlans    = showResult ? getTopPlans( answers, config, 3 ) : [];
+	const allScores   = showResult ? getAllScores( answers, config ) : [];
+	const insight     = showResult ? generateInsight( answers, config ) : '';
+	const visitedIds  = new Set( stepHistory.map( String ) );
+	const textAnswers = showResult
+		? questions
+			.filter( ( q ) => q.type === 'text' && answers[ q.id ] && visitedIds.has( String( q.id ) ) )
+			.map( ( q ) => ( { question: q.text, answer: answers[ q.id ] } ) )
+		: [];
 
 	return (
 		<>
@@ -400,6 +406,7 @@ export default function Wizard() {
 								wizardId={ wizardId }
 								nonce={ nonce }
 								autoSentRef={ autoSentRef }
+								textAnswers={ textAnswers }
 							/>
 						</div>
 					</div>
