@@ -105,6 +105,11 @@
 			"tiers": ["agency"],
 			"upgrade_message": "Cross-platform analytics, drop-off tracking, and monthly strategy reports."
 		},
+		"plan_logo_icons": {
+			"label": "Plan logo & icon images",
+			"tiers": ["pro", "agency"],
+			"upgrade_message": "Add a logo or icon to each plan so your results page stands out."
+		},
 		"white_label": {
 			"label": "White-label (remove badge)",
 			"tiers": ["agency"],

@@ -951,6 +951,15 @@
 	align-self: flex-start;
 }
 
+.guidwell-scoped .guidwell-hero-logo {
+	display: block;
+	width: 64px;
+	height: 64px;
+	object-fit: contain;
+	border-radius: 8px;
+	margin-bottom: 14px;
+}
+
 .guidwell-scoped .guidwell-hero-name {
 	font-size: 26px;
 	font-weight: 700;
@@ -1154,6 +1163,15 @@
 	padding: 24px;
 	opacity: 0.88;
 	box-shadow: none;
+}
+
+.guidwell-scoped .guidwell-alt-logo {
+	display: block;
+	width: 44px;
+	height: 44px;
+	object-fit: contain;
+	border-radius: 6px;
+	margin-bottom: 10px;
 }
 
 .guidwell-scoped .guidwell-alt-name {

@@ -229,8 +229,11 @@ function TreeCanvas( { config, onConfigChange } ) {
 
 	// ── Dragging ──────────────────────────────────────────────────────────────
 
-	const dragging = useRef( null );
-	const canvasRef = useRef( null );
+	const dragging        = useRef( null );
+	const canvasRef       = useRef( null );
+	const scrollRAF       = useRef( null );
+	const edgeScroll      = useRef( { dx: 0, dy: 0 } );
+	const lastMouseClient = useRef( { x: 0, y: 0 } );
 
 	function getChainParentId( qId ) {
 		return questionsRef.current.find( q => q.defaultNext === qId )?.id ?? null;
@@ -270,8 +273,39 @@ function TreeCanvas( { config, onConfigChange } ) {
 	}
 
 	useEffect( () => {
+		function scheduleEdgeScroll() {
+			function tick() {
+				if ( ! dragging.current ) { scrollRAF.current = null; return; }
+				const { dx, dy } = edgeScroll.current;
+				if ( ! dx && ! dy ) { scrollRAF.current = null; return; }
+				const canvas = canvasRef.current;
+				if ( ! canvas ) { scrollRAF.current = null; return; }
+
+				const prevL   = canvas.scrollLeft;
+				const prevT   = canvas.scrollTop;
+				canvas.scrollLeft += dx;
+				canvas.scrollTop  += dy;
+				const actualDx = canvas.scrollLeft - prevL;
+				const actualDy = canvas.scrollTop  - prevT;
+
+				if ( actualDx || actualDy ) {
+					dragging.current.startMouseX -= actualDx;
+					dragging.current.startMouseY -= actualDy;
+					const { qId, startMouseX, startMouseY, origX, origY } = dragging.current;
+					const { x: cx, y: cy } = lastMouseClient.current;
+					const newX = Math.max( 0, origX + ( cx - startMouseX ) );
+					const newY = Math.max( 0, origY + ( cy - startMouseY ) );
+					setPositions( prev => ( { ...prev, [ qId ]: { x: newX, y: newY } } ) );
+				}
+
+				scrollRAF.current = requestAnimationFrame( tick );
+			}
+			scrollRAF.current = requestAnimationFrame( tick );
+		}
+
 		function onMouseMove( e ) {
 			if ( ! dragging.current ) return;
+			lastMouseClient.current = { x: e.clientX, y: e.clientY };
 			const { qId, startMouseX, startMouseY, origX, origY, chainParentId } = dragging.current;
 			const newX = Math.max( 0, origX + ( e.clientX - startMouseX ) );
 			const newY = Math.max( 0, origY + ( e.clientY - startMouseY ) );
@@ -334,9 +368,29 @@ function TreeCanvas( { config, onConfigChange } ) {
 
 			const dragPos = snap ? { x: snap.snapX, y: snap.snapY } : { x: newX, y: newY };
 			setPositions( prev => ( { ...prev, [ qId ]: dragPos } ) );
+
+			// Edge-scroll: detect proximity to canvas edges and start/update a RAF loop.
+			const canvas = canvasRef.current;
+			if ( canvas ) {
+				const rect = canvas.getBoundingClientRect();
+				const ZONE = 80, MAX = 12;
+				let sdx = 0, sdy = 0;
+				if      ( e.clientX < rect.left   + ZONE ) sdx = -MAX * ( ( rect.left   + ZONE - e.clientX ) / ZONE );
+				else if ( e.clientX > rect.right  - ZONE ) sdx =  MAX * ( ( e.clientX   - rect.right  + ZONE ) / ZONE );
+				if      ( e.clientY < rect.top    + ZONE ) sdy = -MAX * ( ( rect.top    + ZONE - e.clientY ) / ZONE );
+				else if ( e.clientY > rect.bottom - ZONE ) sdy =  MAX * ( ( e.clientY   - rect.bottom + ZONE ) / ZONE );
+				edgeScroll.current = { dx: Math.round( sdx ), dy: Math.round( sdy ) };
+				if ( ( sdx || sdy ) && ! scrollRAF.current ) scheduleEdgeScroll();
+			}
 		}
 
 		function onMouseUp() {
+			if ( scrollRAF.current ) {
+				cancelAnimationFrame( scrollRAF.current );
+				scrollRAF.current = null;
+			}
+			edgeScroll.current = { dx: 0, dy: 0 };
+
 			if ( ! dragging.current ) return;
 			const { qId, snapTarget, chainParentId, origX, origY } = dragging.current;
 			dragging.current = null;
@@ -415,6 +469,10 @@ function TreeCanvas( { config, onConfigChange } ) {
 		return () => {
 			window.removeEventListener( 'mousemove', onMouseMove );
 			window.removeEventListener( 'mouseup',   onMouseUp );
+			if ( scrollRAF.current ) {
+				cancelAnimationFrame( scrollRAF.current );
+				scrollRAF.current = null;
+			}
 		};
 	}, [ persistLayout ] );
 
