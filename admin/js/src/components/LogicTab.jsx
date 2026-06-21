@@ -598,10 +598,10 @@ function TreeCanvas( { config, onConfigChange } ) {
 			<div
 				className={ `gw-tree-canvas${ pendingWire ? ' gw-tree-canvas--connecting' : '' }` }
 				ref={ canvasRef }
-				style={ { minWidth: canvasW, minHeight: canvasH } }
 				onMouseMove={ onCanvasMouseMove }
 				onClick={ onCanvasClick }
 			>
+				<div style={ { width: canvasW, height: canvasH, position: 'relative' } }>
 				<svg
 					className="gw-tree-svg"
 					width={ canvasW }
@@ -739,6 +739,7 @@ function TreeCanvas( { config, onConfigChange } ) {
 						</div>
 					);
 				} ) }
+				</div>
 			</div>
 		</div>
 	);
