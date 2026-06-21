@@ -601,6 +601,7 @@ function TreeCanvas( { config, onConfigChange } ) {
 				onMouseMove={ onCanvasMouseMove }
 				onClick={ onCanvasClick }
 			>
+				{ /* Scroll content: explicit dimensions give .gw-tree-canvas (overflow:auto) something to overflow against — position:absolute children alone don't expand the scroll area. */ }
 				<div style={ { width: canvasW, height: canvasH, position: 'relative' } }>
 				<svg
 					className="gw-tree-svg"
