@@ -196,6 +196,13 @@ function HeroSection( { plan, insight, cardInsight, featuresList } ) {
 				<span className="guidwell-hero-badge">
 					✦ { __( 'Recommended for you', 'guidwell' ) }
 				</span>
+				{ plan.logoUrl && (
+					<img
+						src={ plan.logoUrl }
+						alt={ plan.name || '' }
+						className="guidwell-hero-logo"
+					/>
+				) }
 				<p className="guidwell-hero-name">
 					{ plan.name || __( 'Your Best Match', 'guidwell' ) }
 				</p>
@@ -260,6 +267,13 @@ function AltCard( { plan, cardInsight, recommendedPlan, featuresList, isPriority
 
 	return (
 		<div className={ cardClass }>
+			{ plan.logoUrl && (
+				<img
+					src={ plan.logoUrl }
+					alt={ plan.name || '' }
+					className="guidwell-alt-logo"
+				/>
+			) }
 			{ plan.name  && <p className="guidwell-alt-name">{ plan.name }</p> }
 			{ plan.price && <p className="guidwell-alt-price">{ plan.price }</p> }
 			<hr className="guidwell-alt-divider" />

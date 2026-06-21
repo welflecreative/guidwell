@@ -1,6 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { __, sprintf } from '@wordpress/i18n';
 
+const {
+	tier: TIER_DATA = {},
+} = window.guidwellAdminData || {};
+
+const CAN_PLAN_LOGOS = TIER_DATA?.features?.plan_logo_icons?.allowed ?? false;
+const UPGRADE_URL    = TIER_DATA?.upgrade_url || 'https://welflecreative.com/guidwell';
+
 function AutoResizeTextarea( { value, onChange, ...props } ) {
 	const ref = useRef( null );
 
@@ -69,7 +76,40 @@ export default function PlanEditor( { plan, onUpdate, features = [], onGoToFeatu
 				/>
 			</div>
 
-<div className="gw-field">
+			<div className="gw-field">
+				<label className="gw-label">{ __( 'Plan Logo / Icon URL', 'guidwell' ) }</label>
+				<p className="gw-field-note">{ __( 'Optional image shown above the plan name on the results page. Recommended: square image, 80×80px or larger.', 'guidwell' ) }</p>
+				{ CAN_PLAN_LOGOS ? (
+					<>
+						<input
+							type="url"
+							className="gw-input"
+							value={ plan.logoUrl || '' }
+							onChange={ ( e ) => set( 'logoUrl', e.target.value ) }
+							placeholder="https://"
+						/>
+						{ plan.logoUrl && (
+							<div style={ { marginTop: 8 } }>
+								<img
+									src={ plan.logoUrl }
+									alt={ __( 'Logo preview', 'guidwell' ) }
+									style={ { maxWidth: 80, maxHeight: 80, borderRadius: 8, border: '1px solid var(--gw-border)', objectFit: 'contain', padding: 4 } }
+								/>
+							</div>
+						) }
+					</>
+				) : (
+					<div className="gw-tier-gate">
+						<span className="gw-tier-gate__icon" aria-hidden="true">🔒</span>
+						<span className="gw-tier-gate__text">{ __( 'Pro plan required', 'guidwell' ) }</span>
+						<a href={ UPGRADE_URL } target="_blank" rel="noreferrer" className="gw-tier-gate__link">
+							{ __( 'Upgrade', 'guidwell' ) }
+						</a>
+					</div>
+				) }
+			</div>
+
+			<div className="gw-field">
 				<label className="gw-label">{ __( 'Description', 'guidwell' ) }</label>
 				<AutoResizeTextarea
 					value={ plan.description }

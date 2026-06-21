@@ -592,6 +592,13 @@ class Guidwell_API {
 				if ( isset( $plan['description'] ) )  $plan['description'] = sanitize_text_field( $plan['description'] );
 				if ( isset( $plan['ctaLabel'] ) )     $plan['ctaLabel']    = sanitize_text_field( $plan['ctaLabel'] );
 				if ( isset( $plan['ctaUrl'] ) )       $plan['ctaUrl']      = esc_url_raw( $plan['ctaUrl'] );
+				if ( isset( $plan['logoUrl'] ) ) {
+					if ( Guidwell_Tiers::can( 'plan_logo_icons' ) ) {
+						$plan['logoUrl'] = esc_url_raw( $plan['logoUrl'] );
+					} else {
+						unset( $plan['logoUrl'] );
+					}
+				}
 			}
 			unset( $plan );
 		}
