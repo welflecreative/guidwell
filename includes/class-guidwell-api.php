@@ -442,7 +442,7 @@ class Guidwell_API {
 			];
 		};
 
-		$raw_text_answers = is_array( $body['textAnswers'] ?? null ) ? $body['textAnswers'] : [];
+		$raw_text_answers = is_array( $body['textAnswers'] ?? null ) ? array_slice( $body['textAnswers'], 0, 50 ) : [];
 		$text_answers     = [];
 		foreach ( $raw_text_answers as $item ) {
 			if ( ! is_array( $item ) ) continue;

@@ -59,7 +59,7 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 		} );
 
 		return () => sortable.destroy();
-	}, [] );
+	}, [ isTextQuestion ] );
 
 	function setQuestionText( text ) {
 		onUpdate( { ...question, text } );

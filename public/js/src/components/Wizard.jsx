@@ -284,7 +284,7 @@ export default function Wizard() {
 	}
 
 	function handleNext() {
-		if ( ! selectedAnswer || flipPhase !== 'idle' ) return;
+		if ( ( ! selectedAnswer && question?.type !== 'text' ) || flipPhase !== 'idle' ) return;
 
 		if ( isTreeMode ) {
 			const nextId = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
@@ -339,9 +339,10 @@ export default function Wizard() {
 	const topPlans    = showResult ? getTopPlans( answers, config, 3 ) : [];
 	const allScores   = showResult ? getAllScores( answers, config ) : [];
 	const insight     = showResult ? generateInsight( answers, config ) : '';
+	const visitedIds  = new Set( stepHistory.map( String ) );
 	const textAnswers = showResult
 		? questions
-			.filter( ( q ) => q.type === 'text' && answers[ q.id ] )
+			.filter( ( q ) => q.type === 'text' && answers[ q.id ] && visitedIds.has( String( q.id ) ) )
 			.map( ( q ) => ( { question: q.text, answer: answers[ q.id ] } ) )
 		: [];
 
