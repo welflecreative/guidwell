@@ -8,6 +8,7 @@ function computeScores( answers, config ) {
 	plans.forEach( ( plan ) => { scores[ plan.slug ] = 0; } );
 
 	questions.forEach( ( question ) => {
+		if ( question.type === 'text' ) return;
 		const selectedId = answers[ question.id ];
 		if ( ! selectedId ) return;
 

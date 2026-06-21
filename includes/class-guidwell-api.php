@@ -442,12 +442,24 @@ class Guidwell_API {
 			];
 		};
 
+		$raw_text_answers = is_array( $body['textAnswers'] ?? null ) ? $body['textAnswers'] : [];
+		$text_answers     = [];
+		foreach ( $raw_text_answers as $item ) {
+			if ( ! is_array( $item ) ) continue;
+			$q = sanitize_text_field( $item['question'] ?? '' );
+			$a = sanitize_textarea_field( $item['answer']   ?? '' );
+			if ( $q !== '' && $a !== '' ) {
+				$text_answers[] = [ 'question' => $q, 'answer' => $a ];
+			}
+		}
+
 		$data = [
 			'recommendedPlan' => $sanitize_plan( $body['recommendedPlan'] ?? null ),
 			'runnerUpPlan'    => isset( $body['runnerUpPlan'] ) ? $sanitize_plan( $body['runnerUpPlan'] ) : null,
 			'insight'         => sanitize_text_field( $body['insight'] ?? '' ),
 			'visitorEmail'    => sanitize_email( $body['visitorEmail'] ?? '' ) ?: null,
 			'wizardId'        => $wizard_id,
+			'textAnswers'     => $text_answers,
 		];
 
 		if ( ! $data['recommendedPlan'] || empty( $data['recommendedPlan']['name'] ) ) {
@@ -562,6 +574,7 @@ class Guidwell_API {
 			foreach ( $config['questions'] as &$q ) {
 				if ( isset( $q['id'] ) )   $q['id']   = sanitize_key( $q['id'] );
 				if ( isset( $q['text'] ) ) $q['text']  = sanitize_text_field( $q['text'] );
+				if ( isset( $q['type'] ) ) $q['type']  = in_array( $q['type'], [ 'text', 'scored' ], true ) ? $q['type'] : 'scored';
 				if ( is_array( $q['answers'] ?? null ) ) {
 					foreach ( $q['answers'] as &$a ) {
 						if ( isset( $a['id'] ) )    $a['id']    = sanitize_key( $a['id'] );
@@ -635,23 +648,36 @@ class Guidwell_API {
 		}
 
 		foreach ( $config['questions'] as $i => $q ) {
-			if ( empty( $q['id'] ) || empty( $q['text'] ) || empty( $q['answers'] ) || ! is_array( $q['answers'] ) ) {
+			$is_text_q = ( $q['type'] ?? '' ) === 'text';
+
+			if ( empty( $q['id'] ) || empty( $q['text'] ) ) {
 				return new WP_Error(
 					'guidwell_invalid_config',
 					/* translators: %d: question index */
-					sprintf( __( 'Question %d must have id, text, and answers.', 'guidwell' ), $i + 1 ),
+					sprintf( __( 'Question %d must have id and text.', 'guidwell' ), $i + 1 ),
 					[ 'status' => 400 ]
 				);
 			}
 
-			foreach ( $q['answers'] as $j => $a ) {
-				if ( empty( $a['id'] ) || empty( $a['label'] ) || empty( $a['weights'] ) || ! is_array( $a['weights'] ) ) {
+			if ( ! $is_text_q ) {
+				if ( empty( $q['answers'] ) || ! is_array( $q['answers'] ) ) {
 					return new WP_Error(
 						'guidwell_invalid_config',
-						/* translators: %1$d: question index, %2$d: answer index */
-						sprintf( __( 'Answer %2$d on question %1$d must have id, label, and weights.', 'guidwell' ), $i + 1, $j + 1 ),
+						/* translators: %d: question index */
+						sprintf( __( 'Question %d must have answers.', 'guidwell' ), $i + 1 ),
 						[ 'status' => 400 ]
 					);
+				}
+
+				foreach ( $q['answers'] as $j => $a ) {
+					if ( empty( $a['id'] ) || empty( $a['label'] ) || empty( $a['weights'] ) || ! is_array( $a['weights'] ) ) {
+						return new WP_Error(
+							'guidwell_invalid_config',
+							/* translators: %1$d: question index, %2$d: answer index */
+							sprintf( __( 'Answer %2$d on question %1$d must have id, label, and weights.', 'guidwell' ), $i + 1, $j + 1 ),
+							[ 'status' => 400 ]
+						);
+					}
 				}
 			}
 		}

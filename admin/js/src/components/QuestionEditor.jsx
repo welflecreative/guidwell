@@ -24,9 +24,23 @@ function AutoResizeTextarea( { value, onChange, className, ...props } ) {
 }
 
 export default function QuestionEditor( { question, plans, onUpdate } ) {
+	const isTextQuestion = question.type === 'text';
+
 	const answersListRef = useRef( null );
 	const answersRef     = useRef( question.answers );
 	useEffect( () => { answersRef.current = question.answers; }, [ question.answers ] );
+
+	function setQuestionType( type ) {
+		if ( type === 'text' ) {
+			onUpdate( { ...question, type: 'text', answers: [] } );
+		} else {
+			const { type: _t, ...rest } = question;
+			const answers = rest.answers?.length
+				? rest.answers
+				: [ { id: `a_${ Date.now() }`, label: '', weights: Object.fromEntries( plans.map( ( p ) => [ p.slug, 0 ] ) ) } ];
+			onUpdate( { ...rest, answers } );
+		}
+	}
 
 	// Sortable for answer rows.
 	useEffect( () => {
@@ -86,6 +100,30 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 	return (
 		<div>
 			<div className="gw-field">
+				<label className="gw-label">{ __( 'Question Type', 'guidwell' ) }</label>
+				<div className="gw-radio-group">
+					<label className="gw-radio-option">
+						<input
+							type="radio"
+							name={ `qtype_${ question.id }` }
+							checked={ ! isTextQuestion }
+							onChange={ () => setQuestionType( 'scored' ) }
+						/>
+						<span>{ __( 'Scored — answer choices affect plan recommendations', 'guidwell' ) }</span>
+					</label>
+					<label className="gw-radio-option">
+						<input
+							type="radio"
+							name={ `qtype_${ question.id }` }
+							checked={ isTextQuestion }
+							onChange={ () => setQuestionType( 'text' ) }
+						/>
+						<span>{ __( 'Text response — free-form, sent to admin only (not scored)', 'guidwell' ) }</span>
+					</label>
+				</div>
+			</div>
+
+			<div className="gw-field">
 				<label className="gw-label">{ __( 'Question', 'guidwell' ) }</label>
 				<AutoResizeTextarea
 					value={ question.text }
@@ -95,6 +133,12 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 				/>
 			</div>
 
+			{ isTextQuestion ? (
+				<p className="gw-field-note gw-field-note--info">
+					{ __( 'Visitors will see a text area for their answer. Their response won\'t affect scoring and won\'t appear on the results page — it will only show up in your admin notification email.', 'guidwell' ) }
+				</p>
+			) : (
+				<>
 			<div className="gw-section-header">
 				<h3 className="gw-section-title">{ __( 'Answers', 'guidwell' ) }</h3>
 				<button className="gw-btn-secondary" onClick={ addAnswer }>
@@ -139,6 +183,8 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 					</div>
 				) ) }
 			</div>
+				</>
+			) }
 		</div>
 	);
 }

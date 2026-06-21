@@ -153,6 +153,31 @@
 	gap: 10px;
 }
 
+.guidwell-scoped .guidwell-text-answer {
+	width: 100%;
+}
+
+.guidwell-scoped .guidwell-text-answer__input {
+	width: 100%;
+	min-height: 120px;
+	padding: 14px 16px;
+	background: var(--guidwell-card-bg);
+	border: 1.5px solid var(--guidwell-border);
+	border-radius: 10px;
+	color: var(--guidwell-text);
+	font-family: inherit;
+	font-size: 15px;
+	line-height: 1.6;
+	resize: vertical;
+	box-sizing: border-box;
+	transition: border-color 0.15s var(--guidwell-ease);
+}
+
+.guidwell-scoped .guidwell-text-answer__input:focus {
+	outline: none;
+	border-color: var(--guidwell-primary);
+}
+
 .guidwell-scoped .guidwell-answer-card {
 	display: flex;
 	align-items: center;
