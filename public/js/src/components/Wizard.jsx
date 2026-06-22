@@ -249,10 +249,17 @@ export default function Wizard() {
 	const totalSteps     = questions.length;
 
 	// In tree mode: "last step" means neither the selected answer nor the question's default chain has a next target.
-	const selectedAnswerObj = question?.answers?.find( ( a ) => a.id === selectedAnswer ) ?? null;
-	const effectiveNext = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
+	// Multi-select and text questions always use defaultNext (no per-answer branching).
+	const selectedAnswerObj = ( question?.multiSelect || question?.type === 'text' )
+		? null
+		: question?.answers?.find( ( a ) => a.id === selectedAnswer ) ?? null;
+	const effectiveNext  = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
+	const hasAnswerForStep = question?.type === 'text' ||
+		( question?.multiSelect
+			? Array.isArray( selectedAnswer ) && selectedAnswer.length > 0
+			: selectedAnswer !== null );
 	const isLastStep = isTreeMode
-		? ( question?.type === 'text' || selectedAnswer !== null ) && effectiveNext === null
+		? hasAnswerForStep && effectiveNext === null
 		: stepHistory.length === totalSteps;
 
 	function transition( direction, callback ) {
@@ -268,23 +275,25 @@ export default function Wizard() {
 		setAnswers( ( prev ) => {
 			const updated = { ...prev };
 			if ( isTreeMode ) {
-				// Clear answers for any questions further along the current path.
 				const currentIdx = stepHistory.indexOf( currentQId );
-				stepHistory.slice( currentIdx + 1 ).forEach( ( id ) => {
-					delete updated[ id ];
-				} );
+				stepHistory.slice( currentIdx + 1 ).forEach( ( id ) => { delete updated[ id ]; } );
 			} else {
-				// Linear: clear all answers after the current position.
-				questions.slice( stepHistory.length ).forEach( ( q ) => {
-					delete updated[ q.id ];
-				} );
+				questions.slice( stepHistory.length ).forEach( ( q ) => { delete updated[ q.id ]; } );
+			}
+
+			if ( question.multiSelect ) {
+				const current = Array.isArray( updated[ question.id ] ) ? updated[ question.id ] : [];
+				const next    = current.includes( answerId )
+					? current.filter( ( id ) => id !== answerId )
+					: [ ...current, answerId ];
+				return { ...updated, [ question.id ]: next.length ? next : null };
 			}
 			return { ...updated, [ question.id ]: answerId };
 		} );
 	}
 
 	function handleNext() {
-		if ( ( ! selectedAnswer && question?.type !== 'text' ) || flipPhase !== 'idle' ) return;
+		if ( ! hasAnswerForStep || flipPhase !== 'idle' ) return;
 
 		if ( isTreeMode ) {
 			const nextId = selectedAnswerObj?.next ?? question?.defaultNext ?? null;
@@ -336,7 +345,7 @@ export default function Wizard() {
 		: '';
 
 	// Compute result data only when modal is open.
-	const topPlans    = showResult ? getTopPlans( answers, config, 3 ) : [];
+	const topPlans    = showResult ? getTopPlans( answers, config, 3 ).filter( ( p, i ) => i === 0 || p.score > 0 ) : [];
 	const allScores   = showResult ? getAllScores( answers, config ) : [];
 	const insight     = showResult ? generateInsight( answers, config ) : '';
 	const visitedIds  = new Set( stepHistory.map( String ) );

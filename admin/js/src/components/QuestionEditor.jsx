@@ -123,6 +123,19 @@ export default function QuestionEditor( { question, plans, onUpdate } ) {
 				</div>
 			</div>
 
+			{ ! isTextQuestion && (
+				<div className="gw-field">
+					<label className="gw-checkbox-option">
+						<input
+							type="checkbox"
+							checked={ !! question.multiSelect }
+							onChange={ ( e ) => onUpdate( { ...question, multiSelect: e.target.checked } ) }
+						/>
+						<span>{ __( 'Allow multiple selections — visitor can pick more than one answer', 'guidwell' ) }</span>
+					</label>
+				</div>
+			) }
+
 			<div className="gw-field">
 				<label className="gw-label">{ __( 'Question', 'guidwell' ) }</label>
 				<AutoResizeTextarea

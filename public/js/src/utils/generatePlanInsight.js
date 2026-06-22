@@ -25,10 +25,13 @@ export default function generatePlanInsight( plan, podiumPosition, answers, conf
 	questions.forEach( ( q ) => {
 		const selectedId = answers?.[ q.id ];
 		if ( ! selectedId ) return;
-		const answer = q.answers?.find( ( a ) => a.id === selectedId );
-		if ( ! answer ) return;
-		const weight = answer.weights?.[ slug ] ?? 0;
-		answered.push( { label: answer.label, weight } );
+		const ids = Array.isArray( selectedId ) ? selectedId : [ selectedId ];
+		ids.forEach( ( id ) => {
+			const answer = q.answers?.find( ( a ) => a.id === id );
+			if ( ! answer ) return;
+			const weight = answer.weights?.[ slug ] ?? 0;
+			answered.push( { label: answer.label, weight } );
+		} );
 	} );
 
 	const byDesc = [ ...answered ].sort( ( a, b ) => b.weight - a.weight );

@@ -12,11 +12,13 @@ function computeScores( answers, config ) {
 		const selectedId = answers[ question.id ];
 		if ( ! selectedId ) return;
 
-		const answer = question.answers.find( ( a ) => a.id === selectedId );
-		if ( ! answer ) return;
-
-		Object.entries( answer.weights ).forEach( ( [ slug, weight ] ) => {
-			if ( slug in scores ) scores[ slug ] += weight;
+		const ids = question.multiSelect && Array.isArray( selectedId ) ? selectedId : [ selectedId ];
+		ids.forEach( ( id ) => {
+			const answer = question.answers.find( ( a ) => a.id === id );
+			if ( ! answer ) return;
+			Object.entries( answer.weights ).forEach( ( [ slug, weight ] ) => {
+				if ( slug in scores ) scores[ slug ] += weight;
+			} );
 		} );
 	} );
 
