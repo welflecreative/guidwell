@@ -293,11 +293,7 @@ export default function Wizard() {
 	}
 
 	function handleNext() {
-		const canAdvance = question?.type === 'text' ||
-			( question?.multiSelect
-				? Array.isArray( selectedAnswer ) && selectedAnswer.length > 0
-				: !! selectedAnswer );
-		if ( ! canAdvance || flipPhase !== 'idle' ) return;
+		if ( ! hasAnswerForStep || flipPhase !== 'idle' ) return;
 
 		if ( isTreeMode ) {
 			const nextId = selectedAnswerObj?.next ?? question?.defaultNext ?? null;

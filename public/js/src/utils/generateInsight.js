@@ -22,16 +22,19 @@ export default function generateInsight( answers, config ) {
 		const selectedId = answers[ question.id ];
 		if ( ! selectedId ) return;
 
-		const answer = question.answers.find( ( a ) => a.id === selectedId );
-		if ( ! answer ) return;
+		const ids = Array.isArray( selectedId ) ? selectedId : [ selectedId ];
+		ids.forEach( ( id ) => {
+			const answer = question.answers.find( ( a ) => a.id === id );
+			if ( ! answer ) return;
 
-		const recommendedWeight = answer.weights[ recommendedSlug ] ?? 0;
-		const otherWeights      = otherSlugs.map( ( s ) => answer.weights[ s ] ?? 0 );
-		const avgOther          = otherWeights.length > 0
-			? otherWeights.reduce( ( sum, w ) => sum + w, 0 ) / otherWeights.length
-			: 0;
+			const recommendedWeight = answer.weights[ recommendedSlug ] ?? 0;
+			const otherWeights      = otherSlugs.map( ( s ) => answer.weights[ s ] ?? 0 );
+			const avgOther          = otherWeights.length > 0
+				? otherWeights.reduce( ( sum, w ) => sum + w, 0 ) / otherWeights.length
+				: 0;
 
-		deltas.push( { label: answer.label, delta: recommendedWeight - avgOther } );
+			deltas.push( { label: answer.label, delta: recommendedWeight - avgOther } );
+		} );
 	} );
 
 	const top = deltas.sort( ( a, b ) => b.delta - a.delta ).slice( 0, 2 );
