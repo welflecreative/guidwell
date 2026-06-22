@@ -574,7 +574,8 @@ class Guidwell_API {
 			foreach ( $config['questions'] as &$q ) {
 				if ( isset( $q['id'] ) )   $q['id']   = sanitize_key( $q['id'] );
 				if ( isset( $q['text'] ) ) $q['text']  = sanitize_text_field( $q['text'] );
-				if ( isset( $q['type'] ) ) $q['type']  = in_array( $q['type'], [ 'text', 'scored' ], true ) ? $q['type'] : 'scored';
+				if ( isset( $q['type'] ) )        $q['type']        = in_array( $q['type'], [ 'text', 'scored' ], true ) ? $q['type'] : 'scored';
+				if ( isset( $q['multiSelect'] ) ) $q['multiSelect'] = (bool) $q['multiSelect'];
 				if ( is_array( $q['answers'] ?? null ) ) {
 					foreach ( $q['answers'] as &$a ) {
 						if ( isset( $a['id'] ) )    $a['id']    = sanitize_key( $a['id'] );

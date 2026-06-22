@@ -126,9 +126,9 @@ function ScoringReport( { allScores, topPlans, config, answers } ) {
 			<p className="guidwell-report__heading">{ __( 'How we scored this', 'guidwell' ) }</p>
 			<div className="guidwell-report__panel-inner">
 
-				{ /* Score bars — always visible */ }
+				{ /* Score bars — only plans that earned points */ }
 				<p className="guidwell-report__section-label">{ __( 'Score breakdown', 'guidwell' ) }</p>
-				{ allScores.map( ( plan, index ) => (
+				{ allScores.filter( ( p ) => p.score > 0 ).map( ( plan, index ) => (
 					<div key={ plan.slug } className="guidwell-report__score-row">
 						<span className="guidwell-report__score-name">
 							{ plan.name || plan.slug }
@@ -165,7 +165,24 @@ function ScoringReport( { allScores, topPlans, config, answers } ) {
 				{ showAnswers && (
 					<div className="guidwell-report__answers">
 						{ questions.map( ( question ) => {
-							const selectedId     = answers?.[ question.id ];
+							const selectedId = answers?.[ question.id ];
+							if ( ! selectedId ) return null;
+
+							if ( question.multiSelect && Array.isArray( selectedId ) ) {
+								const selected = selectedId
+									.map( ( id ) => question.answers?.find( ( a ) => a.id === id ) )
+									.filter( Boolean );
+								if ( ! selected.length ) return null;
+								return (
+									<div key={ question.id } className="guidwell-report__answer-row">
+										<p className="guidwell-report__answer-question">{ question.text }</p>
+										{ selected.map( ( a ) => (
+											<p key={ a.id } className="guidwell-report__answer-selected">→ { a.label }</p>
+										) ) }
+									</div>
+								);
+							}
+
 							const selectedAnswer = question.answers?.find( ( a ) => a.id === selectedId );
 							if ( ! selectedAnswer ) return null;
 							return (

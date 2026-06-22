@@ -153,6 +153,13 @@
 	gap: 10px;
 }
 
+.guidwell-scoped .guidwell-multi-hint {
+	font-size: 12px;
+	color: var(--guidwell-muted, #6b7280);
+	margin: 0 0 6px;
+	font-style: italic;
+}
+
 .guidwell-scoped .guidwell-text-answer {
 	width: 100%;
 }

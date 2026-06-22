@@ -12,7 +12,11 @@ export default function QuestionStep( {
 	isLastStep,
 	headingRef,
 } ) {
-	const isText = question.type === 'text';
+	const isText  = question.type === 'text';
+	const isMulti = ! isText && !! question.multiSelect;
+	const selectedIds = isMulti
+		? ( Array.isArray( selectedAnswer ) ? selectedAnswer : [] )
+		: null;
 
 	return (
 		<div className="guidwell-question">
@@ -34,23 +38,28 @@ export default function QuestionStep( {
 					/>
 				</div>
 			) : (
-				<div className="guidwell-answers">
-					{ question.answers.map( ( answer ) => (
-						<AnswerCard
-							key={ answer.id }
-							answer={ answer }
-							isSelected={ selectedAnswer === answer.id }
-							onSelect={ onSelect }
-						/>
-					) ) }
-				</div>
+				<>
+					{ isMulti && (
+						<p className="guidwell-multi-hint">{ __( 'Select all that apply', 'guidwell' ) }</p>
+					) }
+					<div className="guidwell-answers">
+						{ question.answers.map( ( answer ) => (
+							<AnswerCard
+								key={ answer.id }
+								answer={ answer }
+								isSelected={ isMulti ? selectedIds.includes( answer.id ) : selectedAnswer === answer.id }
+								onSelect={ onSelect }
+							/>
+						) ) }
+					</div>
+				</>
 			) }
 			<NavigationButtons
 				onNext={ onNext }
 				onBack={ onBack }
 				canGoBack={ canGoBack }
 				isLastStep={ isLastStep }
-				hasSelection={ isText ? true : !! selectedAnswer }
+				hasSelection={ isText ? true : isMulti ? selectedIds.length > 0 : !! selectedAnswer }
 			/>
 		</div>
 	);
