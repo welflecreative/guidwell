@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>API Reference — Guidwell Docs</title>
+<title>Embed Your Wizard — Guidwell Docs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
@@ -52,7 +52,6 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 .doc-section { margin-bottom: 60px; scroll-margin-top: 80px; }
 .doc-section h2 { font-size: 24px; font-weight: 800; color: var(--dark); letter-spacing: -0.02em; margin-bottom: 12px; padding-top: 8px; border-top: 1px solid var(--border); padding-bottom: 12px; }
 .doc-section h3 { font-size: 17px; font-weight: 700; color: var(--dark); margin: 28px 0 10px; }
-.doc-section h4 { font-size: 14px; font-weight: 700; color: var(--dark); margin: 20px 0 8px; }
 .doc-section p { font-size: 14.5px; color: var(--body); line-height: 1.75; margin-bottom: 14px; max-width: 680px; }
 .doc-section ul, .doc-section ol { padding-left: 20px; margin-bottom: 14px; max-width: 680px; }
 .doc-section li { font-size: 14.5px; color: var(--body); line-height: 1.75; margin-bottom: 5px; }
@@ -66,57 +65,18 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
 .callout--tip   { background: #f0fdf4; border-left: 3px solid var(--accent); }
 .callout--warn  { background: #fffbeb; border-left: 3px solid #f59e0b; }
 
-code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 6px; color: var(--primary-dk); }
-pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 20px 24px; font-size: 13px; font-family: 'Fira Code', monospace; overflow-x: auto; margin: 14px 0; max-width: 720px; line-height: 1.75; }
-pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
-pre .cm { color: #64748b; }
-pre .kw { color: #93c5fd; }
-pre .st { color: #86efac; }
-pre .fn { color: #fcd34d; }
-pre .ty { color: #f0abfc; }
-pre .nu { color: #fb923c; }
+.code-block { background: var(--dark); border-radius: 8px; padding: 16px 20px; font-family: 'Fira Code', monospace; font-size: 14px; color: #7dd3e8; margin: 16px 0; max-width: 400px; }
 
-/* ── ENDPOINT BLOCK ── */
-.endpoint {
-  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
-  overflow: hidden; margin: 20px 0; max-width: 720px;
-}
-.endpoint__header {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px 20px; background: #f9fafb; border-bottom: 1px solid var(--border);
-}
-.method {
-  font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 700;
-  padding: 3px 9px; border-radius: 5px; letter-spacing: 0.04em; flex-shrink: 0;
-}
-.method--get    { background: #dcfce7; color: #15803d; }
-.method--post   { background: #dbeafe; color: #1d4ed8; }
-.endpoint__path { font-family: 'Fira Code', monospace; font-size: 13px; color: var(--dark); font-weight: 500; }
-.endpoint__auth {
-  margin-left: auto; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-  text-transform: uppercase; padding: 3px 8px; border-radius: 4px;
-}
-.auth--admin  { background: #fef3c7; color: #b45309; }
-.auth--public { background: #f0fdf4; color: #15803d; }
-.endpoint__body { padding: 16px 20px; }
-.endpoint__body p { font-size: 13.5px; color: var(--body); line-height: 1.6; margin-bottom: 10px; max-width: 100%; }
+.method-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 24px 28px; margin: 20px 0; max-width: 680px; }
+.method-card__num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 13px; font-weight: 800; flex-shrink: 0; margin-bottom: 12px; }
+.method-card__title { font-size: 18px; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
+.method-card__steps { padding-left: 18px; margin: 10px 0 0; }
+.method-card__steps li { font-size: 14px; color: var(--body); line-height: 1.75; margin-bottom: 4px; }
 
-/* ── PARAM TABLE ── */
-.param-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 10px 0 0; }
-.param-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 7px 10px; background: #f9fafb; border-bottom: 1px solid var(--border); }
-.param-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--body); vertical-align: top; }
-.param-table tr:last-child td { border-bottom: none; }
-.param-table td:first-child { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--primary-dk); font-weight: 500; white-space: nowrap; }
-.param-table td:nth-child(2) { color: var(--muted); font-size: 12px; }
-.req-pill { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #fee2e2; color: #b91c1c; border-radius: 3px; padding: 2px 5px; }
-.opt-pill { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #f1f5f9; color: #64748b; border-radius: 3px; padding: 2px 5px; }
-
-/* ── CONSTANTS TABLE ── */
-.const-table { width: 100%; max-width: 720px; border-collapse: collapse; font-size: 13.5px; margin: 14px 0; }
-.const-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; background: #f9fafb; border-bottom: 2px solid var(--border); }
-.const-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
-.const-table td:first-child { font-family: 'Fira Code', monospace; font-size: 12.5px; color: var(--primary-dk); white-space: nowrap; }
-.const-table tr:last-child td { border-bottom: none; }
+.where-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 680px; margin: 20px 0; }
+.where-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+.where-card__label { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
+.where-card__desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
 .site-footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 32px 28px; display: flex; align-items: center; justify-content: space-between; }
 .site-footer__brand { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); }
@@ -129,6 +89,7 @@ pre .nu { color: #fb923c; }
   .sidebar { display: none; }
   .content { padding: 28px 20px 60px; }
   .topnav__links { display: none; }
+  .where-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -143,9 +104,9 @@ pre .nu { color: #fb923c; }
   <div class="topnav__links">
     <a href="./getting-started.html">Getting Started</a>
     <a href="./user-guide.html">User Guide</a>
-    <a href="./api-reference.html" class="active">API Reference</a>
     <a href="./pricing.html">Pricing</a>
     <a href="./changelog.html">Changelog</a>
+    <a href="./api-reference.html" class="active">Embed Your Wizard</a>
   </div>
   <a href="https://welflecreative.com/guidwell" class="topnav__cta" target="_blank" rel="noopener">Get Guidwell →</a>
 </nav>
@@ -153,21 +114,14 @@ pre .nu { color: #fb923c; }
 <div class="page-layout">
   <aside class="sidebar">
     <div class="sidebar__section">
-      <div class="sidebar__heading">REST API</div>
-      <a href="#overview" class="sidebar__link">Overview</a>
-      <a href="#wizard" class="sidebar__link">POST /wizard</a>
-      <a href="#config-get" class="sidebar__link">GET /config/{id}</a>
-      <a href="#config-post" class="sidebar__link">POST /config/{id}</a>
-      <a href="#settings" class="sidebar__link">GET / POST /settings</a>
-      <a href="#contact" class="sidebar__link">Contact Settings</a>
-      <a href="#send-result" class="sidebar__link">POST /send-result</a>
-      <a href="#features" class="sidebar__link">Features</a>
+      <div class="sidebar__heading">Embed Methods</div>
+      <a href="#shortcode" class="sidebar__link">Shortcode</a>
+      <a href="#gutenberg" class="sidebar__link">Gutenberg Block</a>
+      <a href="#elementor" class="sidebar__link">Elementor</a>
     </div>
     <div class="sidebar__section">
-      <div class="sidebar__heading">PHP Reference</div>
-      <a href="#constants" class="sidebar__link">Constants</a>
-      <a href="#tiers-class" class="sidebar__link">Guidwell_Tiers</a>
-      <a href="#release-pipeline" class="sidebar__link">Release Pipeline</a>
+      <div class="sidebar__heading">Placement</div>
+      <a href="#where" class="sidebar__link">Where to Embed</a>
     </div>
     <div class="sidebar__section">
       <div class="sidebar__heading">Other Docs</div>
@@ -182,360 +136,113 @@ pre .nu { color: #fb923c; }
     <div class="breadcrumb">
       <a href="./index.html">Docs</a>
       <span class="breadcrumb__sep">/</span>
-      <span>API Reference</span>
+      <span>Embed Your Wizard</span>
     </div>
 
-    <p class="page-eyebrow">Developer Reference</p>
-    <h1 class="page-title">API Reference</h1>
-    <p class="page-lead">REST API endpoints, PHP constants, the tier system, and the GitHub release pipeline — everything a developer needs to integrate with or extend Guidwell.</p>
+    <p class="page-eyebrow">Embedding Guide</p>
+    <h1 class="page-title">Embed Your Wizard</h1>
+    <p class="page-lead">Once your wizard is set up, adding it to any page takes just a few clicks. There are three ways to do it — pick the one that matches how you build your site.</p>
 
-    <!-- OVERVIEW -->
-    <section class="doc-section" id="overview">
-      <h2>REST API Overview</h2>
-      <p>Guidwell registers its own REST API namespace at <code>guidwell/v1</code>. All endpoints are available at:</p>
-      <pre><code>https://yoursite.com/wp-json/guidwell/v1/...</code></pre>
-      <p>Write endpoints require WordPress authentication. The admin React app sends a <code>X-WP-Nonce</code> header using a nonce generated via <code>wp_create_nonce('wp_rest')</code> and localized on the admin page. Public endpoints (<code>/config/{id}</code>, <code>/features</code>, <code>/send-result</code>) do not require authentication.</p>
+    <div class="callout callout--info">
+      <div class="callout__icon">ℹ️</div>
+      <div class="callout__body">The Guidwell wizard is <strong>self-contained</strong> — it doesn't inherit your theme's styles, so it looks consistent on any theme. If you'd like it to blend in with your site's colors, turn on <strong>Use theme colors</strong> in the Settings tab.</div>
+    </div>
 
-      <h3>Authentication levels</h3>
-      <ul>
-        <li><strong>Admin</strong> — requires <code>manage_options</code> capability (WordPress Administrators only)</li>
-        <li><strong>Public</strong> — no authentication required; public endpoints are rate-limited where applicable</li>
-      </ul>
-    </section>
+    <div class="callout callout--warn">
+      <div class="callout__icon">⚠️</div>
+      <div class="callout__body"><strong>One wizard per site.</strong> Guidwell currently supports one active wizard at a time. Support for multiple wizards is coming in a future update.</div>
+    </div>
 
-    <hr class="rule"/>
+    <!-- SHORTCODE -->
+    <section class="doc-section" id="shortcode">
+      <h2>Method 1 — Shortcode</h2>
+      <p>The shortcode is the simplest option. It works in the Classic Editor, Elementor HTML widgets, Divi code modules, and anywhere else that accepts WordPress shortcodes.</p>
 
-    <!-- WIZARD -->
-    <section class="doc-section" id="wizard">
-      <h2>Create Wizard</h2>
+      <p>Just paste this into your page or post:</p>
+      <div class="code-block">[guidwell]</div>
 
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--post">POST</span>
-          <span class="endpoint__path">/guidwell/v1/wizard</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Creates a new <code>guidwell_wizard</code> post. Enforces the active tier's <code>active_wizards</code> limit before creating.</p>
-          <table class="param-table">
-            <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td>title</td><td>string</td><td><span class="opt-pill">optional</span></td><td>Wizard post title. Defaults to "My Wizard".</td></tr>
-            </tbody>
-          </table>
-          <p style="margin-top:12px;"><strong>Response:</strong> <code>{ "id": 42 }</code> — the new wizard's post ID.</p>
-        </div>
+      <div class="method-card">
+        <div class="method-card__title">How to add it in the Classic Editor</div>
+        <ol class="method-card__steps">
+          <li>Open or create the page you want to embed the wizard on.</li>
+          <li>Click in the body of the page where you want the wizard to appear.</li>
+          <li>Type or paste <strong>[guidwell]</strong>.</li>
+          <li>Publish or update the page. The wizard will appear in its place on the front end.</li>
+        </ol>
       </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- CONFIG GET -->
-    <section class="doc-section" id="config-get">
-      <h2>Get Wizard Config</h2>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--get">GET</span>
-          <span class="endpoint__path">/guidwell/v1/config/{wizard_id}</span>
-          <span class="endpoint__auth auth--public">Public</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Returns the full JSON configuration for a published wizard. Used by the frontend wizard component to load questions, plans, and logic tree connections. Returns <code>400</code> if the wizard has no config yet, <code>404</code> if the wizard doesn't exist or isn't published.</p>
-          <table class="param-table">
-            <thead><tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td>wizard_id</td><td>integer</td><td><span class="req-pill">required</span></td><td>WordPress post ID of the wizard. Must be ≥ 1.</td></tr>
-            </tbody>
-          </table>
-          <p style="margin-top:12px;"><strong>Response:</strong> The full wizard config object (questions array, plans array, mode string).</p>
-        </div>
-      </div>
-
-      <div class="callout callout--info">
-        <div class="callout__icon">ℹ️</div>
-        <div class="callout__body">The wizard config is also served via <code>wp_localize_script</code> on pages that contain the shortcode or block, so the frontend doesn't need to make a separate API call on initial load. The REST endpoint is used for subsequent loads and admin preview.</div>
-      </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- CONFIG POST -->
-    <section class="doc-section" id="config-post">
-      <h2>Save Wizard Config</h2>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--post">POST</span>
-          <span class="endpoint__path">/guidwell/v1/config/{wizard_id}</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Validates, sanitizes, and saves the wizard configuration. Enforces tier limits (question count, tree depth, tree nodes). Returns the sanitized config on success.</p>
-          <p><strong>Body:</strong> JSON object with the following top-level keys:</p>
-          <table class="param-table">
-            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td>questions</td><td>array</td><td>Array of question objects. Each must have <code>id</code>, <code>text</code>, and <code>answers</code> array.</td></tr>
-              <tr><td>plans</td><td>array</td><td>Array of plan objects. Minimum 2. Each must have <code>slug</code>, <code>tier</code>, <code>name</code>, <code>ctaLabel</code>.</td></tr>
-              <tr><td>mode</td><td>string</td><td><code>"linear"</code> or <code>"tree"</code>. Defaults to <code>"linear"</code> if omitted or invalid.</td></tr>
-              <tr><td>_imported</td><td>boolean</td><td>Set to <code>true</code> to flag as a JSON import. Requires <code>json_import</code> tier feature; stripped before saving.</td></tr>
-            </tbody>
-          </table>
-          <p style="margin-top:12px;"><strong>Question object:</strong></p>
-          <pre><code>{
-  <span class="st">"id"</span>: <span class="st">"q1"</span>,          <span class="cm">// sanitize_key()</span>
-  <span class="st">"text"</span>: <span class="st">"..."</span>,       <span class="cm">// sanitize_text_field()</span>
-  <span class="st">"answers"</span>: [
-    {
-      <span class="st">"id"</span>: <span class="st">"a1"</span>,       <span class="cm">// sanitize_key()</span>
-      <span class="st">"label"</span>: <span class="st">"..."</span>,  <span class="cm">// sanitize_text_field()</span>
-      <span class="st">"weights"</span>: { <span class="st">"plan-slug"</span>: <span class="nu">3</span> },
-      <span class="st">"next"</span>: <span class="kw">null</span>    <span class="cm">// or "q2" for tree mode</span>
-    }
-  ]
-}</code></pre>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- SETTINGS -->
-    <section class="doc-section" id="settings">
-      <h2>Plugin Settings</h2>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--get">GET</span>
-          <span class="endpoint__path">/guidwell/v1/settings</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Returns the current plugin display settings (colors and branding options).</p>
-        </div>
-      </div>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--post">POST</span>
-          <span class="endpoint__path">/guidwell/v1/settings</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Saves display settings. All color values are validated with <code>sanitize_hex_color()</code>.</p>
-          <table class="param-table">
-            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td>primaryColor</td><td>string</td><td>Hex color. Button and accent color.</td></tr>
-              <tr><td>primaryDark</td><td>string</td><td>Hex color. Hover states.</td></tr>
-              <tr><td>backgroundColor</td><td>string</td><td>Hex color. Wizard panel background.</td></tr>
-              <tr><td>cardBackground</td><td>string</td><td>Hex color. Wizard card background.</td></tr>
-              <tr><td>useThemeColors</td><td>boolean</td><td>Auto-detect colors from active theme.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- CONTACT SETTINGS -->
-    <section class="doc-section" id="contact">
-      <h2>Contact &amp; SMTP Settings</h2>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--get">GET</span>
-          <span class="endpoint__path">/guidwell/v1/contact-settings</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Returns contact and SMTP settings. The <code>smtpPassword</code> field is always returned as an empty string — use <code>smtpPasswordSet: true/false</code> to check if a password is stored.</p>
-        </div>
-      </div>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--post">POST</span>
-          <span class="endpoint__path">/guidwell/v1/contact-settings</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Saves contact and SMTP settings. SMTP password is AES-256-CBC encrypted before storage using a key derived from <code>AUTH_KEY</code>. Omit <code>smtpPassword</code> to keep the existing stored password.</p>
-          <table class="param-table">
-            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td>recipientEmail</td><td>string</td><td>Admin notification recipient.</td></tr>
-              <tr><td>recipientName</td><td>string</td><td>Recipient display name.</td></tr>
-              <tr><td>senderEmail</td><td>string</td><td>From address. Defaults to WordPress admin email.</td></tr>
-              <tr><td>senderName</td><td>string</td><td>From display name.</td></tr>
-              <tr><td>emailSubject</td><td>string</td><td>Notification email subject line.</td></tr>
-              <tr><td>sendOnResult</td><td>boolean</td><td>Enable admin notifications.</td></tr>
-              <tr><td>collectVisitorEmail</td><td>boolean</td><td>Show email capture on result screen.</td></tr>
-              <tr><td>useCustomSmtp</td><td>boolean</td><td>Use custom SMTP instead of wp_mail().</td></tr>
-              <tr><td>smtpHost</td><td>string</td><td>SMTP server hostname.</td></tr>
-              <tr><td>smtpPort</td><td>integer</td><td>SMTP port (1–65535).</td></tr>
-              <tr><td>smtpUsername</td><td>string</td><td>SMTP authentication username.</td></tr>
-              <tr><td>smtpPassword</td><td>string</td><td>SMTP password (plain text — encrypted before storage).</td></tr>
-              <tr><td>smtpEncryption</td><td>string</td><td><code>"tls"</code>, <code>"ssl"</code>, or <code>"none"</code>.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- SEND RESULT -->
-    <section class="doc-section" id="send-result">
-      <h2>Send Result Email</h2>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--post">POST</span>
-          <span class="endpoint__path">/guidwell/v1/send-result</span>
-          <span class="endpoint__auth auth--public">Public · Rate limited</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Sends the result notification email after a visitor completes the wizard. Rate-limited to 5 requests per IP per hour. No-ops if <code>sendOnResult</code> is disabled in contact settings.</p>
-          <table class="param-table">
-            <thead><tr><th>Key</th><th>Type</th><th>Description</th></tr></thead>
-            <tbody>
-              <tr><td>wizardId</td><td>integer</td><td>The wizard's post ID.</td></tr>
-              <tr><td>recommendedPlan</td><td>object</td><td><span class="req-pill">required</span> Must have a non-empty <code>name</code> field.</td></tr>
-              <tr><td>runnerUpPlan</td><td>object|null</td><td>Second-best plan, optional.</td></tr>
-              <tr><td>insight</td><td>string</td><td>The generated insight paragraph.</td></tr>
-              <tr><td>visitorEmail</td><td>string</td><td>Visitor's email for the visitor copy.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- FEATURES -->
-    <section class="doc-section" id="features">
-      <h2>Feature Library</h2>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--get">GET</span>
-          <span class="endpoint__path">/guidwell/v1/features</span>
-          <span class="endpoint__auth auth--public">Public</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Returns the feature library as a JSON array of <code>{ id, label }</code> objects. Used by the frontend to render feature checklists on the result screen.</p>
-        </div>
-      </div>
-
-      <div class="endpoint">
-        <div class="endpoint__header">
-          <span class="method method--post">POST</span>
-          <span class="endpoint__path">/guidwell/v1/features</span>
-          <span class="endpoint__auth auth--admin">Admin</span>
-        </div>
-        <div class="endpoint__body">
-          <p>Replaces the entire feature library. Maximum 100 features. Each item requires a non-empty <code>id</code> (sanitized to slug) and <code>label</code> (max 120 chars).</p>
-        </div>
-      </div>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- CONSTANTS -->
-    <section class="doc-section" id="constants">
-      <h2>PHP Constants</h2>
-      <p>Define these in <code>wp-config.php</code> before the "stop editing" line to customize Guidwell's behavior at the server level.</p>
-
-      <table class="const-table">
-        <thead><tr><th>Constant</th><th>Type</th><th>Description</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>GUIDWELL_VERSION</td>
-            <td>string</td>
-            <td>Set automatically from the plugin header. Do not override.</td>
-          </tr>
-          <tr>
-            <td>GUIDWELL_PLUGIN_DIR</td>
-            <td>string</td>
-            <td>Absolute path to the plugin directory (trailing slash). Set automatically.</td>
-          </tr>
-          <tr>
-            <td>GUIDWELL_PLUGIN_URL</td>
-            <td>string</td>
-            <td>Full URL to the plugin directory (trailing slash). Set automatically.</td>
-          </tr>
-        </tbody>
-      </table>
-
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- TIERS CLASS -->
-    <section class="doc-section" id="tiers-class">
-      <h2>Guidwell_Tiers PHP Class</h2>
-      <p>The <code>Guidwell_Tiers</code> class is the single access point for all tier and feature gating logic. Available after the plugin is loaded.</p>
-
-      <h3>Methods</h3>
-      <pre><code><span class="cm">// Get the active tier slug for this install</span>
-<span class="ty">Guidwell_Tiers</span>::<span class="fn">current</span>(): <span class="ty">string</span>
-<span class="cm">// Returns: 'free' | 'starter' | 'pro' | 'agency'</span>
-
-<span class="cm">// Check if the current tier includes a feature</span>
-<span class="ty">Guidwell_Tiers</span>::<span class="fn">can</span>( <span class="ty">string</span> <span class="va">$feature</span> ): <span class="ty">bool</span>
-<span class="cm">// Feature keys: 'custom_branding', 'email_capture', 'result_notifications',</span>
-<span class="cm">//   'json_export', 'json_import', 'conditional_logic', 'analytics_basic',</span>
-<span class="cm">//   'analytics_full', 'white_label', 'email_integrations', 'multi_site'</span>
-
-<span class="cm">// Get a numeric limit for the current tier (null = unlimited)</span>
-<span class="ty">Guidwell_Tiers</span>::<span class="fn">limit</span>( <span class="ty">string</span> <span class="va">$key</span> ): ?<span class="ty">int</span>
-<span class="cm">// Limit keys: 'questions_per_wizard', 'active_wizards',</span>
-<span class="cm">//   'sites', 'logic_tree_depth', 'logic_tree_nodes'</span>
-
-<span class="cm">// True if $count exceeds the tier's limit for $key</span>
-<span class="ty">Guidwell_Tiers</span>::<span class="fn">exceeds_limit</span>( <span class="ty">string</span> <span class="va">$key</span>, <span class="ty">int</span> <span class="va">$count</span> ): <span class="ty">bool</span>
-
-<span class="cm">// Returns full tier summary (for JS / REST responses)</span>
-<span class="ty">Guidwell_Tiers</span>::<span class="fn">current_summary</span>(): <span class="ty">array</span></code></pre>
-
-      <h3>Setting the tier (database)</h3>
-      <p>The active tier is read from the WordPress options table:</p>
-      <pre><code><span class="cm">// Via WP-CLI</span>
-wp option set guidwell_license_tier agency
-
-<span class="cm">// Valid values: 'free', 'starter', 'pro', 'agency'</span></code></pre>
-    </section>
-
-    <hr class="rule"/>
-
-    <!-- RELEASE PIPELINE -->
-    <section class="doc-section" id="release-pipeline">
-      <h2>Release Pipeline</h2>
-      <p>Guidwell uses two GitHub Actions workflows for versioning and distribution.</p>
-
-      <h3>Bump Version (<code>.github/workflows/bump-version.yml</code>)</h3>
-      <p>Triggered manually from <strong>GitHub → Actions → Bump Version → Run workflow</strong>. Takes a <code>bump</code> input (<code>patch</code>, <code>minor</code>, or <code>major</code>).</p>
-      <p>Reads the current version from <code>guidwell.php</code>, increments the correct segment, updates both the plugin header comment and the <code>GUIDWELL_VERSION</code> constant, commits the change to <code>main</code>, and pushes a <code>vX.Y.Z</code> tag.</p>
-
-      <h3>Release (<code>.github/workflows/release.yml</code>)</h3>
-      <p>Triggered automatically on any <code>v*</code> tag push. Runs:</p>
-      <ol style="padding-left:20px;max-width:680px;">
-        <li style="font-size:14.5px;line-height:1.75;margin-bottom:5px;"><code>npm ci && npm run build</code> — compiles fresh JS bundles</li>
-        <li style="font-size:14.5px;line-height:1.75;margin-bottom:5px;"><code>composer install --no-dev</code> — installs runtime PHP dependencies only</li>
-        <li style="font-size:14.5px;line-height:1.75;margin-bottom:5px;">Rsync with <code>.distignore</code> exclusions into a clean temp directory</li>
-        <li style="font-size:14.5px;line-height:1.75;margin-bottom:5px;">Zips into <code>guidwell-{version}.zip</code> with the required single root folder</li>
-        <li style="font-size:14.5px;line-height:1.75;margin-bottom:5px;">Creates a GitHub Release and attaches the zip as a release asset</li>
-      </ol>
-
-      <h3>Auto-updates on installed sites</h3>
-      <p>Installed copies of the plugin include the <a href="https://github.com/YahnisElsts/plugin-update-checker" target="_blank" rel="noopener">Plugin Update Checker</a> library wired to GitHub Releases. When a new release is published, WordPress will show the standard update prompt in <strong>WP Admin → Plugins</strong> within 12 hours (or on the next admin page load).</p>
 
       <div class="callout callout--tip">
         <div class="callout__icon">✅</div>
-        <div class="callout__body">The update checker requires the GitHub repository to be <strong>public</strong> to fetch release metadata without authentication. If the repo is private, a GitHub token must be provided in the plugin's update checker configuration.</div>
+        <div class="callout__body">If your page builder has an <strong>HTML block</strong> or <strong>shortcode widget</strong>, you can use the same <code>[guidwell]</code> shortcode there too.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- GUTENBERG -->
+    <section class="doc-section" id="gutenberg">
+      <h2>Method 2 — Gutenberg Block</h2>
+      <p>If you use WordPress's built-in block editor, Guidwell adds its own block that you can insert just like any other block.</p>
+
+      <div class="method-card">
+        <div class="method-card__title">How to add the Gutenberg block</div>
+        <ol class="method-card__steps">
+          <li>Open or create the page in the block editor.</li>
+          <li>Click the <strong>+</strong> button to add a new block (either in the toolbar or inline between blocks).</li>
+          <li>Search for <strong>Guidwell</strong> in the block search bar.</li>
+          <li>Click the <strong>Guidwell Wizard</strong> block to insert it.</li>
+          <li>Drag it to the position you want on the page, then publish or update.</li>
+        </ol>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ELEMENTOR -->
+    <section class="doc-section" id="elementor">
+      <h2>Method 3 — Elementor Widget</h2>
+      <p>If you build with Elementor, Guidwell registers a native widget you can drag directly into your layout.</p>
+
+      <div class="method-card">
+        <div class="method-card__title">How to add the Elementor widget</div>
+        <ol class="method-card__steps">
+          <li>Open your page in the Elementor editor.</li>
+          <li>In the left panel, use the search bar at the top to search for <strong>Guidwell Wizard</strong>.</li>
+          <li>Drag the widget from the panel onto your layout wherever you'd like the wizard to appear.</li>
+          <li>Click <strong>Publish</strong> or <strong>Update</strong> to save.</li>
+        </ol>
+      </div>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body">You can place the Guidwell widget inside any Elementor section or column, including full-width layouts.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- WHERE TO EMBED -->
+    <section class="doc-section" id="where">
+      <h2>Where to Embed It</h2>
+      <p>Not sure which page to put the wizard on? Here are the most common placements that work well:</p>
+
+      <div class="where-grid">
+        <div class="where-card">
+          <div class="where-card__label">Dedicated Landing Page</div>
+          <div class="where-card__desc">Create a page like "Find the Right Plan" or "Get a Recommendation" and make the wizard the main feature. Great for driving traffic from ads or email.</div>
+        </div>
+        <div class="where-card">
+          <div class="where-card__label">Homepage Section</div>
+          <div class="where-card__desc">Embed the wizard below your hero section so visitors can self-select right away. Works especially well for service-based businesses.</div>
+        </div>
+        <div class="where-card">
+          <div class="where-card__label">Pricing Page</div>
+          <div class="where-card__desc">Help visitors who are comparing plans find the right fit before they bounce. The wizard sits naturally alongside a pricing table.</div>
+        </div>
+        <div class="where-card">
+          <div class="where-card__label">Contact or Inquiry Page</div>
+          <div class="where-card__desc">Let visitors self-qualify before reaching out. You'll get better-matched inquiries and they'll feel more confident about what they need.</div>
+        </div>
       </div>
     </section>
 
