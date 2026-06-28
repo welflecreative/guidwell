@@ -15,7 +15,7 @@ class Guidwell_Shortcode {
 	 * @return string
 	 */
 	public function render( $atts ): string {
-		return '<div id="guidwell" class="guidwell-scoped"></div>';
+		return '<div id="guidwell" class="guidwell-scoped alignfull"></div>';
 	}
 }
 

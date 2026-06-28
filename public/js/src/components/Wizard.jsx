@@ -156,11 +156,12 @@ export default function Wizard() {
 		if ( ! el ) return;
 
 		const align = () => {
-			el.style.marginLeft = ''; // reset to CSS value so we measure from there
+			el.style.removeProperty( 'margin-left' ); // reset to CSS value so we measure from there
 			const left = el.getBoundingClientRect().left;
 			if ( Math.abs( left ) > 0.5 ) {
 				const computedML = parseFloat( getComputedStyle( el ).marginLeft ) || 0;
-				el.style.marginLeft = `${ computedML - left }px`;
+				// Use setProperty with 'important' to override Gutenberg's margin-inline: auto !important
+				el.style.setProperty( 'margin-left', `${ computedML - left }px`, 'important' );
 			}
 		};
 

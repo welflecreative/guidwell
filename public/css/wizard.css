@@ -41,7 +41,7 @@
 	width: 100vw !important;
 	max-width: none !important;
 	position: relative;
-	margin-left: calc(50% - 50vw);
+	margin-left: calc(50% - 50vw) !important;
 }
 
 /* Focus styles */
