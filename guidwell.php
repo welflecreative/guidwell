@@ -3,7 +3,7 @@
  * Plugin Name: Guidwell
  * Plugin URI: https://welflecreative.com
  * Description: A customizable guided wizard that recommends the right plan or offer for each visitor.
- * Version: 1.4.3
+ * Version: 1.5.0
  * Requires at least: 6.0
  * Requires PHP: 8.1
  * Author: Chad Welfle
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GUIDWELL_VERSION', '1.4.3' );
+define( 'GUIDWELL_VERSION', '1.5.0' );
 define( 'GUIDWELL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GUIDWELL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
@@ -94,10 +94,11 @@ function guidwell_enqueue_wizard_assets( int $wizard_id = 0 ): void {
 		'guidwell-wizard',
 		'guidwellData',
 		[
-			'wizardId' => $wizard_id,
-			'apiBase'  => rest_url( 'guidwell/v1/' ),
-			'nonce'    => wp_create_nonce( 'wp_rest' ),
-			'settings' => guidwell_get_settings(),
+			'wizardId'  => $wizard_id,
+			'apiBase'   => rest_url( 'guidwell/v1/' ),
+			'nonce'     => wp_create_nonce( 'wp_rest' ),
+			'pluginUrl' => GUIDWELL_PLUGIN_URL,
+			'settings'  => guidwell_get_settings(),
 			'config'   => [],
 			'contact'  => [
 				'sendOnResult'        => ! empty( $contact_settings['sendOnResult'] ),
@@ -211,6 +212,7 @@ function guidwell_get_settings(): array {
 		'bodyFont'          => '',
 		'headingFontSize'   => '',
 		'bodyFontSize'      => '',
+		'removeWatermark'   => false,
 	];
 
 	$saved = get_option( 'guidwell_settings', [] );

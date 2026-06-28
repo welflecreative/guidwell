@@ -93,7 +93,7 @@ function SpinnerFallback() {
 }
 
 export default function Wizard() {
-	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [] } = window.guidwellData || {};
+	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [], pluginUrl = '' } = window.guidwellData || {};
 
 	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,     setLoading     ] = useState( wizardId > 0 );
@@ -372,6 +372,22 @@ export default function Wizard() {
 								headingRef={ headingRef }
 							/>
 						</div>
+						{ ! settings.removeWatermark && pluginUrl && (
+							<a
+								href="https://welflecreative.com/guidwell"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="guidwell-watermark"
+								aria-label="Brought to you by Guidwell"
+							>
+								<span className="guidwell-watermark__text">{ __( 'Brought to you by', 'guidwell' ) }</span>
+								<img
+									src={ `${ pluginUrl }public/assets/guidwell-logo.svg` }
+									alt="Guidwell"
+									className="guidwell-watermark__logo"
+								/>
+							</a>
+						) }
 					</div>
 					<ProgressBar
 						current={ stepHistory.length }
