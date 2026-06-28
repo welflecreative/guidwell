@@ -162,8 +162,9 @@ add_action( 'init', 'guidwell_register_block' );
  * Return the React mount-point HTML used by every render path (block, shortcode, Elementor).
  * Centralised here so any future attribute change only needs one edit.
  */
-function guidwell_mount_point(): string {
-	return '<div id="guidwell" class="guidwell-scoped alignfull"></div>';
+function guidwell_mount_point( string $align = 'full' ): string {
+	$class = 'guidwell-scoped' . ( $align ? ' align' . sanitize_html_class( $align ) : '' );
+	return '<div id="guidwell" class="' . esc_attr( $class ) . '"></div>';
 }
 
 /**
@@ -175,7 +176,7 @@ function guidwell_mount_point(): string {
 function guidwell_render_wizard_block( array $attributes ): string {
 	$wizard_id = isset( $attributes['wizardId'] ) ? absint( $attributes['wizardId'] ) : 0;
 	guidwell_enqueue_wizard_assets( $wizard_id );
-	return guidwell_mount_point();
+	return guidwell_mount_point( $attributes['align'] ?? 'full' );
 }
 
 /**
@@ -224,9 +225,15 @@ function guidwell_get_settings(): array {
 		'removeWatermark'   => false,
 	];
 
-	$saved = get_option( 'guidwell_settings', [] );
+	$saved    = get_option( 'guidwell_settings', [] );
+	$settings = wp_parse_args( $saved, $defaults );
 
-	return wp_parse_args( $saved, $defaults );
+	// Enforce tier gate at read time so a downgraded site can't keep a stale true value.
+	if ( $settings['removeWatermark'] && ! Guidwell_Tiers::can( 'white_label' ) ) {
+		$settings['removeWatermark'] = false;
+	}
+
+	return $settings;
 }
 
 /**

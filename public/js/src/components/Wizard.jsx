@@ -158,8 +158,8 @@ export default function Wizard() {
 		let rafId = 0;
 		const align = () => {
 			el.style.removeProperty( 'margin-left' ); // reset to CSS value so we measure from there
-			// getBoundingClientRect().left is viewport-relative; add scrollX for document-relative offset.
-			const left = el.getBoundingClientRect().left + window.scrollX;
+			// getBoundingClientRect().left is viewport-relative — the goal is left === 0 (flush with viewport).
+			const left = el.getBoundingClientRect().left;
 			if ( Math.abs( left ) > 0.5 ) {
 				const computedML = parseFloat( getComputedStyle( el ).marginLeft ) || 0;
 				// Use setProperty with 'important' to override Gutenberg's margin-inline: auto !important
