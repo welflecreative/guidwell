@@ -263,3 +263,20 @@ jobs:
           name: Guidwell ${{ steps.version.outputs.tag }}
           body_path: /tmp/release-notes.md
           files: ${{ env.ZIP_PATH }}
+
+      - name: Deploy guidwell-docs to WordPress.com
+        env:
+          SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
+        run: |
+          sudo apt-get install -y lftp -qq
+          # Write credentials to .netrc so the password never appears in the process list
+          printf 'machine sftp.wp.com login welflecreative.wordpress.com password %s\n' "$SFTP_PASS" > ~/.netrc
+          chmod 600 ~/.netrc
+          lftp -e "
+            set net:reconnect-interval-base 5;
+            set net:max-retries 2;
+            set sftp:auto-confirm yes;
+            mirror --reverse --delete --parallel=4 guidwell-docs/ /srv/htdocs/guidwell-docs/;
+            bye
+          " sftp://sftp.wp.com
+          rm -f ~/.netrc
