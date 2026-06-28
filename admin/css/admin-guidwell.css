@@ -709,6 +709,31 @@
 	cursor: not-allowed;
 }
 
+#guidwell-admin .gw-upgrade-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 11px;
+	font-weight: 600;
+	color: #7a5c00;
+	background: #fff8e6;
+	border: 1px solid #f0c040;
+	border-radius: 20px;
+	padding: 2px 8px;
+	white-space: nowrap;
+	margin-left: 4px;
+}
+
+#guidwell-admin .gw-upgrade-badge a {
+	color: var(--gw-primary);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+#guidwell-admin .gw-upgrade-badge a:hover {
+	text-decoration: underline;
+}
+
 #guidwell-admin .gw-field-note--theme {
 	font-style: italic;
 	margin-top: 4px;
