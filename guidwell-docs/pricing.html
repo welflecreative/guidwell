@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Plans &amp; Pricing — Guidwell Docs</title>
+<link rel="icon" href="./guidwell-favicon.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
@@ -21,7 +22,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
 
 .topnav { position: sticky; top: 0; z-index: 100; height: var(--nav-h); background: var(--dark); display: flex; align-items: center; padding: 0 28px; gap: 28px; box-shadow: 0 1px 0 rgba(255,255,255,0.06); }
 .topnav__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-.topnav__logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+.topnav__logo-mark { width: 28px; height: 28px; display: block; }
 .topnav__logo-text { font-size: 15px; font-weight: 700; color: #fff; }
 .topnav__logo-badge { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 7px; }
 .topnav__links { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -158,7 +159,7 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
 
 <nav class="topnav">
   <a href="./index.html" class="topnav__logo">
-    <div class="topnav__logo-mark">G</div>
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
     <span class="topnav__logo-text">Guidwell</span>
     <span class="topnav__logo-badge">Docs</span>
   </a>
@@ -484,8 +485,8 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
       <p>After purchase you receive a license key by email. Enter it under <strong>WP Admin → Guidwell → Settings → License</strong>. The license is validated against your domain.</p>
       <h3>What happens when a license expires?</h3>
       <p>The wizard on the frontend keeps running — visitors still see the wizard and get results. What stops: automatic plugin updates. You can renew at any time to re-enable updates.</p>
-      <h3>Refunds</h3>
-      <p>We offer a 14-day money-back guarantee. Contact support within 14 days of purchase if Guidwell doesn't work for your use case.</p>
+      <h3>Refunds &amp; Support</h3>
+      <p>Purchases are processed through our licensing provider. Refund terms and support contact details are provided at the time of purchase.</p>
       <div class="callout callout--info">
         <div class="callout__icon">ℹ️</div>
         <div class="callout__body">Guidwell uses GitHub Releases for automatic updates. When a new version is tagged, WordPress's update system will prompt you to update from inside WP Admin — no manual zip upload needed.</div>

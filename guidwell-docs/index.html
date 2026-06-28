@@ -50,13 +50,7 @@ body {
   display: flex; align-items: center; gap: 10px;
   text-decoration: none; flex-shrink: 0;
 }
-.topnav__logo-mark {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: var(--primary);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800; color: #fff;
-  letter-spacing: -0.04em;
-}
+.topnav__logo-mark { width: 30px; height: 30px; display: block; }
 .topnav__logo-text {
   font-size: 15px; font-weight: 700; color: #fff;
   letter-spacing: -0.01em;
@@ -286,7 +280,7 @@ body {
 <!-- ── TOP NAV ── -->
 <nav class="topnav">
   <a href="./index.html" class="topnav__logo">
-    <div class="topnav__logo-mark">G</div>
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
     <span class="topnav__logo-text">Guidwell</span>
     <span class="topnav__logo-badge">Docs</span>
   </a>

@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Getting Started — Guidwell Docs</title>
+<link rel="icon" href="./guidwell-favicon.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
@@ -26,7 +27,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   padding: 0 28px; gap: 28px; box-shadow: 0 1px 0 rgba(255,255,255,0.06);
 }
 .topnav__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-.topnav__logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+.topnav__logo-mark { width: 28px; height: 28px; display: block; }
 .topnav__logo-text { font-size: 15px; font-weight: 700; color: #fff; }
 .topnav__logo-badge { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 7px; }
 .topnav__links { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -156,7 +157,7 @@ pre code { background: none; border: none; padding: 0; color: inherit; font-size
 
 <nav class="topnav">
   <a href="./index.html" class="topnav__logo">
-    <div class="topnav__logo-mark">G</div>
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
     <span class="topnav__logo-text">Guidwell</span>
     <span class="topnav__logo-badge">Docs</span>
   </a>

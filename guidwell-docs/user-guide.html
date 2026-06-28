@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>User Guide — Guidwell Docs</title>
+<link rel="icon" href="./guidwell-favicon.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
@@ -26,7 +27,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   padding: 0 28px; gap: 28px; box-shadow: 0 1px 0 rgba(255,255,255,0.06);
 }
 .topnav__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-.topnav__logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+.topnav__logo-mark { width: 28px; height: 28px; display: block; }
 .topnav__logo-text { font-size: 15px; font-weight: 700; color: #fff; }
 .topnav__logo-badge { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 7px; }
 .topnav__links { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -182,7 +183,7 @@ code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5
 
 <nav class="topnav">
   <a href="./index.html" class="topnav__logo">
-    <div class="topnav__logo-mark">G</div>
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
     <span class="topnav__logo-text">Guidwell</span>
     <span class="topnav__logo-badge">Docs</span>
   </a>
@@ -338,15 +339,15 @@ code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5
       </div>
 
       <h3 id="scoring">Scoring</h3>
-      <p>Scoring is how Guidwell decides which plan to recommend. For every answer in your wizard, you assign a weight (0–5) for each plan. When a visitor finishes the quiz, Guidwell adds up those weights across all their answers and recommends the plan with the highest total score.</p>
+      <p>Scoring is how Guidwell decides which plan to recommend. For every answer in your wizard, you assign a weight for each plan. When a visitor finishes the quiz, Guidwell adds up those weights across all their answers and recommends the plan with the highest total score.</p>
 
       <h4>How to set weights</h4>
-      <p>The scoring grid shows each answer as a row, and each plan as a column. Click any cell and enter a number from 0 to 5:</p>
+      <p>The scoring grid shows each answer as a row, and each plan as a column. The maximum weight per cell equals the number of plans in your wizard — so if you have 5 plans, the scale is 0–5; with 3 plans, it's 0–3. Click any cell and enter a number:</p>
       <ul>
         <li><strong>0</strong> — this answer says nothing about affinity for this plan</li>
-        <li><strong>1–2</strong> — weak signal: a slight lean toward this plan</li>
-        <li><strong>3–4</strong> — strong signal: this answer meaningfully suggests this plan</li>
-        <li><strong>5</strong> — very strong match: this answer is a clear, confident indicator for this plan</li>
+        <li><strong>Low (1–2)</strong> — weak signal: a slight lean toward this plan</li>
+        <li><strong>High (near max)</strong> — strong signal: this answer meaningfully suggests this plan</li>
+        <li><strong>Max</strong> — very strong match: this answer is a clear, confident indicator for this plan</li>
       </ul>
 
       <p>You don't need every answer to add up perfectly. The system is comparative — it recommends whichever plan accumulates the most points, not a plan that crosses a threshold. Focus on making the relative differences between plans meaningful.</p>
@@ -431,7 +432,9 @@ code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5
       <p>The best way to understand what you're building is to see a visitor navigate a branched wizard from start to finish. Watch how the path changes based on the choices they make — and notice how the results modal at the end feels like a natural conclusion to the conversation:</p>
 
       <div class="screenshot-wrap">
-        <img src="./assets/screenshots/wizard-demo.gif" alt="Animated demo showing the Guidwell wizard being navigated: questions appear one at a time, branching occurs silently, and the results modal reveals the recommended plan at the end" class="screenshot">
+        <video autoplay loop muted playsinline class="screenshot" style="width:100%;border-radius:8px;">
+          <source src="./assets/screenshots/wizard-demo.mp4" type="video/mp4">
+        </video>
         <div class="screenshot-caption">A complete wizard run. Notice how each question appears cleanly, transitions are smooth, and the results modal feels like a confident conclusion — not a random output.</div>
       </div>
 
@@ -593,7 +596,7 @@ code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5
       </div>
 
       <h4>Watermark</h4>
-      <p>Free and Starter plans display a small "Powered by Guidwell" credit at the bottom of the wizard. This is removed automatically on Pro and Agency plans. If you're using Agency to build wizards for clients, the white-label option means visitors never know which tool is powering the experience.</p>
+      <p>All plans below Agency display a small "Brought to you by Guidwell" credit at the bottom of the wizard. The Agency plan includes the option to remove it entirely — ideal for client sites where the wizard should feel like a bespoke part of their brand, not a third-party tool.</p>
 
       <div class="callout callout--tier">
         <div class="callout__icon">🔒</div>
