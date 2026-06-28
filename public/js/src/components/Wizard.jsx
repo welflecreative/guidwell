@@ -93,7 +93,7 @@ function SpinnerFallback() {
 }
 
 export default function Wizard() {
-	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [], pluginUrl = '' } = window.guidwellData || {};
+	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [], pluginUrl = '', version = '' } = window.guidwellData || {};
 
 	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,     setLoading     ] = useState( wizardId > 0 );
@@ -382,7 +382,7 @@ export default function Wizard() {
 							>
 								<span className="guidwell-watermark__text">{ __( 'Brought to you by', 'guidwell' ) }</span>
 								<img
-									src={ `${ pluginUrl }public/assets/guidwell-logo.svg` }
+									src={ `${ pluginUrl }public/assets/guidwell-logo.svg?ver=${ version }` }
 									alt="Guidwell"
 									className="guidwell-watermark__logo"
 								/>

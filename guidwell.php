@@ -98,6 +98,7 @@ function guidwell_enqueue_wizard_assets( int $wizard_id = 0 ): void {
 			'apiBase'   => rest_url( 'guidwell/v1/' ),
 			'nonce'     => wp_create_nonce( 'wp_rest' ),
 			'pluginUrl' => GUIDWELL_PLUGIN_URL,
+			'version'   => GUIDWELL_VERSION,
 			'settings'  => guidwell_get_settings(),
 			'config'   => [],
 			'contact'  => [
