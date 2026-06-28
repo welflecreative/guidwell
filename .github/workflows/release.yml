@@ -134,10 +134,132 @@ jobs:
           git tag "${{ steps.version.outputs.tag }}"
           git push origin main "${{ steps.version.outputs.tag }}"
 
+      - name: Generate release notes
+        env:
+          CURRENT_TAG: ${{ steps.version.outputs.tag }}
+          REPO: ${{ github.repository }}
+          BUMP_TYPE: ${{ steps.bump.outputs.type }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python3 << 'PYEOF'
+          import subprocess, os, re
+
+          current_tag = os.environ['CURRENT_TAG']
+          repo        = os.environ['REPO']
+          bump_type   = os.environ.get('BUMP_TYPE', 'patch')
+          pr_title    = os.environ.get('PR_TITLE', '')
+          pr_body     = os.environ.get('PR_BODY', '')
+          pr_number   = os.environ.get('PR_NUMBER', '')
+
+          # Find the previous tag (sorted by semver)
+          raw_tags = subprocess.check_output(['git', 'tag', '--sort=-version:refname']).decode().strip()
+          tags = [t for t in raw_tags.split('\n') if t and t != current_tag]
+          prev_tag = tags[0] if tags else None
+
+          # Collect commits since the previous tag, skipping auto-bump commits and merges
+          log_range = f"{prev_tag}..{current_tag}" if prev_tag else current_tag
+          raw_log = subprocess.check_output([
+              'git', 'log', log_range,
+              '--pretty=format:%s|||%H|||%h|||%an',
+              '--no-merges',
+          ]).decode().strip()
+
+          CONV = re.compile(r'^(feat|fix|docs|chore|refactor|style|test|perf)(\([^)]+\))?!?:\s*(.+)$', re.I)
+
+          features, fixes, docs_list, other = [], [], [], []
+
+          for line in raw_log.split('\n'):
+              if not line:
+                  continue
+              parts = line.split('|||')
+              if len(parts) < 3:
+                  continue
+              subject, sha, short = parts[0], parts[1], parts[2]
+              if re.search(r'^bump version to', subject, re.I):
+                  continue
+              url  = f"https://github.com/{repo}/commit/{sha}"
+              link = f"[`{short}`]({url})"
+              m = CONV.match(subject)
+              if m:
+                  kind = m.group(1).lower()
+                  desc = m.group(3)
+                  entry = f"- {desc} {link}"
+                  if kind == 'feat':              features.append(entry)
+                  elif kind == 'fix':             fixes.append(entry)
+                  elif kind == 'docs':            docs_list.append(entry)
+                  else:                           other.append(entry)
+              else:
+                  other.append(f"- {subject} {link}")
+
+          compare_url = (
+              f"https://github.com/{repo}/compare/{prev_tag}...{current_tag}"
+              if prev_tag else
+              f"https://github.com/{repo}/commits/{current_tag}"
+          )
+          prev_label = prev_tag or "initial"
+
+          logo_url = f"https://raw.githubusercontent.com/{repo}/main/public/assets/guidwell-logo.svg"
+
+          bump_badge = {
+              'major': '🚀 Major Release',
+              'minor': '✨ Minor Release',
+              'patch': '🔧 Patch Release',
+          }.get(bump_type, '🔧 Patch Release')
+
+          lines = [
+              f'<div align="center">',
+              f'  <img src="{logo_url}" height="60" alt="Guidwell" />',
+              f'  <br /><br />',
+              f'  <h2>Guidwell {current_tag}</h2>',
+              f'  <p><strong>{bump_badge}</strong> &nbsp;·&nbsp; A customizable guided wizard for WordPress</p>',
+              f'</div>',
+              f'',
+              f'---',
+              f'',
+          ]
+
+          if features:
+              lines += ['### ✨ New Features', ''] + features + ['']
+          if fixes:
+              lines += ['### 🐛 Bug Fixes', ''] + fixes + ['']
+          if docs_list:
+              lines += ['### 📝 Documentation', ''] + docs_list + ['']
+          if other:
+              lines += ['### 🔧 Other Changes', ''] + other + ['']
+
+          # Include the PR description body if this was a PR merge and it has content
+          if pr_body and pr_number:
+              cleaned = pr_body.strip()
+              # Strip the bot footer line
+              cleaned = re.sub(r'\n?🤖 Generated with.*$', '', cleaned, flags=re.S).strip()
+              if cleaned:
+                  lines += [
+                      '---',
+                      '',
+                      f'### 📋 Pull Request #{pr_number} Notes',
+                      '',
+                      cleaned,
+                      '',
+                  ]
+
+          lines += [
+              '---',
+              '',
+              f'**Full Changelog:** [`{prev_label}...{current_tag}`]({compare_url})',
+          ]
+
+          with open('/tmp/release-notes.md', 'w') as f:
+              f.write('\n'.join(lines) + '\n')
+
+          print(f"Release notes written for {current_tag} ({bump_type})")
+          PYEOF
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: Guidwell ${{ steps.version.outputs.tag }}
+          body_path: /tmp/release-notes.md
           files: ${{ env.ZIP_PATH }}
-          generate_release_notes: true

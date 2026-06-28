@@ -60,9 +60,10 @@ const {
 	tier: TIER_DATA = {},
 } = window.guidwellAdminData || {};
 
-const CAN_EXPORT  = TIER_DATA?.features?.json_export?.allowed ?? false;
-const CAN_IMPORT  = TIER_DATA?.features?.json_import?.allowed ?? false;
-const UPGRADE_URL = TIER_DATA?.upgrade_url || 'https://welflecreative.com/guidwell';
+const CAN_EXPORT      = TIER_DATA?.features?.json_export?.allowed ?? false;
+const CAN_IMPORT      = TIER_DATA?.features?.json_import?.allowed ?? false;
+const CAN_WHITE_LABEL = TIER_DATA?.features?.white_label?.allowed ?? false;
+const UPGRADE_URL     = TIER_DATA?.upgrade_url || 'https://welflecreative.com/guidwell';
 
 const COLOR_FIELDS = [
 	{
@@ -451,7 +452,34 @@ export default function SettingsTab( {
 				/>
 			</div>
 
-			{ /* ── Section 4: Backup & Transfer ── */ }
+			{ /* ── Section 4: Branding ── */ }
+			<div className="gw-settings-section">
+				<h3 className="gw-settings-heading">{ __( 'Branding', 'guidwell' ) }</h3>
+				<p className="gw-settings-subheading">
+					{ __( 'Control the "Brought to you by Guidwell" watermark displayed on the quiz card.', 'guidwell' ) }
+				</p>
+				{ CAN_WHITE_LABEL ? (
+					<div className="gw-checkbox-row">
+						<input
+							type="checkbox"
+							id="removeWatermark"
+							checked={ !! settings.removeWatermark }
+							onChange={ ( e ) => handleSettingChange( 'removeWatermark', e.target.checked ) }
+						/>
+						<label htmlFor="removeWatermark">{ __( 'Remove "Brought to you by Guidwell" watermark', 'guidwell' ) }</label>
+					</div>
+				) : (
+					<div className="gw-tier-gate">
+						<span className="gw-tier-gate__icon" aria-hidden="true">🔒</span>
+						<span className="gw-tier-gate__text">{ __( 'Agency plan required', 'guidwell' ) }</span>
+						<a href={ UPGRADE_URL } target="_blank" rel="noreferrer" className="gw-tier-gate__link">
+							{ __( 'Upgrade →', 'guidwell' ) }
+						</a>
+					</div>
+				) }
+			</div>
+
+			{ /* ── Section 5: Backup & Transfer ── */ }
 			<div className="gw-settings-section gw-settings-section--transfer">
 				<h3 className="gw-settings-heading">{ __( 'Backup & Transfer', 'guidwell' ) }</h3>
 				<p className="gw-settings-subheading">

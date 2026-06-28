@@ -1628,3 +1628,38 @@
 	}
 }
 
+/* --------------------------------------------------------------------------
+   Watermark — "Brought to you by Guidwell"
+   -------------------------------------------------------------------------- */
+
+.guidwell-scoped .guidwell-watermark {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	margin-top: 24px;
+	padding-top: 16px;
+	border-top: 1px solid var(--guidwell-border);
+	opacity: 0.55;
+	transition: opacity 0.2s ease;
+	text-decoration: none;
+}
+
+.guidwell-scoped .guidwell-watermark:hover {
+	opacity: 0.85;
+}
+
+.guidwell-scoped .guidwell-watermark__text {
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--guidwell-muted);
+	letter-spacing: 0.02em;
+	white-space: nowrap;
+}
+
+.guidwell-scoped .guidwell-watermark__logo {
+	height: 18px;
+	width: auto;
+	display: block;
+}
+

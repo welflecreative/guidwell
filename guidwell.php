@@ -94,10 +94,11 @@ function guidwell_enqueue_wizard_assets( int $wizard_id = 0 ): void {
 		'guidwell-wizard',
 		'guidwellData',
 		[
-			'wizardId' => $wizard_id,
-			'apiBase'  => rest_url( 'guidwell/v1/' ),
-			'nonce'    => wp_create_nonce( 'wp_rest' ),
-			'settings' => guidwell_get_settings(),
+			'wizardId'  => $wizard_id,
+			'apiBase'   => rest_url( 'guidwell/v1/' ),
+			'nonce'     => wp_create_nonce( 'wp_rest' ),
+			'pluginUrl' => GUIDWELL_PLUGIN_URL,
+			'settings'  => guidwell_get_settings(),
 			'config'   => [],
 			'contact'  => [
 				'sendOnResult'        => ! empty( $contact_settings['sendOnResult'] ),
@@ -211,6 +212,7 @@ function guidwell_get_settings(): array {
 		'bodyFont'          => '',
 		'headingFontSize'   => '',
 		'bodyFontSize'      => '',
+		'removeWatermark'   => false,
 	];
 
 	$saved = get_option( 'guidwell_settings', [] );
