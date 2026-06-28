@@ -1636,7 +1636,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
+	gap: 10px;
 	margin-top: 24px;
 	padding-top: 16px;
 	border-top: 1px solid var(--guidwell-border);
@@ -1650,15 +1650,16 @@
 }
 
 .guidwell-scoped .guidwell-watermark__text {
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: 500;
 	color: var(--guidwell-muted);
 	letter-spacing: 0.02em;
 	white-space: nowrap;
+	line-height: 1;
 }
 
 .guidwell-scoped .guidwell-watermark__logo {
-	height: 40px;
+	height: 52px;
 	width: auto;
 	display: block;
 }
