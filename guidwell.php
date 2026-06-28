@@ -159,6 +159,14 @@ function guidwell_register_block(): void {
 add_action( 'init', 'guidwell_register_block' );
 
 /**
+ * Return the React mount-point HTML used by every render path (block, shortcode, Elementor).
+ * Centralised here so any future attribute change only needs one edit.
+ */
+function guidwell_mount_point(): string {
+	return '<div id="guidwell" class="guidwell-scoped alignfull"></div>';
+}
+
+/**
  * Server-side render callback for the guidwell/wizard block.
  *
  * @param array<string, mixed> $attributes Block attributes.
@@ -167,7 +175,7 @@ add_action( 'init', 'guidwell_register_block' );
 function guidwell_render_wizard_block( array $attributes ): string {
 	$wizard_id = isset( $attributes['wizardId'] ) ? absint( $attributes['wizardId'] ) : 0;
 	guidwell_enqueue_wizard_assets( $wizard_id );
-	return '<div id="guidwell" class="guidwell-scoped alignfull"></div>';
+	return guidwell_mount_point();
 }
 
 /**

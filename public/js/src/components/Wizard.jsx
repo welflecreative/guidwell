@@ -155,19 +155,22 @@ export default function Wizard() {
 		const el = document.getElementById( 'guidwell' );
 		if ( ! el ) return;
 
+		let rafId = 0;
 		const align = () => {
 			el.style.removeProperty( 'margin-left' ); // reset to CSS value so we measure from there
-			const left = el.getBoundingClientRect().left;
+			// getBoundingClientRect().left is viewport-relative; add scrollX for document-relative offset.
+			const left = el.getBoundingClientRect().left + window.scrollX;
 			if ( Math.abs( left ) > 0.5 ) {
 				const computedML = parseFloat( getComputedStyle( el ).marginLeft ) || 0;
 				// Use setProperty with 'important' to override Gutenberg's margin-inline: auto !important
 				el.style.setProperty( 'margin-left', `${ computedML - left }px`, 'important' );
 			}
 		};
+		const alignRaf = () => { cancelAnimationFrame( rafId ); rafId = requestAnimationFrame( align ); };
 
 		align();
-		window.addEventListener( 'resize', align );
-		return () => window.removeEventListener( 'resize', align );
+		window.addEventListener( 'resize', alignRaf );
+		return () => { window.removeEventListener( 'resize', alignRaf ); cancelAnimationFrame( rafId ); };
 	}, [] );
 
 	// Copy CSS vars from #guidwell to the portaled modal container before the browser paints,
@@ -404,7 +407,7 @@ export default function Wizard() {
 							>
 								<span className="guidwell-watermark__text">{ __( 'Brought to you by', 'guidwell' ) }</span>
 								<img
-									src={ `${ pluginUrl }public/assets/guidwell-logo.svg?ver=${ version }` }
+									src={ `${ pluginUrl }public/assets/guidwell-logo.svg${ version ? `?ver=${ version }` : '' }` }
 									alt="Guidwell"
 									className="guidwell-watermark__logo"
 								/>
