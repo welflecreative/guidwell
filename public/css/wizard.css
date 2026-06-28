@@ -1657,7 +1657,7 @@
 	white-space: nowrap;
 	line-height: 1;
 	margin-top: 17px;
-	margin-right: -20px;
+	margin-right: -10px;
 }
 
 .guidwell-scoped .guidwell-watermark__logo {
@@ -1673,7 +1673,7 @@
 	.guidwell-scoped .guidwell-watermark__text {
 		font-size: 12px;
 		margin-top: 13px;
-		margin-right: -15px;
+		margin-right: -8px;
 	}
 }
 
