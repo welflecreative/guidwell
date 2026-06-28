@@ -148,6 +148,27 @@ export default function Wizard() {
 		else                   el.style.removeProperty( '--guidwell-body-size' );
 	}, [ settings ] );
 
+	// Align #guidwell flush with the left viewport edge regardless of theme container padding.
+	// The CSS calc(50% - 50vw) assumes the parent is centered; some themes offset the content
+	// column (e.g. Gutenberg's .has-global-padding), so we correct it with a measurement.
+	useLayoutEffect( () => {
+		const el = document.getElementById( 'guidwell' );
+		if ( ! el ) return;
+
+		const align = () => {
+			el.style.marginLeft = ''; // reset to CSS value so we measure from there
+			const left = el.getBoundingClientRect().left;
+			if ( Math.abs( left ) > 0.5 ) {
+				const computedML = parseFloat( getComputedStyle( el ).marginLeft ) || 0;
+				el.style.marginLeft = `${ computedML - left }px`;
+			}
+		};
+
+		align();
+		window.addEventListener( 'resize', align );
+		return () => window.removeEventListener( 'resize', align );
+	}, [] );
+
 	// Copy CSS vars from #guidwell to the portaled modal container before the browser paints,
 	// so the modal inherits the correct brand colors even though it lives on document.body.
 	useLayoutEffect( () => {
