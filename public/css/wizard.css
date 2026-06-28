@@ -1656,6 +1656,8 @@
 	letter-spacing: 0.02em;
 	white-space: nowrap;
 	line-height: 1;
+	margin-top: 17px;
+	margin-right: -10px;
 }
 
 .guidwell-scoped .guidwell-watermark__logo {
