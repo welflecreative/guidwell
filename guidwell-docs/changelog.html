@@ -124,7 +124,8 @@ code { font-family: 'Fira Code', monospace; font-size: 12px; background: #f1f5f9
   <aside class="sidebar">
     <div class="sidebar__section">
       <div class="sidebar__heading">Releases</div>
-      <a href="#v1-5-6" class="sidebar__link active">v1.5.6 — replace lftp+sshpass with paramiko for</a>
+      <a href="#v1-5-7" class="sidebar__link active">v1.5.7 — deploy docs to /guidwell/ on server</a>
+      <a href="#v1-5-6" class="sidebar__link">v1.5.6 — replace lftp+sshpass with paramiko for</a>
       <a href="#v1-5-5" class="sidebar__link">v1.5.5 — resolve SFTP auth — embed user in URL</a>
       <a href="#v1-5-4" class="sidebar__link">v1.5.4 — use sshpass for SFTP password auth in</a>
       <a href="#v1-5-3" class="sidebar__link">v1.5.3 — logo SVG, docs overhaul, SFTP deploy,</a>
@@ -154,11 +155,34 @@ code { font-family: 'Fira Code', monospace; font-size: 12px; background: #f1f5f9
     <h1 class="page-title">Changelog</h1>
     <p class="page-lead">All notable changes, fixes, and security patches. Follows <a href="https://semver.org" target="_blank" rel="noopener" style="color:var(--primary);">Semantic Versioning</a> — patch for fixes, minor for new features, major for breaking changes.</p>
 
+    <!-- v1.5.7 -->
+    <div class="release" id="v1-5-7">
+      <div class="release__header">
+        <div class="release__version">v1.5.7</div>
+        <span class="release__tag tag--latest">Latest</span>
+        <span class="release__tag tag--fix">Fix</span>
+        <span class="release__date">2026-06-29</span>
+      </div>
+      <div class="change-group">
+        <div class="change-group__label">Fixed</div>
+        <ul class="change-list">
+          <li>deploy docs to /srv/htdocs/guidwell instead of /srv/htdocs/guidwell-docs</li>
+        </ul>
+      </div>
+      <div class="change-group">
+        <div class="change-group__label">Documentation</div>
+        <ul class="change-list">
+          <li>add v1.5.6 entry to changelog.html</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="rule"/>
+
     <!-- v1.5.6 -->
     <div class="release" id="v1-5-6">
       <div class="release__header">
         <div class="release__version">v1.5.6</div>
-        <span class="release__tag tag--latest">Latest</span>
         <span class="release__tag tag--fix">Fix</span>
         <span class="release__date">2026-06-29</span>
       </div>
