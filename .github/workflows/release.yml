@@ -393,12 +393,15 @@ jobs:
         env:
           SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
         run: |
-          sudo apt-get install -y lftp -qq
-          # -u passes credentials directly to lftp; .netrc is not used for SFTP connections
-          lftp -u "welflecreative.wordpress.com,$SFTP_PASS" -e "
+          sudo apt-get install -y lftp sshpass -qq
+          # lftp SFTP uses OpenSSH underneath which doesn't accept passwords non-interactively.
+          # sshpass intercepts the SSH password prompt; SSHPASS env var keeps it out of ps output.
+          export SSHPASS="$SFTP_PASS"
+          lftp -e "
+            set sftp:connect-program 'sshpass -e ssh -a -x -oStrictHostKeyChecking=no';
             set net:reconnect-interval-base 5;
             set net:max-retries 2;
-            set sftp:auto-confirm yes;
+            open -u welflecreative.wordpress.com sftp://sftp.wp.com;
             mirror --reverse --delete --parallel=4 guidwell-docs/ /srv/htdocs/guidwell-docs/;
             bye
-          " sftp://sftp.wp.com
+          "
