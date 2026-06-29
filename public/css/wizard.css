@@ -54,6 +54,13 @@
 	outline: none;
 }
 
+/* The question heading is focused programmatically for screen-reader announcements only —
+   never via keyboard interaction — so suppress any visible outline regardless of browser heuristics. */
+.guidwell-scoped .guidwell-question-text:focus,
+.guidwell-scoped .guidwell-question-text:focus-visible {
+	outline: none;
+}
+
 /* --------------------------------------------------------------------------
    Layout
    -------------------------------------------------------------------------- */
