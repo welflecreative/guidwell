@@ -50,13 +50,7 @@ body {
   display: flex; align-items: center; gap: 10px;
   text-decoration: none; flex-shrink: 0;
 }
-.topnav__logo-mark {
-  width: 30px; height: 30px; border-radius: 7px;
-  background: var(--primary);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800; color: #fff;
-  letter-spacing: -0.04em;
-}
+.topnav__logo-mark { width: 30px; height: 30px; display: block; }
 .topnav__logo-text {
   font-size: 15px; font-weight: 700; color: #fff;
   letter-spacing: -0.01em;
@@ -220,6 +214,26 @@ body {
   font-size: 11px; color: #7dd3e8; background: none; border: none; padding: 0;
 }
 
+/* ── WHY GUIDWELL ── */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.why-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.why-card__title {
+  font-size: 16px; font-weight: 700; color: var(--dark); letter-spacing: -0.01em;
+}
+.why-card__desc {
+  font-size: 13.5px; color: var(--muted); line-height: 1.6;
+}
+
 /* ── STATS ── */
 .stats-row {
   display: grid; grid-template-columns: repeat(4, 1fr);
@@ -252,6 +266,7 @@ body {
   .quickstart { grid-template-columns: 1fr; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .topnav__links { display: none; }
+  .why-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .doc-grid { grid-template-columns: 1fr; }
@@ -265,14 +280,13 @@ body {
 <!-- ── TOP NAV ── -->
 <nav class="topnav">
   <a href="./index.html" class="topnav__logo">
-    <div class="topnav__logo-mark">G</div>
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
     <span class="topnav__logo-text">Guidwell</span>
     <span class="topnav__logo-badge">Docs</span>
   </a>
   <div class="topnav__links">
     <a href="./getting-started.html">Getting Started</a>
     <a href="./user-guide.html">User Guide</a>
-    <a href="./api-reference.html">API Reference</a>
     <a href="./pricing.html">Pricing</a>
     <a href="./changelog.html">Changelog</a>
   </div>
@@ -283,7 +297,7 @@ body {
 <section class="hero">
   <div class="hero__eyebrow"><span class="hero__eyebrow-dot"></span>Documentation · v1.0</div>
   <h1>Everything you need to build<br/><em>guided recommendations</em></h1>
-  <p class="hero__sub">Complete reference for Guidwell — the WordPress plugin that turns visitor questions into personalized plan recommendations.</p>
+  <p class="hero__sub">Turn visitors into clients with personalized plan recommendations.</p>
   <div class="hero__actions">
     <a href="./getting-started.html" class="btn btn--primary">Start here →</a>
     <a href="./user-guide.html" class="btn btn--ghost">Browse the guide</a>
@@ -302,43 +316,36 @@ body {
       <a href="./getting-started.html" class="doc-card">
         <div class="doc-card__icon">🚀</div>
         <div class="doc-card__title">Getting Started</div>
-        <div class="doc-card__desc">Install the plugin, activate your license, set up your first wizard, and embed it on a page in under 10 minutes.</div>
+        <div class="doc-card__desc">Install the plugin, set up your first wizard, and embed it on a page in under 10 minutes.</div>
         <div class="doc-card__arrow">Read guide →</div>
       </a>
 
       <a href="./user-guide.html" class="doc-card">
         <div class="doc-card__icon">📖</div>
         <div class="doc-card__title">User Guide</div>
-        <div class="doc-card__desc">Deep-dive into every admin tab — Wizard Builder, Logic trees, Features, Settings, and Notifications — with annotated mockups.</div>
-        <div class="doc-card__arrow">Read guide →</div>
-      </a>
-
-      <a href="./user-guide.html#scoring" class="doc-card">
-        <div class="doc-card__icon">⚖️</div>
-        <div class="doc-card__title">Scoring & Weights</div>
-        <div class="doc-card__desc">Understand how the weighted scoring matrix works, how to set answer weights, and how tie-breaking is handled.</div>
+        <div class="doc-card__desc">Step-by-step guide to every admin tab with real screenshots. Questions, plans, logic trees, and more.</div>
         <div class="doc-card__arrow">Read guide →</div>
       </a>
 
       <a href="./user-guide.html#logic" class="doc-card">
         <div class="doc-card__icon">🌿</div>
         <div class="doc-card__title">Logic Trees</div>
-        <div class="doc-card__desc">Build branching wizard paths where each answer leads to a different next question using the visual canvas builder.</div>
+        <div class="doc-card__desc">Build branching wizards where each answer leads down a different path. The feature that makes recommendations feel personal.</div>
         <div class="doc-card__arrow">Read guide →</div>
-      </a>
-
-      <a href="./api-reference.html" class="doc-card">
-        <div class="doc-card__icon">🔌</div>
-        <div class="doc-card__title">API Reference</div>
-        <div class="doc-card__desc">REST API endpoints, PHP constants, tier class reference, and developer integration notes.</div>
-        <div class="doc-card__arrow">Read reference →</div>
       </a>
 
       <a href="./pricing.html" class="doc-card">
         <div class="doc-card__icon">💳</div>
         <div class="doc-card__title">Plans & Pricing</div>
-        <div class="doc-card__desc">Compare Free, Starter, Pro, and Agency tiers side by side. Feature matrix, limits, and competitor comparison included.</div>
+        <div class="doc-card__desc">Free, Starter ($79), Pro ($149), and Agency ($299). Compare tiers and pick what fits your business.</div>
         <div class="doc-card__arrow">See pricing →</div>
+      </a>
+
+      <a href="./changelog.html" class="doc-card">
+        <div class="doc-card__icon">📋</div>
+        <div class="doc-card__title">Changelog</div>
+        <div class="doc-card__desc">What's new in each release.</div>
+        <div class="doc-card__arrow">View changelog →</div>
       </a>
 
     </div>
@@ -365,7 +372,7 @@ body {
         </div>
         <div class="qs-step">
           <div class="qs-step__num">3</div>
-          <div class="qs-step__text">Open Guidwell, build your wizard</div>
+          <div class="qs-step__text">Build your wizard (questions + plans)</div>
         </div>
         <div class="qs-step">
           <div class="qs-step__num">4</div>
@@ -376,15 +383,49 @@ body {
   </div>
 </section>
 
-<!-- ── STATS ── -->
+<!-- ── WHY GUIDWELL ── -->
 <section class="section">
   <div class="wrap">
+    <p class="section-label">Why Guidwell</p>
+    <h2 class="section-title">Built different</h2>
+    <p class="section-sub">No monthly fees. No iframes. No data leaving your server. Just a WordPress-native wizard that converts.</p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-card__title">Your data, your rules</div>
+        <div class="why-card__desc">Everything lives in your WordPress database. No third-party servers, no iframes.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-card__title">Branching logic that converts</div>
+        <div class="why-card__desc">Guide different visitors down different paths based on their answers. Logic Trees turn a generic quiz into a personal consultation.</div>
+      </div>
+      <div class="why-card">
+        <div class="why-card__title">Built-in upsell engine</div>
+        <div class="why-card__desc">The results modal shows your top recommendation plus 2 runner-up plans, with feature checklists that make upgrading obvious.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="section section--alt">
+  <div class="wrap">
     <div class="stats-row">
-      <div class="stat"><div class="stat__num">4</div><div class="stat__label">License tiers</div></div>
-      <div class="stat"><div class="stat__num"><em>∞</em></div><div class="stat__label">Plans per wizard (Starter+)</div></div>
+      <div class="stat"><div class="stat__num"><em>$79</em>/yr</div><div class="stat__label">Starts at just $79/year</div></div>
+      <div class="stat"><div class="stat__num">10 <em>min</em></div><div class="stat__label">Average setup time</div></div>
       <div class="stat"><div class="stat__num">0</div><div class="stat__label">Monthly SaaS fees</div></div>
       <div class="stat"><div class="stat__num">100<em>%</em></div><div class="stat__label">WordPress-native</div></div>
     </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="section">
+  <div class="wrap" style="text-align:center;">
+    <p class="section-label">Get Started</p>
+    <h2 class="section-title">10 minutes from install to live</h2>
+    <p class="section-sub">A starter template loads automatically on activation — just customize your questions and plans, drop in the shortcode, and you're done.</p>
+    <a href="./getting-started.html" class="btn btn--primary" style="font-size:15px; padding:13px 28px;">Read the setup guide →</a>
   </div>
 </section>
 
@@ -394,11 +435,11 @@ body {
   <div class="site-footer__links">
     <a href="./getting-started.html">Getting Started</a>
     <a href="./user-guide.html">User Guide</a>
-    <a href="./api-reference.html">API Reference</a>
+    <a href="./pricing.html">Pricing</a>
     <a href="./changelog.html">Changelog</a>
     <a href="https://welflecreative.com" target="_blank" rel="noopener">welflecreative.com</a>
   </div>
-  <div class="site-footer__copy">© 2025 Welfle Creative</div>
+  <div class="site-footer__copy">© 2026 Welfle Creative</div>
 </footer>
 
 </body>

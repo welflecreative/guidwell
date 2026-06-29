@@ -69,6 +69,6 @@ class Guidwell_Elementor_Widget extends \Elementor\Widget_Base {
 
 		$wizard_id = (int) $this->get_settings_for_display( 'wizard_id' );
 		guidwell_enqueue_wizard_assets( $wizard_id );
-		echo '<div id="guidwell" class="guidwell-scoped"></div>';
+		echo guidwell_mount_point(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }

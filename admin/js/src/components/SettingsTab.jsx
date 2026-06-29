@@ -458,25 +458,21 @@ export default function SettingsTab( {
 				<p className="gw-settings-subheading">
 					{ __( 'Control the "Brought to you by Guidwell" watermark displayed on the quiz card.', 'guidwell' ) }
 				</p>
-				{ CAN_WHITE_LABEL ? (
-					<div className="gw-checkbox-row">
-						<input
-							type="checkbox"
-							id="removeWatermark"
-							checked={ !! settings.removeWatermark }
-							onChange={ ( e ) => handleSettingChange( 'removeWatermark', e.target.checked ) }
-						/>
-						<label htmlFor="removeWatermark">{ __( 'Remove "Brought to you by Guidwell" watermark', 'guidwell' ) }</label>
-					</div>
-				) : (
-					<div className="gw-tier-gate">
-						<span className="gw-tier-gate__icon" aria-hidden="true">🔒</span>
-						<span className="gw-tier-gate__text">{ __( 'Agency plan required', 'guidwell' ) }</span>
-						<a href={ UPGRADE_URL } target="_blank" rel="noreferrer" className="gw-tier-gate__link">
-							{ __( 'Upgrade →', 'guidwell' ) }
-						</a>
-					</div>
-				) }
+				<div className={ `gw-checkbox-row${ ! CAN_WHITE_LABEL ? ' gw-checkbox-row--disabled' : '' }` }>
+					<input
+						type="checkbox"
+						id="removeWatermark"
+						checked={ !! settings.removeWatermark }
+						onChange={ ( e ) => handleSettingChange( 'removeWatermark', e.target.checked ) }
+						disabled={ ! CAN_WHITE_LABEL }
+					/>
+					<label htmlFor="removeWatermark">{ __( 'Remove "Brought to you by Guidwell" watermark', 'guidwell' ) }</label>
+					{ ! CAN_WHITE_LABEL && (
+						<span className="gw-upgrade-badge">
+							🔒 { __( 'Agency plan', 'guidwell' ) } &middot; <a href={ UPGRADE_URL } target="_blank" rel="noreferrer">{ __( 'Upgrade', 'guidwell' ) }</a>
+						</span>
+					) }
+				</div>
 			</div>
 
 			{ /* ── Section 5: Backup & Transfer ── */ }

@@ -41,7 +41,7 @@
 	width: 100vw !important;
 	max-width: none !important;
 	position: relative;
-	margin-left: calc(50% - 50vw);
+	margin-left: calc(50% - 50vw) !important;
 }
 
 /* Focus styles */
@@ -69,7 +69,7 @@
 
 .guidwell-scoped .guidwell-card {
 	width: 100%;
-	max-width: clamp(600px, 65vw, 1080px);
+	max-width: min(clamp(360px, 65vw, 1080px), 100%);
 	background-color: var(--guidwell-card-bg);
 	border-radius: var(--guidwell-radius-card);
 	box-shadow: var(--guidwell-shadow);
@@ -90,7 +90,7 @@
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: clamp(600px, 65vw, 1080px);
+	max-width: min(clamp(360px, 65vw, 1080px), 100%);
 }
 
 /* Override the internal margin-bottom the bar used when it lived inside the card. */
@@ -763,10 +763,15 @@
 	}
 
 	.guidwell-scoped .guidwell-card {
+		max-width: 100%;
 		border-radius: 0;
 		box-shadow: none;
 		padding: 24px;
 		min-height: 100vh;
+	}
+
+	.guidwell-scoped .guidwell-wizard-frame {
+		max-width: 100%;
 	}
 
 	.guidwell-scoped .guidwell-question-text {
@@ -1636,7 +1641,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	gap: 6px;
+	gap: 10px;
 	margin-top: 24px;
 	padding-top: 16px;
 	border-top: 1px solid var(--guidwell-border);
@@ -1650,16 +1655,30 @@
 }
 
 .guidwell-scoped .guidwell-watermark__text {
-	font-size: 11px;
+	font-size: 13px;
 	font-weight: 500;
 	color: var(--guidwell-muted);
 	letter-spacing: 0.02em;
 	white-space: nowrap;
+	line-height: 1;
+	margin-top: 17px;
+	margin-right: -10px;
 }
 
 .guidwell-scoped .guidwell-watermark__logo {
-	height: 18px;
+	height: 70px;
 	width: auto;
 	display: block;
+}
+
+@media (max-width: 600px) {
+	.guidwell-scoped .guidwell-watermark__logo {
+		height: 52px;
+	}
+	.guidwell-scoped .guidwell-watermark__text {
+		font-size: 12px;
+		margin-top: 13px;
+		margin-right: -8px;
+	}
 }
 

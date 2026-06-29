@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Getting Started — Guidwell Docs</title>
+<link rel="icon" href="./guidwell-favicon.svg" type="image/svg+xml"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
@@ -26,7 +27,7 @@ body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); colo
   padding: 0 28px; gap: 28px; box-shadow: 0 1px 0 rgba(255,255,255,0.06);
 }
 .topnav__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
-.topnav__logo-mark { width: 28px; height: 28px; border-radius: 6px; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+.topnav__logo-mark { width: 28px; height: 28px; display: block; }
 .topnav__logo-text { font-size: 15px; font-weight: 700; color: #fff; }
 .topnav__logo-badge { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 7px; }
 .topnav__links { display: flex; align-items: center; gap: 4px; flex: 1; }
@@ -118,18 +119,18 @@ hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
 code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 6px; color: var(--primary-dk); }
 pre { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 20px 24px; font-size: 13px; font-family: 'Fira Code', monospace; overflow-x: auto; margin: 14px 0; max-width: 680px; line-height: 1.75; }
 pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
-pre .cm { color: #64748b; } /* comment */
-pre .kw { color: #93c5fd; } /* keyword */
-pre .st { color: #86efac; } /* string */
-pre .fn { color: #fcd34d; } /* function */
-pre .va { color: #e2e8f0; } /* variable */
 
-/* ── REQUIREMENTS TABLE ── */
-.req-table { width: 100%; max-width: 520px; border-collapse: collapse; margin: 18px 0; font-size: 13.5px; }
-.req-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 8px 12px; background: #f9fafb; border-bottom: 2px solid var(--border); }
-.req-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--body); }
-.req-table td:last-child { font-weight: 600; color: var(--dark); }
-.req-table tr:last-child td { border-bottom: none; }
+/* ── SCREENSHOTS ── */
+.screenshot-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 20px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.screenshot { width: 100%; display: block; }
+
+/* ── WHAT'S NEXT CARDS ── */
+.next-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 680px; margin: 24px 0; }
+.next-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; text-decoration: none; transition: border-color 0.15s, box-shadow 0.15s; }
+.next-card:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(74,144,164,0.12); }
+.next-card__eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--primary); margin-bottom: 6px; }
+.next-card__title { font-size: 16px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+.next-card__desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
 /* ── NEXT/PREV ── */
 .page-nav { display: flex; justify-content: flex-end; margin-top: 64px; border-top: 1px solid var(--border); padding-top: 28px; }
@@ -148,6 +149,7 @@ pre .va { color: #e2e8f0; } /* variable */
   .sidebar { display: none; }
   .content { padding: 28px 20px 60px; }
   .topnav__links { display: none; }
+  .next-cards { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -155,14 +157,13 @@ pre .va { color: #e2e8f0; } /* variable */
 
 <nav class="topnav">
   <a href="./index.html" class="topnav__logo">
-    <div class="topnav__logo-mark">G</div>
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
     <span class="topnav__logo-text">Guidwell</span>
     <span class="topnav__logo-badge">Docs</span>
   </a>
   <div class="topnav__links">
     <a href="./getting-started.html" class="active">Getting Started</a>
     <a href="./user-guide.html">User Guide</a>
-    <a href="./api-reference.html">API Reference</a>
     <a href="./pricing.html">Pricing</a>
     <a href="./changelog.html">Changelog</a>
   </div>
@@ -175,17 +176,15 @@ pre .va { color: #e2e8f0; } /* variable */
   <aside class="sidebar">
     <div class="sidebar__section">
       <div class="sidebar__heading">Getting Started</div>
-      <a href="#requirements" class="sidebar__link">Requirements</a>
-      <a href="#install" class="sidebar__link active">Installation</a>
-      <a href="#activate" class="sidebar__link">Activation</a>
-      <a href="#first-wizard" class="sidebar__link">First Wizard</a>
-      <a href="#embed" class="sidebar__link">Embedding</a>
-      <a href="#testing" class="sidebar__link">Testing It Live</a>
+      <a href="#installation" class="sidebar__link active">Installation</a>
+      <a href="#first-launch" class="sidebar__link">First Launch</a>
+      <a href="#build" class="sidebar__link">Build Your Wizard</a>
+      <a href="#embed" class="sidebar__link">Embed the Wizard</a>
+      <a href="#go-live" class="sidebar__link">Go Live</a>
     </div>
     <div class="sidebar__section">
       <div class="sidebar__heading">Other Docs</div>
       <a href="./user-guide.html" class="sidebar__link">User Guide</a>
-      <a href="./api-reference.html" class="sidebar__link">API Reference</a>
       <a href="./pricing.html" class="sidebar__link">Plans &amp; Pricing</a>
       <a href="./changelog.html" class="sidebar__link">Changelog</a>
     </div>
@@ -200,153 +199,167 @@ pre .va { color: #e2e8f0; } /* variable */
       <span>Getting Started</span>
     </div>
 
-    <p class="page-eyebrow">Getting Started</p>
-    <h1 class="page-title">Install &amp; set up Guidwell</h1>
-    <p class="page-lead">From zero to a live wizard on your WordPress site — download the plugin, upload it, configure your first questions and plans, and embed it on a page.</p>
+    <p class="page-eyebrow">Quick-Start Guide</p>
+    <h1 class="page-title">Up and running in 10 minutes</h1>
+    <p class="page-lead">Install the plugin, customize the starter wizard, and embed it on any page. No developer setup required — just your WordPress admin and a few clicks.</p>
 
-    <!-- REQUIREMENTS -->
-    <section class="doc-section" id="requirements">
-      <h2>Requirements</h2>
-      <p>Guidwell runs entirely inside WordPress. No external services or API keys are required for core functionality.</p>
-      <table class="req-table">
-        <thead><tr><th>Requirement</th><th>Minimum</th></tr></thead>
-        <tbody>
-          <tr><td>WordPress</td><td>6.0 or higher</td></tr>
-          <tr><td>PHP</td><td>8.1 or higher</td></tr>
-          <tr><td>MySQL / MariaDB</td><td>WordPress minimum (5.5+ / 10.1+)</td></tr>
-          <tr><td>Browser (admin)</td><td>Any modern browser</td></tr>
-          <tr><td>Server outgoing mail</td><td>Required for email notifications (optional)</td></tr>
-        </tbody>
-      </table>
-      <div class="callout callout--info">
-        <div class="callout__icon">ℹ️</div>
-        <div class="callout__body">PHP 8.1+ is required. PHP 7.x is not supported. Most managed WordPress hosts (WP Engine, Kinsta, Flywheel, SiteGround) default to PHP 8.1 or 8.2. Check your hosting control panel if unsure.</div>
-      </div>
-    </section>
+    <!-- INSTALLATION -->
+    <section class="doc-section" id="installation">
+      <h2>1. Installation</h2>
+      <p>Guidwell is a standard WordPress plugin delivered as a <code>.zip</code> file. No hosting changes, no server access, no code.</p>
 
-    <hr class="rule"/>
-
-    <!-- INSTALL -->
-    <section class="doc-section" id="install">
-      <h2>Installation</h2>
-      <p>Guidwell is distributed as a <code>.zip</code> file via GitHub Releases. Download the latest release and upload it through the WordPress admin.</p>
-
-      <h3>Step-by-step</h3>
+      <h3>Download &amp; Upload</h3>
       <ol class="steps">
-        <li><span>Go to <a href="https://github.com/welflecreative/guidwell/releases" target="_blank" rel="noopener">github.com/welflecreative/guidwell/releases</a> and download the latest <code>guidwell-x.y.z.zip</code> asset from the release.</span></li>
-        <li><span>In your WordPress admin, navigate to <strong>Plugins → Add New → Upload Plugin</strong>.</span></li>
-        <li><span>Click <strong>Choose File</strong>, select the <code>guidwell-x.y.z.zip</code> you downloaded, and click <strong>Install Now</strong>.</span></li>
-        <li><span>Once the upload completes, click <strong>Activate Plugin</strong>.</span></li>
-        <li><span>A new <strong>Guidwell</strong> menu item appears in the left sidebar of WP Admin. Click it to open the plugin.</span></li>
+        <li><span>After purchase, download the <code>guidwell.zip</code> file from your confirmation email or account dashboard.</span></li>
+        <li><span>In your WordPress admin, go to <strong>Plugins → Add New → Upload Plugin</strong>.</span></li>
+        <li><span>Click <strong>Choose File</strong>, select the <code>guidwell.zip</code> you downloaded, then click <strong>Install Now</strong>.</span></li>
+      </ol>
+
+      <h3>Activate</h3>
+      <ol class="steps">
+        <li><span>Once the upload finishes, click <strong>Activate Plugin</strong>.</span></li>
+        <li><span>Done. A <strong>Guidwell</strong> menu item now appears in your WP Admin sidebar.</span></li>
       </ol>
 
       <div class="callout callout--tip">
         <div class="callout__icon">✅</div>
-        <div class="callout__body"><strong>Future updates are automatic.</strong> Once the plugin is installed from the release zip, WordPress will detect new releases on GitHub and show an update prompt in WP Admin → Plugins — just like any other plugin.</div>
+        <div class="callout__body"><strong>Future updates are automatic.</strong> WordPress will detect new Guidwell releases and show an update prompt in your Plugins list — just like any other plugin.</div>
       </div>
-
-      <h3>Manual installation (FTP)</h3>
-      <p>If you prefer FTP or your host blocks file uploads:</p>
-      <ol class="steps">
-        <li><span>Extract the <code>guidwell-x.y.z.zip</code> file. You should get a single <code>guidwell/</code> folder.</span></li>
-        <li><span>Upload the entire <code>guidwell/</code> folder to <code>wp-content/plugins/</code> on your server.</span></li>
-        <li><span>In WP Admin, go to <strong>Plugins → Installed Plugins</strong>, find Guidwell in the list, and click <strong>Activate</strong>.</span></li>
-      </ol>
     </section>
 
     <hr class="rule"/>
 
-    <!-- ACTIVATE -->
-    <section class="doc-section" id="activate">
-      <h2>Activation &amp; License</h2>
-      <p>The <strong>Free tier</strong> requires no license key — activate the plugin and it works immediately with free-tier limits (5 questions per wizard, 1 active wizard, 1 site).</p>
-      <p>For paid tiers (Starter, Pro, Agency), license activation will be handled through the Guidwell settings once the licensing layer is live. In the meantime, your license tier is set directly in the WordPress options table after purchase — Welfle Creative will provide instructions with your purchase confirmation.</p>
+    <!-- FIRST LAUNCH -->
+    <section class="doc-section" id="first-launch">
+      <h2>2. First Launch</h2>
+
+      <h3>What You'll See</h3>
+      <p>Click <strong>Guidwell</strong> in the sidebar. You'll land on the Wizard Builder — a split-panel editor with questions on the left and a live preview on the right.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/admin-builder.png" class="screenshot" alt="Guidwell Wizard Builder showing questions, plans, and scoring weights"/>
+      </div>
+
+      <h3>Starter Template</h3>
+      <p>A sample wizard is pre-loaded with placeholder questions and plans so you can see exactly how everything fits together. A blue banner at the top of the screen confirms it — this starter wizard hasn't been saved yet, so feel free to edit everything before committing anything to your database.</p>
 
       <div class="callout callout--info">
         <div class="callout__icon">ℹ️</div>
-        <div class="callout__body">The license tier controls which features and limits are active. You can check your current tier at any time in <strong>WP Admin → Guidwell</strong> — the tier name is shown in the top-right of the admin interface.</div>
+        <div class="callout__body">The starter template is a great starting point for agencies and consultants. You'll replace the sample text with your own services — typically takes 5–10 minutes.</div>
       </div>
-
     </section>
 
     <hr class="rule"/>
 
-    <!-- FIRST WIZARD -->
-    <section class="doc-section" id="first-wizard">
-      <h2>Your First Wizard</h2>
-      <p>When you open <strong>WP Admin → Guidwell</strong> for the first time, a starter template is pre-loaded with sample questions and plans. A blue banner confirms this — your wizard exists only in memory at this point and hasn't been saved yet.</p>
+    <!-- BUILD YOUR WIZARD -->
+    <section class="doc-section" id="build">
+      <h2>3. Build Your Wizard</h2>
+      <p>The Wizard Builder has two parts: <strong>Questions</strong> (what visitors answer) and <strong>Plans</strong> (what you recommend). Edit both, then save.</p>
 
+      <h3>Edit Questions</h3>
       <ol class="steps">
-        <li><span>Click any <strong>question</strong> in the left sidebar to open it. Review the question text and the answers.</span></li>
-        <li><span>Edit the <strong>question text</strong>, <strong>answer labels</strong>, and <strong>weights</strong> to match your service. Each answer has a weight (0–10) per plan — higher weight = stronger signal toward that plan.</span></li>
-        <li><span>Click a <strong>plan name</strong> in the lower sidebar section to edit it. Fill in the plan name, price, description, and CTA button URL.</span></li>
-        <li><span>When you're ready, click <strong>Save</strong> in the top-right of the tab bar. The wizard is created in the database and the Save button returns to its disabled (greyed-out) state.</span></li>
+        <li><span>Click any question in the left panel to open it for editing.</span></li>
+        <li><span>Update the <strong>question text</strong> and each <strong>answer label</strong> to reflect your services. Add or remove answers as needed.</span></li>
+        <li><span>Set a <strong>weight</strong> (0–10) for each answer under each plan. Higher weight means that answer is a stronger signal toward recommending that plan.</span></li>
       </ol>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Keep questions outcome-focused.</strong> Ask about budget, team size, goals — things that genuinely separate your service tiers. Avoid questions where every answer maps to the same plan.</div>
+      </div>
+
+      <h3>Edit Plans</h3>
+      <ol class="steps">
+        <li><span>Click a plan name in the lower section of the left panel.</span></li>
+        <li><span>Fill in the <strong>plan name</strong>, <strong>price or tagline</strong>, <strong>short description</strong>, and the <strong>CTA button label and URL</strong> (e.g., your booking link or sales page).</span></li>
+        <li><span>Repeat for each plan tier.</span></li>
+      </ol>
+
+      <h3>Scoring Weights</h3>
+      <p>When a visitor completes the wizard, Guidwell totals the weights for all their chosen answers across each plan. The plan with the highest total is recommended. You can review and fine-tune these weights directly in the builder — each answer row shows a weight field per plan.</p>
 
       <div class="callout callout--warn">
         <div class="callout__icon">⚠️</div>
-        <div class="callout__body"><strong>Save before navigating away.</strong> There is no auto-save for the main wizard config. Closing the tab or navigating away without clicking Save discards your changes.</div>
+        <div class="callout__body"><strong>Save before navigating away.</strong> There is no auto-save. Click <strong>Save</strong> in the top-right of the builder tab when you're done — the button greys out to confirm your changes are stored.</div>
       </div>
-
-      <h3>Minimum requirements to save</h3>
-      <ul>
-        <li>At least <strong>1 question</strong> with at least <strong>2 answers</strong></li>
-        <li>At least <strong>2 plans</strong>, each with a name and CTA label</li>
-        <li>Each answer must have a weight assigned for each plan (0 is valid)</li>
-      </ul>
     </section>
 
     <hr class="rule"/>
 
     <!-- EMBED -->
     <section class="doc-section" id="embed">
-      <h2>Embedding the Wizard</h2>
-      <p>Once your wizard is saved, place it on any WordPress page or post using a shortcode or the Gutenberg block.</p>
+      <h2>4. Embed the Wizard</h2>
+      <p>Once your wizard is saved, place it on any page in seconds. Three methods — pick whichever fits your setup.</p>
 
-      <h3>Shortcode (simplest)</h3>
-      <p>Add the following to any page or post:</p>
+      <h3>Shortcode (fastest)</h3>
+      <p>Edit any page or post and paste this into the content area:</p>
       <pre><code>[guidwell]</code></pre>
-      <p>This automatically uses the first published wizard. To embed a specific wizard by its WordPress post ID:</p>
-      <pre><code>[guidwell id="42"]</code></pre>
+      <p>That's it. Guidwell automatically uses your published wizard. Publish or update the page and the wizard is live.</p>
 
-      <h3>Gutenberg block</h3>
-      <p>In the block editor, click the <strong>+</strong> block inserter and search for <strong>Guidwell</strong>. Add the block to your page. The block renders a live preview of the wizard in the editor and includes a sidebar control to select which wizard to embed.</p>
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/wizard-step1.png" class="screenshot" alt="Frontend wizard showing first question to the visitor"/>
+      </div>
 
-      <h3>Where to find your wizard's post ID</h3>
-      <p>The wizard's ID is visible in the URL when you look at it in the WordPress post list. Navigate to <strong>WP Admin → Posts → All Posts</strong>, filter by post type if needed, and hover over the wizard title — the ID appears in the URL in the status bar (e.g. <code>post=42</code>).</p>
+      <h3>Gutenberg Block</h3>
+      <p>In the block editor, click the <strong>+</strong> block inserter and search for <strong>Guidwell</strong>. Insert the block anywhere on the page. The block includes a sidebar control to choose which wizard to display if you have more than one.</p>
 
-      <div class="callout callout--tip">
-        <div class="callout__icon">✅</div>
-        <div class="callout__body">The wizard loads asynchronously — the page itself loads fast, then the wizard initializes. It's safe to place the shortcode anywhere on a page, including inside page builders, inside other blocks, or in a sidebar widget.</div>
+      <h3>Elementor Widget</h3>
+      <p>In Elementor, search for <strong>Guidwell</strong> in the widget panel and drag it onto your canvas. The widget settings let you select your wizard and adjust display options without leaving the editor.</p>
+
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">The wizard loads asynchronously, so it won't slow down your page. It's safe to embed inside page builder sections, sidebars, or popups.</div>
       </div>
     </section>
 
     <hr class="rule"/>
 
-    <!-- TESTING -->
-    <section class="doc-section" id="testing">
-      <h2>Testing It Live</h2>
-      <p>After embedding the shortcode, visit the page on the frontend as a regular visitor would.</p>
+    <!-- GO LIVE -->
+    <section class="doc-section" id="go-live">
+      <h2>5. Go Live</h2>
+      <p>Before you share the page, run through this quick checklist on the frontend as a regular visitor would.</p>
 
-      <h3>What to verify</h3>
+      <h3>Checklist</h3>
       <ul>
         <li>The wizard card appears and shows your first question</li>
-        <li>Clicking an answer selects it (highlighted state) and the Next button becomes active</li>
-        <li>Progressing through all questions leads to the result modal</li>
-        <li>The result modal shows the correct recommended plan based on your weights</li>
-        <li>The CTA button links to the correct URL</li>
-        <li>The modal closes with the × button, Escape key, or clicking the overlay</li>
+        <li>Selecting an answer highlights it and enables the Next button</li>
+        <li>Progressing through all questions opens the results modal</li>
+        <li>The modal shows the correct recommended plan</li>
+        <li>The CTA button links to the right URL</li>
+        <li>The modal closes with the &times; button, Escape key, or clicking the overlay</li>
       </ul>
 
-      <h3>Checking which plan gets recommended</h3>
-      <p>Pick a specific path through your wizard (choose the same answers each time) and note which plan wins. Cross-check manually: sum the weights for each chosen answer per plan and verify the highest total matches the recommendation. If results seem off, review the weight values in the Wizard Builder.</p>
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/wizard-results-modal.png" class="screenshot" alt="Results modal showing the recommended plan to the visitor"/>
+      </div>
 
-      <h3>Testing notifications</h3>
-      <p>If you have admin result notifications enabled in the Notifications tab, complete the wizard with a visitor email address and verify you receive the notification email. Use the <strong>Send Test Email</strong> button in the Notifications tab to verify SMTP connectivity before testing the full flow.</p>
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Spot-check your scoring.</strong> Choose a specific path through your wizard (same answers each time) and verify the right plan wins. If results seem off, revisit the weight values in the builder.</div>
+      </div>
 
-      <div class="callout callout--info">
-        <div class="callout__icon">ℹ️</div>
-        <div class="callout__body">The wizard uses your browser's local state — refreshing the page resets it back to the first question. This is intentional: each page load is a fresh visitor session.</div>
+      <h3>You're live.</h3>
+      <p>Share the page link, add it to your nav, or embed the wizard in a landing page. Every visitor who completes the quiz gets a personalized plan recommendation — and you get a lead who already knows which tier fits them best.</p>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- WHAT'S NEXT -->
+    <section class="doc-section" id="whats-next">
+      <h2>What's next</h2>
+      <p>You've got a live wizard. Here's where to go from here.</p>
+
+      <div class="next-cards">
+        <a href="./user-guide.html" class="next-card">
+          <div class="next-card__eyebrow">Deep Dive</div>
+          <div class="next-card__title">User Guide</div>
+          <div class="next-card__desc">Logic settings, notifications, result tracking, multi-wizard management, and advanced customization.</div>
+        </a>
+        <a href="./pricing.html" class="next-card">
+          <div class="next-card__eyebrow">Upgrade</div>
+          <div class="next-card__title">Plans &amp; Pricing</div>
+          <div class="next-card__desc">Compare tiers and unlock more questions, more wizards, email notifications, and lead capture.</div>
+        </a>
       </div>
     </section>
 
@@ -362,7 +375,7 @@ pre .va { color: #e2e8f0; } /* variable */
   <div class="site-footer__links">
     <a href="./index.html">Docs Home</a>
     <a href="./user-guide.html">User Guide</a>
-    <a href="./api-reference.html">API Reference</a>
+    <a href="./pricing.html">Pricing</a>
     <a href="./changelog.html">Changelog</a>
   </div>
 </footer>

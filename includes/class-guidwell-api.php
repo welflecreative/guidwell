@@ -226,6 +226,9 @@ class Guidwell_API {
 
 		$clean['useThemeColors'] = ! empty( $body['useThemeColors'] );
 
+		// Only agency-tier sites may suppress the watermark; lower tiers are silently forced to false.
+		$clean['removeWatermark'] = ! empty( $body['removeWatermark'] ) && Guidwell_Tiers::can( 'white_label' );
+
 		update_option( 'guidwell_settings', $clean );
 
 		return rest_ensure_response( guidwell_get_settings() );

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>User Guide — Guidwell Docs</title>
+<link rel="icon" href="./guidwell-favicon.svg" type="image/svg+xml"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --primary: #4a90a4; --primary-dk: #3a7a8c; --primary-lt: #e8f4f7;
+  --accent: #27ae60; --gold: #f0a500; --dark: #0f1623;
+  --body: #374151; --muted: #6b7280; --border: #e5e7eb;
+  --bg: #f8f9fb; --card: #ffffff;
+  --nav-h: 60px; --sidebar-w: 252px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'Outfit', system-ui, sans-serif; background: var(--bg); color: var(--body); -webkit-font-smoothing: antialiased; }
+
+/* ── TOP NAV ── */
+.topnav {
+  position: sticky; top: 0; z-index: 100; height: var(--nav-h);
+  background: var(--dark); display: flex; align-items: center;
+  padding: 0 28px; gap: 28px; box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+}
+.topnav__logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.topnav__logo-mark { width: 28px; height: 28px; display: block; }
+.topnav__logo-text { font-size: 15px; font-weight: 700; color: #fff; }
+.topnav__logo-badge { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 7px; }
+.topnav__links { display: flex; align-items: center; gap: 4px; flex: 1; }
+.topnav__links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.55); text-decoration: none; padding: 6px 11px; border-radius: 6px; transition: color 0.12s, background 0.12s; }
+.topnav__links a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+.topnav__links a.active { color: #fff; background: rgba(74,144,164,0.2); }
+.topnav__cta { font-size: 12px !important; font-weight: 700 !important; color: #fff !important; background: var(--primary) !important; border-radius: 7px !important; padding: 7px 14px !important; flex-shrink: 0; }
+.topnav__cta:hover { background: var(--primary-dk) !important; }
+
+/* ── PAGE LAYOUT ── */
+.page-layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: calc(100vh - var(--nav-h)); max-width: 1200px; margin: 0 auto; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky; top: var(--nav-h); align-self: start;
+  height: calc(100vh - var(--nav-h)); overflow-y: auto;
+  padding: 28px 0 40px; border-right: 1px solid var(--border);
+  background: var(--card);
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar__section { margin-bottom: 24px; padding: 0 16px; }
+.sidebar__heading {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); padding: 0 6px 6px; border-bottom: 1px solid var(--border); margin-bottom: 8px;
+}
+.sidebar__link {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500; color: var(--body);
+  text-decoration: none; padding: 6px 8px; border-radius: 6px;
+  transition: background 0.1s, color 0.1s; margin-bottom: 2px;
+}
+.sidebar__link:hover { background: var(--primary-lt); color: var(--primary-dk); }
+.sidebar__link.active { background: var(--primary-lt); color: var(--primary-dk); font-weight: 700; border-left: 3px solid var(--primary); padding-left: 5px; }
+.sidebar__link--sub {
+  padding-left: 22px; font-size: 12.5px; color: var(--muted);
+}
+.sidebar__link--sub:hover { color: var(--primary-dk); }
+.sidebar__link-badge {
+  margin-left: auto; font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 2px 5px; border-radius: 3px;
+}
+.badge--starter { background: #e0f2fe; color: #0369a1; }
+.badge--pro     { background: #dcfce7; color: #15803d; }
+.badge--agency  { background: #fef3c7; color: #b45309; }
+
+/* ── CONTENT ── */
+.content { padding: 44px 56px 80px; min-width: 0; }
+
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--primary); }
+.breadcrumb__sep { color: var(--border); }
+
+.page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--primary); margin-bottom: 8px; }
+.page-title { font-size: 36px; font-weight: 800; color: var(--dark); letter-spacing: -0.025em; line-height: 1.1; margin-bottom: 12px; }
+.page-lead { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 640px; margin-bottom: 40px; }
+
+.doc-section { margin-bottom: 60px; scroll-margin-top: 80px; }
+.doc-section h2 { font-size: 24px; font-weight: 800; color: var(--dark); letter-spacing: -0.02em; margin-bottom: 12px; padding-top: 8px; border-top: 1px solid var(--border); padding-bottom: 12px; }
+.doc-section h3 { font-size: 17px; font-weight: 700; color: var(--dark); margin: 28px 0 10px; }
+.doc-section h4 { font-size: 14px; font-weight: 700; color: var(--dark); margin: 20px 0 8px; }
+.doc-section p { font-size: 14.5px; color: var(--body); line-height: 1.75; margin-bottom: 14px; max-width: 680px; }
+.doc-section ul, .doc-section ol { padding-left: 20px; margin-bottom: 14px; max-width: 680px; }
+.doc-section li { font-size: 14.5px; color: var(--body); line-height: 1.75; margin-bottom: 5px; }
+.doc-section li strong { color: var(--dark); }
+hr.rule { border: none; border-top: 1px solid var(--border); margin: 52px 0; }
+
+/* ── CALLOUTS ── */
+.callout { border-radius: 8px; padding: 14px 18px; margin: 18px 0; font-size: 13.5px; line-height: 1.65; max-width: 680px; display: flex; gap: 12px; align-items: flex-start; }
+.callout__icon { flex-shrink: 0; font-size: 16px; line-height: 1.5; }
+.callout__body { flex: 1; }
+.callout__body strong { font-weight: 700; }
+.callout--info  { background: #eff8ff; border-left: 3px solid #3b82f6; }
+.callout--tip   { background: #f0fdf4; border-left: 3px solid var(--accent); }
+.callout--warn  { background: #fffbeb; border-left: 3px solid #f59e0b; }
+.callout--tier  { background: #fefce8; border-left: 3px solid var(--gold); }
+
+/* ── STEPS ── */
+.steps { counter-reset: step; list-style: none; padding: 0; margin: 18px 0; max-width: 680px; }
+.steps li { counter-increment: step; display: grid; grid-template-columns: 36px 1fr; gap: 14px; margin-bottom: 20px; align-items: start; }
+.steps li::before {
+  content: counter(step);
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  font-size: 13px; font-weight: 800; flex-shrink: 0; margin-top: 2px;
+}
+.steps li span { font-size: 14.5px; color: var(--body); line-height: 1.7; padding-top: 4px; }
+
+/* ── CODE ── */
+code { font-family: 'Fira Code', monospace; font-size: 12.5px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 6px; color: var(--primary-dk); }
+
+/* ── SCREENSHOTS ── */
+.screenshot-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin: 20px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.screenshot { width: 100%; display: block; }
+.screenshot-caption { font-size: 12px; color: var(--muted); text-align: center; padding: 10px 16px; background: #f9fafb; border-top: 1px solid var(--border); }
+
+/* ── TIER TABLE ── */
+.tier-table { width: 100%; max-width: 700px; border-collapse: collapse; margin: 20px 0; font-size: 13px; }
+.tier-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 10px 14px; background: #f9fafb; border-bottom: 2px solid var(--border); }
+.tier-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--body); vertical-align: top; }
+.tier-table tr:last-child td { border-bottom: none; }
+.tier-table td:first-child { font-weight: 600; color: var(--dark); }
+.tier-table .yes { color: var(--accent); font-weight: 700; }
+.tier-table .no  { color: var(--muted); }
+.tier-label { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+.tier-label--free    { background: #f3f4f6; color: var(--muted); }
+.tier-label--starter { background: #e0f2fe; color: #0369a1; }
+.tier-label--pro     { background: #dcfce7; color: #15803d; }
+.tier-label--agency  { background: #fef3c7; color: #b45309; }
+
+/* ── FEATURE GRID ── */
+.feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 700px; margin: 20px 0; }
+.feature-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; }
+.feature-card__icon { font-size: 22px; margin-bottom: 10px; }
+.feature-card__title { font-size: 14px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+.feature-card__body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ── BRANCHING DIAGRAM ── */
+.branch-diagram { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 28px 32px; margin: 20px 0; max-width: 680px; }
+.branch-diagram__title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; }
+.branch-node { display: inline-flex; align-items: center; gap: 8px; background: var(--primary-lt); border: 1.5px solid var(--primary); color: var(--primary-dk); font-size: 13px; font-weight: 600; border-radius: 8px; padding: 8px 14px; white-space: nowrap; }
+.branch-node--start { background: var(--dark); border-color: var(--dark); color: #fff; }
+.branch-node--end { background: #f0fdf4; border-color: var(--accent); color: #15803d; }
+.branch-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.branch-arrow { color: var(--primary); font-size: 18px; font-weight: 700; }
+.branch-label { font-size: 11px; color: var(--muted); background: #f9fafb; border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; }
+
+/* ── NEXT/PREV ── */
+.page-nav { display: flex; justify-content: space-between; margin-top: 64px; border-top: 1px solid var(--border); padding-top: 28px; }
+.page-nav a { display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 14px; font-weight: 700; color: var(--primary); }
+.page-nav a:hover { color: var(--primary-dk); }
+
+/* ── FOOTER ── */
+.site-footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 32px 28px; display: flex; align-items: center; justify-content: space-between; }
+.site-footer__brand { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.7); }
+.site-footer__links { display: flex; gap: 20px; }
+.site-footer__links a { font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: none; }
+.site-footer__links a:hover { color: rgba(255,255,255,0.75); }
+
+@media (max-width: 860px) {
+  .page-layout { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .content { padding: 28px 20px 60px; }
+  .topnav__links { display: none; }
+  .feature-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="./index.html" class="topnav__logo">
+    <img src="./guidwell-favicon.svg" alt="Guidwell" class="topnav__logo-mark">
+    <span class="topnav__logo-text">Guidwell</span>
+    <span class="topnav__logo-badge">Docs</span>
+  </a>
+  <div class="topnav__links">
+    <a href="./getting-started.html">Getting Started</a>
+    <a href="./user-guide.html" class="active">User Guide</a>
+    <a href="./pricing.html">Pricing</a>
+    <a href="./changelog.html">Changelog</a>
+  </div>
+  <a href="https://welflecreative.com/guidwell" class="topnav__cta" target="_blank" rel="noopener">Get Guidwell &rarr;</a>
+</nav>
+
+<div class="page-layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar__section">
+      <div class="sidebar__heading">User Guide</div>
+      <a href="#overview" class="sidebar__link active">Overview</a>
+      <a href="#wizard-builder" class="sidebar__link">Wizard Builder</a>
+      <a href="#questions" class="sidebar__link sidebar__link--sub">Questions</a>
+      <a href="#plans" class="sidebar__link sidebar__link--sub">Plans</a>
+      <a href="#scoring" class="sidebar__link sidebar__link--sub">Scoring</a>
+      <a href="#logic" class="sidebar__link">Logic Trees &#11088;</a>
+      <a href="#linear-vs-tree" class="sidebar__link sidebar__link--sub">Linear vs Tree</a>
+      <a href="#building-branches" class="sidebar__link sidebar__link--sub">Building Branches</a>
+      <a href="#logic-tier-limits" class="sidebar__link sidebar__link--sub">Tier Limits</a>
+      <a href="#features" class="sidebar__link">Features Library</a>
+      <a href="#settings" class="sidebar__link">Settings</a>
+      <a href="#branding" class="sidebar__link sidebar__link--sub">Branding</a>
+      <a href="#license" class="sidebar__link sidebar__link--sub">License</a>
+      <a href="#import-export" class="sidebar__link sidebar__link--sub">Import / Export</a>
+      <a href="#notifications" class="sidebar__link">Notifications</a>
+      <a href="#visitor-experience" class="sidebar__link">Visitor Experience</a>
+    </div>
+    <div class="sidebar__section">
+      <div class="sidebar__heading">Other Docs</div>
+      <a href="./getting-started.html" class="sidebar__link">Getting Started</a>
+      <a href="./pricing.html" class="sidebar__link">Plans &amp; Pricing</a>
+      <a href="./changelog.html" class="sidebar__link">Changelog</a>
+    </div>
+  </aside>
+
+  <!-- ── CONTENT ── -->
+  <main class="content">
+
+    <div class="breadcrumb">
+      <a href="./index.html">Docs</a>
+      <span class="breadcrumb__sep">/</span>
+      <span>User Guide</span>
+    </div>
+
+    <p class="page-eyebrow">Complete Guide</p>
+    <h1 class="page-title">Using Guidwell</h1>
+    <p class="page-lead">A complete walkthrough of every tab in the Guidwell admin — from building your first question to routing visitors down branching paths that feel tailor-made for them.</p>
+
+    <!-- ══════════════════════════════════════════
+         OVERVIEW
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="overview">
+      <h2>Overview</h2>
+      <p>Guidwell turns a common problem — "how do I help a visitor find the right plan?" — into an interactive experience that sells for you around the clock. Instead of a static pricing table that visitors scroll past, you give them a short, guided quiz. They answer a handful of questions about their goals, budget, and working style, and Guidwell surfaces the plan that fits them best.</p>
+      <p>The result isn't just a recommendation — it's a <strong>personalized moment</strong>. Visitors see a plan name, a price, a description written for them, and a checklist of exactly what they get. That specificity builds trust and dramatically reduces the friction between "browsing" and "buying."</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">🧱</div>
+          <div class="feature-card__title">Wizard Builder</div>
+          <div class="feature-card__body">Write questions, define answers, set weights, and manage your plans — all in one place.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🔀</div>
+          <div class="feature-card__title">Logic Trees</div>
+          <div class="feature-card__body">Route visitors to different questions based on what they pick. Branching paths create better, more personal recommendations.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">✅</div>
+          <div class="feature-card__title">Features Library</div>
+          <div class="feature-card__body">Build a library of service deliverables and assign them to plans. They appear as checklists in the results modal.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">📬</div>
+          <div class="feature-card__title">Notifications</div>
+          <div class="feature-card__body">Get notified every time someone completes your wizard. Optionally capture their name and email on the results screen.</div>
+        </div>
+      </div>
+
+      <p>The five tabs in the Guidwell admin each handle one piece of that experience. This guide walks through all of them, in order.</p>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ══════════════════════════════════════════
+         WIZARD BUILDER
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="wizard-builder">
+      <h2>Wizard Builder</h2>
+      <p>The Wizard Builder is your home base. Every time you open Guidwell, this is the tab you land on. It's divided into three panels: a <strong>questions sidebar</strong> on the left, a <strong>plans sidebar</strong> below it, and a <strong>right-panel editor</strong> that opens when you click anything.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/admin-builder.png" alt="Guidwell Wizard Builder tab showing the questions sidebar with 7 questions, plans sidebar with Seed through Blossom plans, and the question editor with a scoring grid" class="screenshot">
+        <div class="screenshot-caption">The Wizard Builder: questions on the left, plans below, editor on the right. Click anything to start editing.</div>
+      </div>
+
+      <p>Everything you build here feeds directly into the wizard your visitors experience. Changes are reflected in real time in the editor — click Save in the top-right when you're ready to persist them.</p>
+
+      <h3 id="questions">Questions</h3>
+      <p>Questions are the heart of your wizard. Each question appears as a single focused screen in the visitor experience — one choice at a time, no scrolling, no overwhelm. Good questions feel like a conversation, not a form.</p>
+
+      <h4>Adding a question</h4>
+      <ol class="steps">
+        <li><span>Click the <strong>+ Add Question</strong> button at the bottom of the questions sidebar.</span></li>
+        <li><span>A new question appears in the list and the editor opens on the right. Type your question text — keep it conversational. "How involved do you want to be in your own marketing?" lands better than "Preferred level of client involvement."</span></li>
+        <li><span>Add answers by clicking <strong>+ Add Answer</strong> inside the editor. Each answer is a choice the visitor can select. Aim for 3–5 answers per question — enough to differentiate, not so many it feels overwhelming.</span></li>
+        <li><span>Set a weight for each answer/plan combination in the scoring grid. (See <a href="#scoring">Scoring</a> below for a full explanation.)</span></li>
+        <li><span>Click <strong>Save</strong> in the top-right of the tab bar when you're done.</span></li>
+      </ol>
+
+      <h4>Reordering questions</h4>
+      <p>Drag any question in the sidebar up or down to change its position. In Linear mode, the sidebar order is the order visitors see questions. In Tree mode, order is determined by your logic connections — the sidebar order there is just for your organizational reference.</p>
+
+      <h4>Deleting a question</h4>
+      <p>Open a question in the editor and use the delete option at the bottom. If you have logic connections referencing that question, they'll be removed automatically — Guidwell keeps the canvas consistent so you don't end up with broken arrows.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Question limits by tier:</strong> Free allows up to 5 questions and 5 answers per question. <span class="tier-label tier-label--starter">Starter</span> raises that to 15 questions / 10 answers. <span class="tier-label tier-label--pro">Pro</span> unlocks 50 questions / 10 answers across up to 5 sites. <span class="tier-label tier-label--agency">Agency</span> supports 100 questions and 20 answers per question — enough to cover even the most complex multi-service offerings across 25 sites. <a href="./pricing.html">Compare plans &rarr;</a></div>
+      </div>
+
+      <h3 id="plans">Plans</h3>
+      <p>Plans are the outcomes your wizard recommends. Think of them as your service tiers or packages — the things a visitor might ultimately buy. Guidwell will recommend exactly one plan per visitor, based on how their answers scored.</p>
+
+      <h4>Editing a plan</h4>
+      <p>Click any plan name in the lower sidebar to open it in the right-panel editor. Each plan has four fields:</p>
+      <ul>
+        <li><strong>Name</strong> — what the plan is called. Shown as the headline in the results modal.</li>
+        <li><strong>Price</strong> — displayed prominently beneath the plan name. This is a display-only field — you handle payments through your own checkout process.</li>
+        <li><strong>Description</strong> — your personalized insight copy. This is your chance to speak directly to the visitor. Write it as if you're saying "based on what you told me, here's why this plan is right for you." Use second-person language and reference the context of the ideal client for that tier.</li>
+        <li><strong>CTA Button</strong> — the label and URL for the call-to-action button in the results modal. Send visitors directly to a checkout page, a contact form, or a booking link.</li>
+      </ul>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Write descriptions that sell.</strong> The plan description in the results modal is the most-read copy in your entire wizard — visitors land here after investing time answering questions. Make the description feel earned. Reference the kind of goals they might have, the level of support they'll get, and what success looks like with this plan. This is your strongest conversion moment.</div>
+      </div>
+
+      <h4>Adding and removing plans</h4>
+      <p>Click <strong>+ Add Plan</strong> at the bottom of the plans sidebar. To delete a plan, open it in the editor and use the delete option. Removing a plan also removes its scoring column from every question — weights are cleaned up automatically.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Plan limits by tier:</strong> Free supports 3 plans. <span class="tier-label tier-label--starter">Starter</span> raises that to 5. <span class="tier-label tier-label--pro">Pro</span> allows up to 8 plans. <span class="tier-label tier-label--agency">Agency</span> supports up to 15 plans — ideal for agencies managing large, multi-tiered service catalogs across client sites. <a href="./pricing.html">Upgrade to unlock more plans &rarr;</a></div>
+      </div>
+
+      <h3 id="scoring">Scoring</h3>
+      <p>Scoring is how Guidwell decides which plan to recommend. For every answer in your wizard, you assign a weight for each plan. When a visitor finishes the quiz, Guidwell adds up those weights across all their answers and recommends the plan with the highest total score.</p>
+
+      <h4>How to set weights</h4>
+      <p>The scoring grid shows each answer as a row, and each plan as a column. The maximum weight per cell equals the number of plans in your wizard — so if you have 5 plans, the scale is 0–5; with 3 plans, it's 0–3. Click any cell and enter a number:</p>
+      <ul>
+        <li><strong>0</strong> — this answer says nothing about affinity for this plan</li>
+        <li><strong>Low (1–2)</strong> — weak signal: a slight lean toward this plan</li>
+        <li><strong>High (near max)</strong> — strong signal: this answer meaningfully suggests this plan</li>
+        <li><strong>Max</strong> — very strong match: this answer is a clear, confident indicator for this plan</li>
+      </ul>
+
+      <p>You don't need every answer to add up perfectly. The system is comparative — it recommends whichever plan accumulates the most points, not a plan that crosses a threshold. Focus on making the relative differences between plans meaningful.</p>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Think about signal, not math.</strong> Don't spend time calculating totals. Ask yourself: "if someone picks this answer, does it lean them toward Plan A or Plan B?" Set high weights for strong leans, low weights for weak ones, and 0 when the answer is genuinely neutral. The scoring engine handles the rest — you just need the relative differences to be honest.</div>
+      </div>
+
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">Plans with a total score of zero are automatically filtered out of results — they won't be shown to the visitor even as a secondary option. This keeps results focused and prevents confusing "zero match" displays on the results screen.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ══════════════════════════════════════════
+         LOGIC TREES
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="logic">
+      <h2>Logic Trees &#11088;</h2>
+      <p>The Logic tab is where Guidwell transforms from a quiz tool into a genuine recommendation engine. This is the feature that makes your wizard feel personal — because instead of sending every visitor through the same questions in the same order, you route them down different paths based on what they tell you.</p>
+      <p>Imagine a visitor who says they're a solo freelancer versus one who's running a ten-person team. Those two people don't need the same follow-up questions. The solo freelancer needs questions about capacity, hands-on support, and high-touch engagement. The team lead needs questions about scale, multi-channel strategy, and delegation. With Logic Trees, they each get exactly that — and both arrive at a recommendation that feels like it was built for them specifically.</p>
+      <p><strong>That's the power of branching.</strong> And it's the single biggest reason visitors trust the recommendation they receive at the end. When the questions feel relevant to your situation, the answer feels credible.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/admin-logic-tree.png" alt="The Guidwell Logic tab showing a visual canvas with question cards connected by blue arrows, representing branching paths between questions" class="screenshot">
+        <div class="screenshot-caption">The Logic canvas: each question is a draggable card, and blue arrows connect answers to the next question in the path. Build complex flows visually, without writing a single line of code.</div>
+      </div>
+
+      <h3 id="linear-vs-tree">Linear vs Tree Mode</h3>
+      <p>When you open the Logic tab, the first thing you'll notice is a mode toggle: <strong>Linear</strong> or <strong>Tree</strong>. This is a foundational choice about how your wizard flows for every visitor.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">➡️</div>
+          <div class="feature-card__title">Linear Mode</div>
+          <div class="feature-card__body">Every visitor sees every question in the same order, every time. Simple, fast to configure, and ideal for short wizards (3–5 questions) where all questions are universally relevant. No logic canvas setup needed — your question order in the Builder sidebar is the flow.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🌳</div>
+          <div class="feature-card__title">Tree Mode</div>
+          <div class="feature-card__body">Different answers lead to different next questions. Visitors only see questions relevant to their specific situation, which makes longer wizards feel shorter — and recommendations feel genuinely earned. Requires Starter or higher.</div>
+        </div>
+      </div>
+
+      <p>Linear mode works on every plan and requires zero Logic tab configuration — just build your questions and save. Switch to Tree mode when you want to add branching based on visitor answers.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Tree mode requires Starter or higher.</strong> The Free tier runs in Linear mode only — all visitors see all questions in sequence. Upgrade to <span class="tier-label tier-label--starter">Starter ($79/yr)</span> to unlock branching and start personalizing the path. Even one branch makes a measurable difference in how relevant the recommendation feels. <a href="./pricing.html">See plans &rarr;</a></div>
+      </div>
+
+      <h3 id="building-branches">Building Branches</h3>
+      <p>When Tree mode is active, the Logic canvas shows all your questions as draggable cards. Each card lists the answers for that question. Your job is to wire them together: draw an arrow from an answer to the question that should follow when a visitor picks that answer.</p>
+
+      <h4>Step-by-step: building your first branch</h4>
+      <ol class="steps">
+        <li><span>Open the <strong>Logic</strong> tab and confirm you're in <strong>Tree</strong> mode using the toggle in the top bar of the canvas.</span></li>
+        <li><span>Your question cards appear on the canvas. If the canvas looks empty, make sure you've saved at least two questions in the Wizard Builder tab first.</span></li>
+        <li><span>Identify your <strong>opening question</strong> — the first question every visitor sees. There should be one card with no incoming arrows pointing to it. That's your starting point.</span></li>
+        <li><span>Hover over an <strong>answer row</strong> on a question card. A small connection handle (a circle or dot) appears on the right edge of that answer row.</span></li>
+        <li><span>Click and drag from that handle toward the question card you want to show next. A blue arrow appears as you drag — guide it to the target card and release to create the connection.</span></li>
+        <li><span>Repeat for each answer you want to branch. Any answer left unconnected will end the quiz at that point and display results based on scores collected so far.</span></li>
+        <li><span>Drag cards around the canvas to organize your layout. Position has no effect on the logic — only the arrow connections matter.</span></li>
+        <li><span>Click <strong>Save</strong> in the top-right when your branching logic is complete.</span></li>
+      </ol>
+
+      <h4>Rearranging and cleaning up the canvas</h4>
+      <p>Cards can be freely dragged to any position on the canvas. There's no functional meaning to where a card sits — only which answers connect to which questions. A common organizing pattern: put your opening question at the top center, fan out the first-level branches below it, and place "leaf" questions (the final questions in each path, leading to results) at the bottom. This gives you a clear top-down mental model of the entire flow.</p>
+
+      <h4>Editing and removing connections</h4>
+      <p>Click any blue arrow on the canvas to select it. A delete button appears — click it to remove that connection. The answer that previously triggered that route returns to its unconnected state, meaning a visitor who picks it will see results immediately rather than continuing to another question.</p>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Sketch before you wire.</strong> Before touching the canvas, map out your decision tree on paper or a notes app. Identify which answers are genuine forks (they meaningfully change what should come next) versus which ones can safely lead to the same follow-up question. This prevents tangled canvases and saves you from rewiring connections later.</div>
+      </div>
+
+      <h4>Watch the wizard in action</h4>
+      <p>The best way to understand what you're building is to see a visitor navigate a branched wizard from start to finish. Watch how the path changes based on the choices they make — and notice how the results modal at the end feels like a natural conclusion to the conversation:</p>
+
+      <div class="screenshot-wrap">
+        <video autoplay loop muted playsinline class="screenshot" style="width:100%;border-radius:8px;">
+          <source src="./assets/screenshots/wizard-demo.mp4" type="video/mp4">
+        </video>
+        <div class="screenshot-caption">A complete wizard run. Notice how each question appears cleanly, transitions are smooth, and the results modal feels like a confident conclusion — not a random output.</div>
+      </div>
+
+      <p>The visitor never sees a flowchart or a decision tree — they just see clear questions, one at a time, with a progress bar showing how close they are to their recommendation. The branching happens invisibly. What they experience is a wizard that seems to understand them. That's what gets your CTA clicked.</p>
+
+      <h4>What makes a question worth branching on?</h4>
+      <p>Not every question deserves a branch. Reserve branching for questions where the answer fundamentally changes what's relevant next. Strong branching questions tend to be:</p>
+      <ul>
+        <li><strong>Context gates</strong> — "Are you a solo practitioner or do you have a team?" The follow-up questions for each path are completely different.</li>
+        <li><strong>Priority filters</strong> — "What matters most to you right now: results speed, budget, or long-term strategy?" Each answer shifts which follow-up features matter most to discuss.</li>
+        <li><strong>Scope qualifiers</strong> — "Are you starting from scratch or building on an existing foundation?" Two very different starting points — they need different questions to arrive at a meaningful recommendation.</li>
+      </ul>
+      <p>Questions about preference, communication style, or tone — where both answers would logically lead to the same next question — usually don't need a branch. Let the scoring weights do that differentiating work instead.</p>
+
+      <h3 id="logic-tier-limits">Tier Limits for Logic Trees</h3>
+      <p>Branching depth is measured in "levels" — a single fork counts as one level. A fork inside a fork is two levels. Here's what each tier supports:</p>
+
+      <table class="tier-table">
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>Mode</th>
+            <th>Branching Depth</th>
+            <th>Max Questions</th>
+            <th>Max Answers / Question</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tier-label tier-label--free">Free</span></td>
+            <td>Linear only</td>
+            <td class="no">None</td>
+            <td>5</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <td><span class="tier-label tier-label--starter">Starter</span></td>
+            <td>Linear + Tree</td>
+            <td>1 level</td>
+            <td>15</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td><span class="tier-label tier-label--pro">Pro</span></td>
+            <td>Linear + Tree</td>
+            <td>3 levels</td>
+            <td>50</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td><span class="tier-label tier-label--agency">Agency</span></td>
+            <td>Linear + Tree</td>
+            <td>Unlimited</td>
+            <td>100</td>
+            <td>20</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">One level of branching — available on Starter — is enough for most service businesses. A single fork ("Solo or team?") creates two distinct paths that dramatically improve recommendation accuracy compared to a linear quiz. You don't need deep nesting to feel the benefit immediately.</div>
+      </div>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Need deeper branching?</strong> If you're building complex qualification flows — a multi-service agency with very different offerings for different industries and company sizes — <span class="tier-label tier-label--pro">Pro</span> (3 levels, 5 sites) or <span class="tier-label tier-label--agency">Agency</span> (unlimited, 25 sites) give you the depth to model those scenarios precisely. <a href="./pricing.html">View plans &rarr;</a></div>
+      </div>
+
+      <h4>A branching path in practice</h4>
+      <p>Here's what a two-level tree looks like. The opening question forks into two paths, and each path has its own additional branch:</p>
+
+      <div class="branch-diagram">
+        <div class="branch-diagram__title">Example: 2-level branching structure (Pro tier)</div>
+        <div class="branch-row">
+          <div class="branch-node branch-node--start">Q1: Solo practitioner or team?</div>
+        </div>
+        <div class="branch-row" style="margin-left: 24px;">
+          <div class="branch-arrow">&#8600;</div>
+          <div class="branch-label">Solo</div>
+          <div class="branch-node">Q2a: How much strategy support do you want?</div>
+          <span style="margin: 0 8px; color: var(--muted);">&rarr;</span>
+          <div class="branch-node branch-node--end">Results</div>
+        </div>
+        <div class="branch-row" style="margin-left: 24px;">
+          <div class="branch-arrow">&#8601;</div>
+          <div class="branch-label">Team</div>
+          <div class="branch-node">Q2b: How many channels are you managing?</div>
+          <span style="margin: 0 8px; color: var(--muted);">&rarr;</span>
+          <div class="branch-node branch-node--end">Results</div>
+        </div>
+      </div>
+
+      <p>In this structure, solo visitors and team-based visitors never see the same second question. Because Q2a and Q2b are directly relevant to each visitor's context, they feel heard — not categorized. That emotional resonance is what makes the final recommendation land with confidence rather than feeling like a coin flip.</p>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ══════════════════════════════════════════
+         FEATURES LIBRARY
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="features">
+      <h2>Features Library</h2>
+      <p>The Features tab is your library of service deliverables — the specific things your plans include. You build the list once here, then assign individual items to whichever plans they belong to. Those items appear as a <strong>"What's Included" checklist</strong> inside the results modal, right below the plan description.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/admin-features.png" alt="Guidwell Features Library tab showing a list of feature items including '60-minute monthly strategy meeting', 'Quarterly audit report', and other service deliverables" class="screenshot">
+        <div class="screenshot-caption">The Features Library: define your service deliverables here once, then assign them to any plan. They appear as a checklist in the results modal.</div>
+      </div>
+
+      <p>Checklists work because they make abstract promises concrete. "Comprehensive support" is vague. "Monthly 60-minute strategy call, weekly check-in email, quarterly audit report" is something a visitor can read, evaluate, and get excited about. The Features Library makes it easy to manage those specifics without re-typing them for every plan.</p>
+
+      <h3>Adding a feature item</h3>
+      <ol class="steps">
+        <li><span>Click <strong>+ Add Feature</strong> on the Features tab.</span></li>
+        <li><span>Type the feature name. Keep it short and benefit-forward — "Monthly strategy call" reads better than "1x 60-minute call with a member of the strategy team."</span></li>
+        <li><span>Use the plan checkboxes to assign this feature to one or more plans. A feature can belong to multiple plans — for example, "Monthly strategy call" might be included in your top three tiers.</span></li>
+        <li><span>Save. The feature immediately appears in the results modal for any plan it's assigned to.</span></li>
+      </ol>
+
+      <h3>Reordering features</h3>
+      <p>Drag features in the list to reorder them. The order here is the order they appear in the checklist inside the results modal. Put the most impressive or most expected items first — the first three items in a checklist get the most visual attention.</p>
+
+      <h3>Writing great feature items</h3>
+      <ul>
+        <li>Use <strong>noun phrases</strong>, not sentences. "Quarterly strategy audit" reads better than "We'll audit your strategy every quarter."</li>
+        <li>Lead with the cadence or benefit. "Weekly check-in call" tells a visitor more than "Call with account manager."</li>
+        <li>Keep items parallel in format — it makes the checklist look clean and professional.</li>
+        <li>Be specific. "2,000-word blog post per month" is more compelling than "Content creation."</li>
+      </ul>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Use features to show tier progression.</strong> Assign your core deliverables to every plan, then add higher-touch or higher-volume items only to premium tiers. When a visitor sees their recommended plan's checklist, they should immediately feel the value difference compared to lower tiers — and feel motivated to stretch for a higher one if the extra items resonate.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ══════════════════════════════════════════
+         SETTINGS
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="settings">
+      <h2>Settings</h2>
+      <p>The Settings tab controls how your wizard looks, manages your license, and lets you back up or transfer your entire wizard configuration.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/admin-settings.png" alt="Guidwell Settings tab showing branding color controls, license key field, and import/export buttons" class="screenshot">
+        <div class="screenshot-caption">Settings: match your brand colors, activate your license, and export your wizard configuration for backups or multi-site deployment.</div>
+      </div>
+
+      <h3 id="branding">Branding</h3>
+      <p>Your wizard lives on your site, inside your brand. By default, Guidwell uses its own color scheme — which is fine for getting started, but you'll want to match your brand before the wizard goes live to real visitors.</p>
+      <p>The Branding section lets you set a primary color for buttons, progress indicators, and accent elements inside the wizard. Enter your brand hex code, preview the change, and save. It takes effect immediately for all future visitors.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Custom branding requires Starter or higher.</strong> On the Free tier, the wizard uses the default Guidwell color palette. Upgrade to <span class="tier-label tier-label--starter">Starter ($79/yr)</span> to match your brand colors and make the wizard feel native to your site rather than a bolted-on tool. <a href="./pricing.html">See what's included &rarr;</a></div>
+      </div>
+
+      <h4>Watermark</h4>
+      <p>All plans below Agency display a small "Brought to you by Guidwell" credit at the bottom of the wizard. The Agency plan includes the option to remove it entirely — ideal for client sites where the wizard should feel like a bespoke part of their brand, not a third-party tool.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>White-label (watermark removal) is an Agency feature.</strong> <span class="tier-label tier-label--agency">Agency ($299/yr)</span> removes the Guidwell branding entirely — ideal for client deployments where the wizard should feel like a bespoke part of their site. <a href="./pricing.html">Upgrade to Agency &rarr;</a></div>
+      </div>
+
+      <h3 id="license">License Key</h3>
+      <p>After purchasing a paid plan, you'll receive a license key by email. Enter it in the License section of the Settings tab and click <strong>Activate</strong>. Guidwell verifies the key and unlocks your tier's features immediately — no restart needed.</p>
+      <p>Your current tier and license status are displayed at the top of the Settings tab. If you upgrade your plan, you'll receive a new key. Deactivate the old one and enter the new key to apply your updated tier.</p>
+
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">License keys are tied to site count: Starter covers 1 site, Pro covers 5 sites, and Agency covers 25 sites. If you activate Guidwell on more sites than your plan allows, you'll be prompted to upgrade or deactivate a site before the new installation activates.</div>
+      </div>
+
+      <h3 id="import-export">Import / Export</h3>
+      <p>Your entire wizard configuration — questions, answers, weights, plans, features, and logic connections — can be exported as a single JSON file. This is useful for backups before major changes, sharing a configuration between sites, or handing a pre-built wizard to a client.</p>
+
+      <h4>Exporting your wizard</h4>
+      <p>Click <strong>Export Wizard</strong> in the Settings tab. A JSON file downloads immediately. Keep it somewhere safe — this is a complete snapshot of everything you've built and can restore your wizard in seconds.</p>
+
+      <h4>Importing a wizard</h4>
+      <p>Click <strong>Import Wizard</strong>, select a previously exported JSON file, and confirm. The import <strong>replaces</strong> your current wizard configuration — it's a full overwrite, not a merge. Export your current wizard first if you want to preserve it before importing.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Export requires Starter or higher. Import requires Pro or higher.</strong> Export lets you back up your wizard and save snapshots of different configurations. Import lets you restore a backup or deploy a pre-built wizard to multiple sites instantly — a significant time-saver for <span class="tier-label tier-label--agency">Agency</span> users setting up multiple client wizards from a master template. <a href="./pricing.html">Compare plans &rarr;</a></div>
+      </div>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Agency workflow tip:</strong> Build and refine a master wizard on a staging or template site. Once it's polished, export it and import it to each client site. Adjust the plan names, descriptions, branding colors, and CTA links per client — the question structure, scoring weights, and logic connections carry over perfectly, saving hours of rebuild time per client.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ══════════════════════════════════════════
+         NOTIFICATIONS
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="notifications">
+      <h2>Notifications</h2>
+      <p>The Notifications tab controls what happens after a visitor completes your wizard — both what you receive (admin alerts) and what you collect (visitor contact info on the results screen).</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/admin-notifications.png" alt="Guidwell Notifications tab showing admin email notification settings, email capture toggle with required/optional setting, and custom SMTP configuration fields" class="screenshot">
+        <div class="screenshot-caption">Notifications: get alerted when visitors complete your wizard, capture their contact info before showing results, and configure reliable email delivery via custom SMTP.</div>
+      </div>
+
+      <h3>Admin notifications</h3>
+      <p>When a visitor completes your wizard, Guidwell can send you an email summary. The notification includes which plan was recommended and — if email capture is enabled — the visitor's name and email address.</p>
+      <p>Enter the email address you want alerts sent to, toggle notifications on, and save. That's all there is to it. Every completed wizard sends a notification in real time, so you always know immediately when someone has self-qualified through your wizard.</p>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Treat notifications as sales triggers.</strong> When you get a notification that someone completed your wizard and landed on your highest-tier plan, that's a warm lead who has just self-qualified. They've told you exactly what they need and your wizard confirmed they're a fit. Follow up promptly. The wizard did the heavy lifting — your job is to close.</div>
+      </div>
+
+      <h3>Email capture</h3>
+      <p>Email capture adds a name and email field to the results screen, displayed just before the visitor sees their recommended plan. You choose whether it's required (they must enter their info to unlock results) or optional (they can skip it and go straight to results).</p>
+      <p>When a visitor submits their contact info, it's included in your admin notification email. In future releases, captured emails will also appear in the Guidwell analytics dashboard for easier management.</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Email capture requires Starter or higher.</strong> On the Free tier, visitors go straight to their results without any opportunity to opt in. Upgrade to <span class="tier-label tier-label--starter">Starter ($79/yr)</span> to start capturing leads while they're at peak interest — right after your wizard has personalized a recommendation for them. <a href="./pricing.html">See pricing &rarr;</a></div>
+      </div>
+
+      <h3>Email integrations</h3>
+      <p>On Agency plans, captured email addresses flow directly to your email marketing platform — straight into your CRM or email list without any manual copying or export. Email integration options are configured in the Notifications tab under "Integrations."</p>
+
+      <div class="callout callout--tier">
+        <div class="callout__icon">🔒</div>
+        <div class="callout__body"><strong>Email integrations are an Agency-only feature.</strong> <span class="tier-label tier-label--agency">Agency ($299/yr)</span> connects Guidwell to your email marketing stack so captured leads flow in automatically. Ideal for high-volume deployments where manual list management isn't practical. <a href="./pricing.html">Upgrade to Agency &rarr;</a></div>
+      </div>
+
+      <h3>Custom SMTP</h3>
+      <p>By default, Guidwell sends notification emails through WordPress's built-in <code>wp_mail()</code> function, which relies on your server's outgoing mail setup. If your host has poor deliverability or you'd prefer to route email through a dedicated provider like SendGrid, Mailgun, or Postmark, the Custom SMTP section lets you enter your credentials directly.</p>
+      <p>Fill in your SMTP host, port, username, and password, then click <strong>Test Connection</strong> to verify everything works before saving. A confirmation email is sent to your admin address as proof.</p>
+
+      <div class="callout callout--info">
+        <div class="callout__icon">ℹ️</div>
+        <div class="callout__body">Custom SMTP in Guidwell applies only to Guidwell's own notification emails. It doesn't affect other WordPress emails (password resets, order confirmations, etc.) unless you're also using a separate SMTP plugin for those.</div>
+      </div>
+    </section>
+
+    <hr class="rule"/>
+
+    <!-- ══════════════════════════════════════════
+         VISITOR EXPERIENCE
+    ══════════════════════════════════════════ -->
+    <section class="doc-section" id="visitor-experience">
+      <h2>Visitor Experience</h2>
+      <p>You've built the wizard. Now let's look at it from your visitor's perspective — because understanding what they see and feel helps you write better questions, craft more compelling plan descriptions, and set the wizard up so it actually converts.</p>
+
+      <h3>The wizard on your page</h3>
+      <p>Guidwell embeds on any WordPress page or post using the shortcode <code>[guidwell_wizard]</code>. Drop it inside a page builder block, a classic editor text block, or anywhere shortcodes are supported. The wizard renders as a clean, centered card that adapts to any layout without extra CSS.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/wizard-step1.png" alt="The Guidwell wizard front-end showing the first question as a clean white card with a clear question and answer buttons below it" class="screenshot">
+        <div class="screenshot-caption">What your visitors see: one question, one clear choice, a progress bar showing how far they've come. No distractions, no confusion about what to do next.</div>
+      </div>
+
+      <p>Each question appears as a single full card. One question, one set of answer buttons, one forward action. The visitor clicks their answer and moves to the next step — no scrolling, no multi-field forms, no wondering whether they've filled everything in. The progress bar at the top shows how far along they are, which reduces abandonment on longer wizards significantly.</p>
+
+      <h3>Mobile experience</h3>
+      <p>Guidwell is fully responsive out of the box. On mobile, the wizard expands to the full width of the screen, answer buttons stack vertically for easy thumb tapping, and nothing requires pinching, zooming, or horizontal scrolling. Your wizard works just as well for someone on their phone in a coffee shop as it does for someone at a desk.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/wizard-mobile.png" alt="Guidwell wizard on a mobile device showing a clean, stacked layout with large touch-friendly answer buttons" class="screenshot">
+        <div class="screenshot-caption">The wizard on mobile: full-width, touch-optimized, and just as clean as the desktop experience.</div>
+      </div>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Test on a real device before going live.</strong> A significant share of your visitors will encounter the wizard on their phone. Open your page on an actual mobile device — not just a browser resize — and click through the full wizard yourself. Confirm the answer buttons are easy to tap, the text is readable, and the results modal is clear at phone scale.</div>
+      </div>
+
+      <h3>The results modal</h3>
+      <p>After answering the final question, the visitor sees the results modal — the payoff for everything they've just invested. This is the most important screen in your wizard, and the one that most directly drives conversions.</p>
+
+      <div class="screenshot-wrap">
+        <img src="./assets/screenshots/wizard-results-modal.png" alt="Guidwell results modal showing the 'Grow' plan recommended at $1,250/mo with a personalized insight paragraph and a features checklist below it" class="screenshot">
+        <div class="screenshot-caption">The results modal: plan name, price, personalized description, feature checklist, and a direct CTA button — everything a visitor needs to say yes, all in one focused screen.</div>
+      </div>
+
+      <p>The results modal contains:</p>
+      <ul>
+        <li><strong>The recommended plan name</strong> — prominent, confident, no hedging or "you might like" language</li>
+        <li><strong>The price</strong> — right up front, so visitors can immediately self-qualify</li>
+        <li><strong>The plan description</strong> — your personalized insight copy that connects their experience to why this plan is right for them</li>
+        <li><strong>The features checklist</strong> — specific deliverables from your Features Library, listed cleanly for this plan</li>
+        <li><strong>The CTA button</strong> — "Book a discovery call," "Get started," "See full details," or whatever fits your sales process</li>
+      </ul>
+
+      <p>If email capture is enabled, a name/email field appears just before the results reveal — giving visitors the opportunity (or requirement, depending on your setting) to share their contact info in exchange for seeing their personalized recommendation.</p>
+
+      <div class="callout callout--tip">
+        <div class="callout__icon">✅</div>
+        <div class="callout__body"><strong>Your CTA button is worth testing.</strong> "See full details" sends people to a plan page for more research. "Book a free call" pulls them into your sales process. "Get started" works if your checkout is low-friction. Match the button to where visitors are in their decision journey — and revisit it after a few weeks to see which phrasing drives the most clicks.</div>
+      </div>
+
+      <h3>Retaking the wizard</h3>
+      <p>Visitors can retake the wizard from the results modal via a "Start over" link. This resets their answers and sends them back to the first question. Useful for visitors who want to see how different answers change the recommendation — and a smart way to keep them engaged with your service offerings longer.</p>
+
+      <h3>Tips for embedding and promoting your wizard</h3>
+      <ul>
+        <li><strong>Give it a dedicated page.</strong> A standalone "Find Your Perfect Plan" page consistently outperforms embedding the wizard mid-page where it competes for attention with other content.</li>
+        <li><strong>Remove distractions.</strong> If your theme supports it, hide the site navigation and sidebar on the wizard page. A distraction-free, full-width layout increases completion rates noticeably.</li>
+        <li><strong>Link to it from your pricing page.</strong> Visitors browsing your pricing table are already interested — they just need help deciding. Offer the wizard as a way to "find the right plan for you" and you convert browsers into engaged prospects.</li>
+        <li><strong>Add a teaser headline above the shortcode.</strong> Something like "Not sure which plan fits your situation? Answer 5 quick questions." Sets expectations, reduces uncertainty before the wizard starts, and frames the experience as helpful rather than salesy.</li>
+        <li><strong>Share it in proposals and follow-up emails.</strong> Linking a prospect to your wizard in a follow-up email ("I thought this might help clarify which plan fits your goals") is a low-pressure, high-value way to re-engage someone who's gone quiet.</li>
+      </ul>
+    </section>
+
+    <div class="page-nav">
+      <a href="./getting-started.html">&larr; Getting Started</a>
+      <a href="./pricing.html">Plans &amp; Pricing &rarr;</a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <span class="site-footer__brand">Guidwell by Welfle Creative</span>
+  <div class="site-footer__links">
+    <a href="./index.html">Docs Home</a>
+    <a href="./getting-started.html">Getting Started</a>
+    <a href="./pricing.html">Pricing</a>
+    <a href="https://welflecreative.com" target="_blank" rel="noopener">welflecreative.com</a>
+  </div>
+</footer>
+
+</body>
+</html>

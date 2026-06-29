@@ -93,7 +93,7 @@ function SpinnerFallback() {
 }
 
 export default function Wizard() {
-	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [], pluginUrl = '' } = window.guidwellData || {};
+	const { wizardId = 0, apiBase = '', nonce = '', settings = {}, contact = {}, features: featuresList = [], pluginUrl = '', version = '' } = window.guidwellData || {};
 
 	const [ config,      setConfig      ] = useState( wizardId > 0 ? null : HARDCODED_CONFIG );
 	const [ loading,     setLoading     ] = useState( wizardId > 0 );
@@ -147,6 +147,31 @@ export default function Wizard() {
 		if ( bodyFontSize )    el.style.setProperty(   '--guidwell-body-size',    `${ bodyFontSize }px` );
 		else                   el.style.removeProperty( '--guidwell-body-size' );
 	}, [ settings ] );
+
+	// Align #guidwell flush with the left viewport edge regardless of theme container padding.
+	// The CSS calc(50% - 50vw) assumes the parent is centered; some themes offset the content
+	// column (e.g. Gutenberg's .has-global-padding), so we correct it with a measurement.
+	useLayoutEffect( () => {
+		const el = document.getElementById( 'guidwell' );
+		if ( ! el ) return;
+
+		let rafId = 0;
+		const align = () => {
+			el.style.removeProperty( 'margin-left' ); // reset to CSS value so we measure from there
+			// getBoundingClientRect().left is viewport-relative — the goal is left === 0 (flush with viewport).
+			const left = el.getBoundingClientRect().left;
+			if ( Math.abs( left ) > 0.5 ) {
+				const computedML = parseFloat( getComputedStyle( el ).marginLeft ) || 0;
+				// Use setProperty with 'important' to override Gutenberg's margin-inline: auto !important
+				el.style.setProperty( 'margin-left', `${ computedML - left }px`, 'important' );
+			}
+		};
+		const alignRaf = () => { cancelAnimationFrame( rafId ); rafId = requestAnimationFrame( align ); };
+
+		align();
+		window.addEventListener( 'resize', alignRaf );
+		return () => { window.removeEventListener( 'resize', alignRaf ); cancelAnimationFrame( rafId ); };
+	}, [] );
 
 	// Copy CSS vars from #guidwell to the portaled modal container before the browser paints,
 	// so the modal inherits the correct brand colors even though it lives on document.body.
@@ -382,7 +407,7 @@ export default function Wizard() {
 							>
 								<span className="guidwell-watermark__text">{ __( 'Brought to you by', 'guidwell' ) }</span>
 								<img
-									src={ `${ pluginUrl }public/assets/guidwell-logo.svg` }
+									src={ `${ pluginUrl }public/assets/guidwell-logo.svg${ version ? `?ver=${ version }` : '' }` }
 									alt="Guidwell"
 									className="guidwell-watermark__logo"
 								/>
