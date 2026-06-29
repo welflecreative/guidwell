@@ -401,7 +401,7 @@ jobs:
           USER     = 'welflecreative.wordpress.com'
           PASSWORD = os.environ['SFTP_PASS']
           LOCAL    = pathlib.Path('guidwell-docs')
-          REMOTE   = '/srv/htdocs/guidwell-docs'
+          REMOTE   = '/srv/htdocs/guidwell'
 
           transport = paramiko.Transport((HOST, 22))
           transport.connect()
