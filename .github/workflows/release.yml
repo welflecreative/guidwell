@@ -256,6 +256,131 @@ jobs:
           print(f"Release notes written for {current_tag} ({bump_type})")
           PYEOF
 
+      - name: Update changelog.html
+        env:
+          CURRENT_TAG: ${{ steps.version.outputs.tag }}
+          BUMP_TYPE: ${{ steps.bump.outputs.type }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 << 'PYEOF'
+          import subprocess, os, re
+          from datetime import date
+          from pathlib import Path
+          import html as html_mod
+
+          current_tag = os.environ['CURRENT_TAG']
+          bump_type   = os.environ.get('BUMP_TYPE', 'patch')
+          pr_title    = os.environ.get('PR_TITLE', '').strip()
+
+          version = current_tag.lstrip('v')                   # "1.5.1"
+          anchor  = 'v' + version.replace('.', '-')           # "v1-5-1"
+          today   = date.today().strftime('%Y-%m-%d')
+
+          # Previous tag for commit range
+          raw_tags = subprocess.check_output(['git', 'tag', '--sort=-version:refname']).decode().strip()
+          tags = [t for t in raw_tags.split('\n') if t and t != current_tag]
+          prev_tag = tags[0] if tags else None
+          log_range = f"{prev_tag}..{current_tag}" if prev_tag else current_tag
+
+          raw_log = subprocess.check_output([
+              'git', 'log', log_range, '--pretty=format:%s', '--no-merges',
+          ]).decode().strip()
+
+          CONV = re.compile(r'^(feat|fix|docs|chore|refactor|style|test|perf)(\([^)]+\))?!?:\s*(.+)$', re.I)
+          features, fixes, docs_list = [], [], []
+          for line in raw_log.split('\n'):
+              if not line or re.search(r'^bump version to', line, re.I):
+                  continue
+              m = CONV.match(line)
+              if m:
+                  kind, desc = m.group(1).lower(), html_mod.escape(m.group(3).strip())
+                  if kind == 'feat':   features.append(desc)
+                  elif kind == 'fix':  fixes.append(desc)
+                  elif kind == 'docs': docs_list.append(desc)
+
+          # Tag badges
+          badges = ['<span class="release__tag tag--latest">Latest</span>']
+          if features:
+              badges.append('<span class="release__tag tag--feature">Feature</span>')
+          elif fixes:
+              badges.append('<span class="release__tag tag--fix">Fix</span>')
+
+          def change_group(label, items):
+              if not items: return ''
+              lis = '\n'.join(f'          <li>{item}</li>' for item in items)
+              return (f'      <div class="change-group">\n'
+                      f'        <div class="change-group__label">{label}</div>\n'
+                      f'        <ul class="change-list">\n{lis}\n        </ul>\n      </div>')
+
+          groups = '\n'.join(filter(None, [
+              change_group('Added', features),
+              change_group('Fixed', fixes),
+              change_group('Documentation', docs_list),
+          ]))
+          if not groups:
+              groups = '      <div class="change-group"><div class="change-group__label">Changes</div><ul class="change-list"><li>See GitHub release notes for details.</li></ul></div>'
+
+          badges_html = '\n        '.join(badges)
+          new_entry = (
+              f'    <!-- v{version} -->\n'
+              f'    <div class="release" id="{anchor}">\n'
+              f'      <div class="release__header">\n'
+              f'        <div class="release__version">v{version}</div>\n'
+              f'        {badges_html}\n'
+              f'        <span class="release__date">{today}</span>\n'
+              f'      </div>\n'
+              f'{groups}\n'
+              f'    </div>\n\n'
+              f'    <hr class="rule"/>\n\n'
+          )
+
+          changelog = Path('guidwell-docs/changelog.html')
+          html = changelog.read_text()
+
+          # Strip tag--latest from the previously-latest entry
+          html = html.replace(
+              '<span class="release__tag tag--latest">Latest</span>\n        ',
+              '', 1
+          )
+          html = html.replace(
+              '<span class="release__tag tag--latest">Latest</span>\n',
+              '', 1
+          )
+
+          # Insert new entry before the first existing <!-- v release comment
+          marker = '    <!-- v'
+          idx = html.find(marker)
+          if idx != -1:
+              html = html[:idx] + new_entry + html[idx:]
+
+          # Sidebar: build short label from PR title or first feature/fix
+          label_src = pr_title or (features[0] if features else fixes[0] if fixes else 'Release')
+          # Strip conventional prefix if present
+          label_src = re.sub(r'^(feat|fix|docs|chore)\([^)]+\)!?:\s*', '', label_src, flags=re.I)
+          label_src = re.sub(r'^(feat|fix|docs|chore)!?:\s*', '', label_src, flags=re.I)
+          short_label = html_mod.escape(label_src[:38].rstrip())
+          sidebar_link = f'      <a href="#{anchor}" class="sidebar__link active">v{version} — {short_label}</a>\n'
+
+          # Remove active class from previous first sidebar link
+          html = re.sub(r'(class="sidebar__link) active"', r'\1"', html, count=1)
+
+          # Insert new sidebar link after the Releases heading
+          releases_heading = '<div class="sidebar__heading">Releases</div>\n'
+          idx2 = html.find(releases_heading)
+          if idx2 != -1:
+              insert_at = idx2 + len(releases_heading)
+              html = html[:insert_at] + sidebar_link + html[insert_at:]
+
+          changelog.write_text(html)
+          print(f'changelog.html updated — added v{version} ({today})')
+          PYEOF
+
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add guidwell-docs/changelog.html
+          git diff --cached --quiet || git commit -m "docs: add v${{ steps.version.outputs.version }} entry to changelog.html"
+          git push origin main
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
