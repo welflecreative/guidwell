@@ -124,7 +124,8 @@ code { font-family: 'Fira Code', monospace; font-size: 12px; background: #f1f5f9
   <aside class="sidebar">
     <div class="sidebar__section">
       <div class="sidebar__heading">Releases</div>
-      <a href="#v1-4-2" class="sidebar__link active">v1.4.2 — Multi-select &amp; filters</a>
+      <a href="#v1-5-3" class="sidebar__link active">v1.5.3 — logo SVG, docs overhaul, SFTP deploy,</a>
+      <a href="#v1-4-2" class="sidebar__link">v1.4.2 — Multi-select &amp; filters</a>
       <a href="#v1-4-0" class="sidebar__link">v1.4.0 — Branding &amp; align fixes</a>
       <a href="#v1-1-0" class="sidebar__link">v1.1.0 — Logic &amp; scoring</a>
       <a href="#v1-0-1" class="sidebar__link">v1.0.1 — Security patch</a>
@@ -150,11 +151,34 @@ code { font-family: 'Fira Code', monospace; font-size: 12px; background: #f1f5f9
     <h1 class="page-title">Changelog</h1>
     <p class="page-lead">All notable changes, fixes, and security patches. Follows <a href="https://semver.org" target="_blank" rel="noopener" style="color:var(--primary);">Semantic Versioning</a> — patch for fixes, minor for new features, major for breaking changes.</p>
 
+    <!-- v1.5.3 -->
+    <div class="release" id="v1-5-3">
+      <div class="release__header">
+        <div class="release__version">v1.5.3</div>
+        <span class="release__tag tag--latest">Latest</span>
+        <span class="release__tag tag--feature">Feature</span>
+        <span class="release__date">2026-06-29</span>
+      </div>
+      <div class="change-group">
+        <div class="change-group__label">Added</div>
+        <ul class="change-list">
+          <li>auto-update changelog.html on every release</li>
+        </ul>
+      </div>
+      <div class="change-group">
+        <div class="change-group__label">Fixed</div>
+        <ul class="change-list">
+          <li>pass SFTP credentials via lftp -u flag instead of .netrc</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="rule"/>
+
     <!-- v1.4.2 -->
     <div class="release" id="v1-4-2">
       <div class="release__header">
         <div class="release__version">v1.4.2</div>
-        <span class="release__tag tag--latest">Latest</span>
         <span class="release__tag tag--feature">Feature</span>
         <span class="release__date">2026-06-28</span>
       </div>
