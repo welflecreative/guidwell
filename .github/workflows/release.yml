@@ -269,11 +269,8 @@ jobs:
           SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
         run: |
           sudo apt-get install -y lftp -qq
-          # Write credentials to .netrc so the password never appears in the process list
-          printf 'machine sftp.wp.com login welflecreative.wordpress.com password %s\n' "$SFTP_PASS" > ~/.netrc
-          chmod 600 ~/.netrc
-          trap 'rm -f ~/.netrc' EXIT
-          lftp -e "
+          # -u passes credentials directly to lftp; .netrc is not used for SFTP connections
+          lftp -u "welflecreative.wordpress.com,$SFTP_PASS" -e "
             set net:reconnect-interval-base 5;
             set net:max-retries 2;
             set sftp:auto-confirm yes;
