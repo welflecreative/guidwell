@@ -392,17 +392,74 @@ jobs:
       - name: Deploy guidwell-docs to WordPress.com
         env:
           SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
-          # SSHPASS must be in the step env so it's inherited by the ssh subprocess via sshpass -e
-          SSHPASS: ${{ secrets.SFTP_PASSWORD }}
         run: |
-          sudo apt-get install -y lftp sshpass -qq
-          # open sftp://user@host (not -u user) so lftp skips its own GetPass() prompt.
-          # sftp:connect-program routes through sshpass which injects SSHPASS at the SSH layer.
-          lftp -e "
-            set sftp:connect-program 'sshpass -e ssh -a -x -oStrictHostKeyChecking=no -oPasswordAuthentication=yes';
-            set net:reconnect-interval-base 5;
-            set net:max-retries 2;
-            open sftp://welflecreative.wordpress.com@sftp.wp.com;
-            mirror --reverse --delete --parallel=4 guidwell-docs/ /srv/htdocs/guidwell-docs/;
-            bye
-          "
+          pip install paramiko --quiet
+          python3 << 'PYEOF'
+          import os, stat, pathlib, paramiko
+
+          HOST     = 'sftp.wp.com'
+          USER     = 'welflecreative.wordpress.com'
+          PASSWORD = os.environ['SFTP_PASS']
+          LOCAL    = pathlib.Path('guidwell-docs')
+          REMOTE   = '/srv/htdocs/guidwell-docs'
+
+          transport = paramiko.Transport((HOST, 22))
+          transport.connect()
+
+          # WordPress.com uses keyboard-interactive auth (app passwords).
+          # Try plain password first; fall back to keyboard-interactive which
+          # answers every prompt with the app password.
+          try:
+              transport.auth_password(USER, PASSWORD)
+          except paramiko.AuthenticationException:
+              transport.auth_interactive(USER, lambda title, instructions, prompts: [PASSWORD] * len(prompts))
+
+          sftp = paramiko.SFTPClient.from_transport(transport)
+
+          def ls_remote(path):
+              try:
+                  return {e.filename: e for e in sftp.listdir_attr(path)}
+              except IOError:
+                  return {}
+
+          def rmdir_remote(path):
+              for e in sftp.listdir_attr(path):
+                  ep = f"{path}/{e.filename}"
+                  if stat.S_ISDIR(e.st_mode):
+                      rmdir_remote(ep)
+                  else:
+                      sftp.remove(ep)
+              sftp.rmdir(path)
+
+          def sync(local, remote):
+              try:
+                  sftp.mkdir(remote)
+              except IOError:
+                  pass  # already exists
+
+              remote_entries = ls_remote(remote)
+              local_names    = {p.name for p in local.iterdir()}
+
+              for item in sorted(local.iterdir()):
+                  rpath = f"{remote}/{item.name}"
+                  if item.is_dir():
+                      sync(item, rpath)
+                  else:
+                      sftp.put(str(item), rpath)
+                      print(f'  put  {item}')
+
+              for name, entry in remote_entries.items():
+                  if name not in local_names:
+                      rpath = f"{remote}/{name}"
+                      if stat.S_ISDIR(entry.st_mode):
+                          rmdir_remote(rpath)
+                      else:
+                          sftp.remove(rpath)
+                      print(f'  del  {rpath}')
+
+          print(f'Syncing {LOCAL} → {HOST}:{REMOTE}')
+          sync(LOCAL, REMOTE)
+          sftp.close()
+          transport.close()
+          print('Sync complete.')
+          PYEOF
