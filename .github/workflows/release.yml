@@ -392,16 +392,17 @@ jobs:
       - name: Deploy guidwell-docs to WordPress.com
         env:
           SFTP_PASS: ${{ secrets.SFTP_PASSWORD }}
+          # SSHPASS must be in the step env so it's inherited by the ssh subprocess via sshpass -e
+          SSHPASS: ${{ secrets.SFTP_PASSWORD }}
         run: |
           sudo apt-get install -y lftp sshpass -qq
-          # lftp SFTP uses OpenSSH underneath which doesn't accept passwords non-interactively.
-          # sshpass intercepts the SSH password prompt; SSHPASS env var keeps it out of ps output.
-          export SSHPASS="$SFTP_PASS"
+          # open sftp://user@host (not -u user) so lftp skips its own GetPass() prompt.
+          # sftp:connect-program routes through sshpass which injects SSHPASS at the SSH layer.
           lftp -e "
-            set sftp:connect-program 'sshpass -e ssh -a -x -oStrictHostKeyChecking=no';
+            set sftp:connect-program 'sshpass -e ssh -a -x -oStrictHostKeyChecking=no -oPasswordAuthentication=yes';
             set net:reconnect-interval-base 5;
             set net:max-retries 2;
-            open -u welflecreative.wordpress.com sftp://sftp.wp.com;
+            open sftp://welflecreative.wordpress.com@sftp.wp.com;
             mirror --reverse --delete --parallel=4 guidwell-docs/ /srv/htdocs/guidwell-docs/;
             bye
           "
