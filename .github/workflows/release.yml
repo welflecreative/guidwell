@@ -95,20 +95,11 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          tools: composer:v2
-
       - name: Install JS dependencies
         run: npm ci
 
       - name: Build JS
         run: npm run build
-
-      - name: Install PHP dependencies (production only)
-        run: composer update --no-dev --optimize-autoloader
 
       - name: Build plugin zip
         run: |
