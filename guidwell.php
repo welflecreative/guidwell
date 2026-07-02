@@ -19,15 +19,35 @@ define( 'GUIDWELL_VERSION', '1.5.8' );
 define( 'GUIDWELL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GUIDWELL_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-// Auto-updates via GitHub Releases. Only active when the library is present (i.e. in a built zip).
-if ( file_exists( GUIDWELL_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
-	require_once GUIDWELL_PLUGIN_DIR . 'vendor/autoload.php';
-	$guidwell_update_checker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-		'https://github.com/welflecreative/guidwell/',
-		__FILE__,
-		'guidwell'
-	);
-	$guidwell_update_checker->getVcsApi()->enableReleaseAssets();
+// Freemius SDK — handles licensing, update delivery, and the upgrade flow.
+if ( ! function_exists( 'guidwell_fs' ) ) {
+	function guidwell_fs(): \Freemius {
+		global $guidwell_fs;
+
+		if ( ! isset( $guidwell_fs ) ) {
+			require_once GUIDWELL_PLUGIN_DIR . 'freemius/start.php';
+
+			$guidwell_fs = fs_dynamic_init( [
+				'id'               => '33342',
+				'slug'             => 'guidwell',
+				'type'             => 'plugin',
+				'public_key'       => 'pk_ef934107eb8469e88b8a13f8bff20',
+				'is_premium'       => true,
+				'is_premium_only'  => false,
+				'has_paid_plans'   => true,
+				'menu'             => [
+					'slug'    => 'guidwell',
+					'contact' => false,
+					'support' => false,
+				],
+			] );
+		}
+
+		return $guidwell_fs;
+	}
+
+	guidwell_fs();
+	do_action( 'guidwell_fs_loaded' );
 }
 
 require_once GUIDWELL_PLUGIN_DIR . 'includes/class-guidwell-tiers.php';
